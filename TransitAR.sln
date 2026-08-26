@@ -1,13 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransitAR.Structures", "TransitAR.Structures\TransitAR.Structures.csproj", "{B156521A-4F2C-47B7-BEB5-E341EA77E0E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransitAR.Api", "TransitAR.Api\TransitAR.Api.csproj", "{F487D87B-C53D-48B5-A4EF-66DA9CBB60DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransitAR.Web", "TransitAR.Web\TransitAR.Web.csproj", "{4E9B9A95-B4E7-42B0-9F18-2DC4691CC7D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0A2B061-CD3B-45C0-A736-D44BA163720A}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
