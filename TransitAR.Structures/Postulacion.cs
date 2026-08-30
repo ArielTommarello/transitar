@@ -59,7 +59,7 @@ namespace TransitAR.Structures
         public string? ObservacionRechazo { get; set; }
 
         /// <summary>
-        /// Chat interno entre el refugio y el postulante sobre esta solicitud. Queda abierta hasta que la mascota fuera entregada
+        /// Chat interno entre el refugio y el postulante sobre esta solicitud. Queda abierta y luego se continua usando en la tenencia
         /// </summary>
         public List<Mensaje> Mensajes { get; set; } = new();
 
