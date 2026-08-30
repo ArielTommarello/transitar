@@ -6,7 +6,7 @@ namespace TransitAR.Structures
     /// <summary>
     /// Link de Contacto de un usuario. Se guarda un id junto con un id del usuario para poder agregar mas valores o repeticiones  al refugio. De esta manera se facilita la busqueda en linq
     /// </summary>
-    public class ContactoUsuario
+    public class ContactoPostulante
     {
         /// <summary>
         /// Identificador del ContactoUsuario
@@ -14,9 +14,9 @@ namespace TransitAR.Structures
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Usuarip al que pertenece este contacto
+        /// Usuario al que pertenece este contacto
         /// </summary>
-        public Guid UsuarioId { get; set; }
+        public Guid PerfilPostulanteId { get; set; }
 
 
         /// <summary>
