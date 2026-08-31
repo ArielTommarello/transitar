@@ -59,6 +59,12 @@ namespace TransitAR.Structures
         public bool? FinalizoBien { get; set; }
 
         /// <summary>
+        /// TIpo de tenencia si es transito o adopcion. Nace copiando el Tipo de la publicacion, y cuando un transito se convierte pasa a adopcion.
+        /// Sin este campo, una tenencia con FechaFinReal en null no se distingue entre un transito en curso y una adopcion vigente, y la agenda del refugio mostraria como "transito vencido" a una familia que adopto hace dos años
+        /// </summary>
+        public TipoPublicacion Modalidad { get; set; }
+
+        /// <summary>
         /// Seguimiento de la mascota, en base a esta tenencia
         /// </summary>
         public List<Seguimiento> Seguimientos { get; set; } = new();
