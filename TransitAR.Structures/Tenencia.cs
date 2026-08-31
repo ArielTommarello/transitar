@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace TransitAR.Structures
@@ -8,7 +9,7 @@ namespace TransitAR.Structures
     /// Puede ser tenencia temporal (en caso de transito) o Tenencia en principio final si se adopta. (Si el psotulante lo devuelve la tenencia debe ser actualizada)
     /// Esto permite el seguimiento de la Mascota. Una teniaca con FechaFinReal en null quiere decir que la mascota se encuentra entregada en algun lugar. 
     /// </summary>
-
+    [Index(nameof(PostulacionId), IsUnique =true)]  
     public class Tenencia
     {
         /// <summary>

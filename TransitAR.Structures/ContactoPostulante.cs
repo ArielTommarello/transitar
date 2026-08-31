@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace TransitAR.Structures
@@ -6,6 +7,7 @@ namespace TransitAR.Structures
     /// <summary>
     /// Link de Contacto de un usuario. Se guarda un id junto con un id del usuario para poder agregar mas valores o repeticiones  al refugio. De esta manera se facilita la busqueda en linq
     /// </summary>
+    [Index(nameof(PerfilPostulanteId),nameof(Tipo), IsUnique = true)]
     public class ContactoPostulante
     {
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace TransitAR.Structures
@@ -6,6 +7,7 @@ namespace TransitAR.Structures
     /// <summary>
     /// Aqui estan los datos del usuario que desa postularse, el refugio los revisa junto con el historial de tenencias que peude tener. Si no existe , la cuenta no completo requerimientos y se le bloqueara la postulacion hasta entonces.
     /// </summary>
+    [Index(nameof(UsuarioId), IsUnique = true)]
    public class PerfilPostulante
     {
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace TransitAR.Structures
@@ -6,6 +7,8 @@ namespace TransitAR.Structures
     /// <summary>
     /// Usuario registrado en la plataforma, el usuario decide si ser adoptante , transitante o ambos. Usuarios con rol refugio son el personal del mismo que puede utilizarlo
     /// </summary>
+    /// 
+    [Index(nameof(Email), IsUnique = true)]
     public class Usuario
     {
         /// <summary>

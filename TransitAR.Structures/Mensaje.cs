@@ -1,6 +1,7 @@
 ﻿
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TransitAR.Structures
 {
@@ -25,8 +26,14 @@ namespace TransitAR.Structures
         /// <summary>
         /// Usuario que envio el mensaje. Puede ser el postulante o la persona del refugio
         /// </summary>
+        [ForeignKey(nameof(Emisor))]
         public Guid EmisorId { get; set; }
 
+        /// <summary>
+        /// Quien escribio el mensaje. Asi se puede mostrar el nombre en el chat sin tener que hacer otra consulta en linq
+        /// 
+        /// </summary>
+        public Usuario? Emisor { get; set; }
         /// <summary>
         /// Texto del mensaje
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace TransitAR.Structures
@@ -9,7 +10,7 @@ namespace TransitAR.Structures
     /// Ocupa un cupo del postulante mientras esta pendiente. Cuando aceptan la postulacion se habilita el chat interno y la puvliacion pasa a Pausada, la entrega se pacta por el chat, por lo que 
     /// se actualizara y se creara Tenencia cuando se confirme la entrega
     /// </summary>
-    
+    [Index(nameof(PublicacionId), nameof(UsuarioId), IsUnique = true)]
     public class Postulacion
     {
         /// <summary>
