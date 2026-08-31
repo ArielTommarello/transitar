@@ -54,6 +54,11 @@ namespace TransitAR.Structures
         public RolUsuario Rol { get; set; }
 
         /// <summary>
+        /// Nivel dentro del rol refugio.Solo se usa para diferenciar  fundador de colaborador y asi poder usar mas personas en el refugio
+        /// </summary>
+        public RolRefugio? RolRefugio { get; set; }
+
+        /// <summary>
         /// Solo en cuentas con rol Refugio: indica que refugio administra esta persona.
         /// En cuentas de postulantes y del admin queda en null
         /// </summary>
