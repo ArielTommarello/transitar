@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using TransitAR.Structures;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger UI for .NET
 builder.Services.AddSwaggerGen();
+
+//Context database for use in the controllers
+builder.Services.AddDbContext<TransitARContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TransitAR")));
 
 var app = builder.Build();
 
