@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TransitAR.Api.Services;
 using TransitAR.Structures;
 
 
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 //Context database for use in the controllers
 builder.Services.AddDbContext<TransitARContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TransitAR")));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 

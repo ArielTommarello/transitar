@@ -19,7 +19,7 @@ namespace TransitAR.Api.Services
             _context = context;
         }
 
-
+        ///<inheritdoc/>
         public async Task<Usuario?> RegistrarPostulanteAsync (RegistroPostulanteRequest request)
         {
             if(request == null)
@@ -47,7 +47,7 @@ namespace TransitAR.Api.Services
             return postulante;
         }
 
-
+        ///<inheritdoc/>
         public async Task<Usuario?> RegistrarRefugioAsync(RegistroRefugioRequest request)
         {
             if (request == null)
