@@ -64,6 +64,7 @@ namespace TransitAR.Api.Services
                 Nombre = request.NombreRefugio.Trim(),
                 Email = email,
                 Telefono = request.Telefono?.Trim(),
+                Localidad = request.Localidad?.Trim(),
                 Direccion = request.Direccion?.Trim(),
                 Activo = true,
                 FechaAlta = DateTime.UtcNow 
