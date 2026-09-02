@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using TransitAR.Api.Extensions;
 using TransitAR.Api.Services;
 using TransitAR.Structures;
 
@@ -74,6 +78,22 @@ namespace TransitAR.Api.Controllers
         }
 
 
+
+        /// <summary>
+        /// Devuelve los datos del usuario autenticado (desde el token)
+        /// </summary>
+        [Authorize]
+        //[Authorize(Roles = nameof(RolUsuario.Refugio))]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            var id = User.ObtenerUsuarioId();
+            var email = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
+            var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+            var refugioId = User.ObtenerRefugioId();
+
+            return Ok(new { id, email, rol, refugioId });
+        }
 
 
 

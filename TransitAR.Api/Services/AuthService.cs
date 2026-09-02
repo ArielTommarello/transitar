@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using TransitAR.Api.Extensions;
 using TransitAR.Structures;
 namespace TransitAR.Api.Services
 {
@@ -136,7 +137,7 @@ namespace TransitAR.Api.Services
             };
             //reviso si el usuario tiene rol de refugio y agrego el id de refugio para trabajar sino es usuario normal
             if(usuario.RefugioId.HasValue)
-                claims.Add(new Claim("refugioId",usuario.RefugioId.Value.ToString()));
+                claims.Add(new Claim(ClaimsPrincipalExtensions.ClaimRefugioId,usuario.RefugioId.Value.ToString()));
 
             //reviso que la clave este config
             var keyString = _configuration["Jwt:Key"]

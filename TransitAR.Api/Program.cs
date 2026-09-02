@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.OpenApi;
 using System.Text;
 using TransitAR.Api.Services;
 using TransitAR.Structures;
@@ -12,7 +15,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger UI for .NET
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+
+//swagger con boton Authorize para mandar el token a endpoint protected
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Pegar solo el token."
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        { new OpenApiSecuritySchemeReference("Bearer", document), new List<string>() }
+    });
+});
 
 //Context database for use in the controllers
 builder.Services.AddDbContext<TransitARContext>(options =>
@@ -29,6 +51,9 @@ var jwtKey = builder.Configuration["Jwt:Key"]
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        //claims con nombre original sin mapeo 
+        options.MapInboundClaims = false;
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
