@@ -1,4 +1,6 @@
-﻿using TransitAR.Structures;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using TransitAR.Structures;
+using LoginRequest = TransitAR.Structures.LoginRequest;
 
 namespace TransitAR.Api.Services
 {
@@ -22,6 +24,15 @@ namespace TransitAR.Api.Services
         /// <param name="request">datos del formulario del registro en Request Structures para el refugio y el usuario fundador</param>
         /// <returns>El usuario creado, null en caso de ya existir</returns>
         Task<Usuario?> RegistrarRefugioAsync(RegistroRefugioRequest request);
+
+
+        /// <summary>
+        /// Interfaz. Login para usuarios, devuelve null en caso de contraseña incorrecta o email incorrecto
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+
+        Task<LoginResponse?> LoginAsync(LoginRequest request);
 
 
     }

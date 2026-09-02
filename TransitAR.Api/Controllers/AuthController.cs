@@ -39,9 +39,13 @@ namespace TransitAR.Api.Controllers
 
         }
 
-
+        /// <summary>
+        /// Registra un usuario fundador y refugio
+        /// </summary>
+        /// <param name="request">Datos del formulario en request</param>
+        /// <returns>datos basicos de la cuenta</returns>
         [HttpPost("registro/refugio")]
-        public async Task<IActionResult> RegistrarREfugio([FromBody] RegistroRefugioRequest request)
+        public async Task<IActionResult> RegistrarRefugio([FromBody] RegistroRefugioRequest request)
         {
             var usuario = await _authService.RegistrarRefugioAsync(request);
 
@@ -51,6 +55,26 @@ namespace TransitAR.Api.Controllers
             return Ok(new { usuario.Id, usuario.Email, usuario.RefugioId });
 
         }
+
+
+        /// <summary>
+        /// Inicia sesion y devuelve el token de acceso
+        /// </summary>
+        /// <param name="request">Email y contraseña</param>
+        /// <returns>token, expiracion y los datos del usuario</returns>
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            var response = await _authService.LoginAsync(request);
+
+            if (response == null)
+                return Unauthorized(new { mensaje = "Email o contraseña incorrectos." });
+
+            return Ok(response);
+        }
+
+
+
 
 
     }
