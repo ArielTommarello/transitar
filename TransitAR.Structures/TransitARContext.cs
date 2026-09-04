@@ -73,6 +73,22 @@ namespace TransitAR.Structures
 
             foreach (var fk in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetForeignKeys()))
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
+
+
+            //catalogo de base para un refugio pueda cargar mascotas . FK de especie y condicion (luego el admin puede agregar a voluntad ya que es dinamico, esto es para tener un start y trabajar)
+            //Especie y Condicion para empezar id fijos
+
+            modelBuilder.Entity<Especie>().HasData(
+                       new Especie { Id = Guid.Parse("11111111-1111-1111-1111-111111111101"), Nombre = "Perro" },
+                       new Especie { Id = Guid.Parse("11111111-1111-1111-1111-111111111102"), Nombre = "Gato" },
+                       new Especie { Id = Guid.Parse("11111111-1111-1111-1111-111111111103"), Nombre = "Conejo" }
+                );
+
+            modelBuilder.Entity<Condicion>().HasData(
+              new Condicion { Id = Guid.Parse("22222222-2222-2222-2222-222222222201"), Nombre = "Sano" },
+              new Condicion { Id = Guid.Parse("22222222-2222-2222-2222-222222222202"), Nombre = "En tratamiento" },
+              new Condicion { Id = Guid.Parse("22222222-2222-2222-2222-222222222203"), Nombre = "Discapacidad permanente" }
+                );
         }
 
     }

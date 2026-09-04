@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransitAR.Structures;
 
@@ -11,9 +12,11 @@ using TransitAR.Structures;
 namespace TransitAR.Structures.Migrations
 {
     [DbContext(typeof(TransitARContext))]
-    partial class TransitARContextModelSnapshot : ModelSnapshot
+    [Migration("20260904142701_CreacionCatalogoEspecieMascota")]
+    partial class CreacionCatalogoEspecieMascota
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
