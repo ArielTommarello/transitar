@@ -33,9 +33,20 @@ namespace TransitAR.Structures
         public Guid EspecieId { get; set; }
 
         /// <summary>
+        /// Especie del animal. Sale del catalogo que administra el Admin , se usa para navegacion en efCore
+        /// </summary>
+        public Especie? Especie { get; set; }
+
+        /// <summary>
         /// Condicion actual. Todas las mascotas tienen una, aunque sea Sano (depende de lo que se cargue en condicion dinamicamente)
         /// </summary>
         public Guid CondicionId { get; set; }
+
+
+        /// <summary>
+        /// Condicion del animal. Sale del catalogo que administra el Admin , se usa para navegacion en efCore
+        /// </summary>
+        public Condicion? Condicion { get; set; }
 
         /// <summary>
         /// Raza del animal, si se conoce o  es una cruza

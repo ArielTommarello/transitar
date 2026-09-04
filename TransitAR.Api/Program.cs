@@ -41,6 +41,7 @@ builder.Services.AddDbContext<TransitARContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TransitAR")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMascotaService, MascotaService>();
 
 
 //reviso que tenga la configuracion de la clave
