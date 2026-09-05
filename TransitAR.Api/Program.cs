@@ -42,7 +42,8 @@ builder.Services.AddDbContext<TransitARContext>(options =>
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMascotaService, MascotaService>();
-
+builder.Services.AddScoped<ICondicionService, CondicionService>();
+builder.Services.AddScoped<IEspecieService, EspecieService>();
 
 //reviso que tenga la configuracion de la clave
 var jwtKey = builder.Configuration["Jwt:Key"]
