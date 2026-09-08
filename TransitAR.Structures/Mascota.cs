@@ -28,6 +28,11 @@ namespace TransitAR.Structures
         public Guid RefugioId { get; set; }
 
         /// <summary>
+        /// Refugio completo para comparar con id y obtener nombre, localidad etc (navegacion EF CORE)
+        /// </summary>
+        public Refugio? Refugio { get; set; }
+
+        /// <summary>
         /// Especie del animal. Sale del catalogo que administra el Admin
         /// </summary>
         public Guid EspecieId { get; set; }

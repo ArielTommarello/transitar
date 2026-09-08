@@ -44,6 +44,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMascotaService, MascotaService>();
 builder.Services.AddScoped<ICondicionService, CondicionService>();
 builder.Services.AddScoped<IEspecieService, EspecieService>();
+builder.Services.AddScoped<IPublicacionService, PublicacionService>();
 
 //reviso que tenga la configuracion de la clave
 var jwtKey = builder.Configuration["Jwt:Key"]

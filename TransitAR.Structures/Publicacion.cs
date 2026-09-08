@@ -19,6 +19,11 @@ namespace TransitAR.Structures
         public Guid MascotaId { get; set; }
 
         /// <summary>
+        /// Mascota completa para comparar con id y obtener refugio (navegacion EF CORE)
+        /// </summary>
+        public Mascota? Mascota { get; set; }
+
+        /// <summary>
         /// Titulo de la publicacion
         /// </summary>
         [Required]

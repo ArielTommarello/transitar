@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using Microsoft.EntityFrameworkCore;
+using TransitAR.Api.Extensions;
 using TransitAR.Structures;
 
 namespace TransitAR.Api.Services
@@ -162,35 +163,13 @@ namespace TransitAR.Api.Services
             Raza = mascota.Raza,
             Sexo = mascota.Sexo,
             FechaNacimientoAproximada = mascota.FechaNacimientoAproximada,
-            EdadAproximadaMeses = CalcularEdadMeses(mascota.FechaNacimientoAproximada),
+            EdadAproximadaMeses = mascota.FechaNacimientoAproximada.EdadEnMeses(),
             Tamanio = mascota.Tamanio,
             Vacunado = mascota.Vacunado,
             Estado = mascota.Estado,
             FotosUrl = mascota.FotosUrl,
             FechaAlta = mascota.FechaAlta
         };
-
-        /// <summary>
-        /// Calcula la edad en meses a partir del dia de nacimiento, contra el dia actual . Error si no es static
-        /// </summary>
-        /// <param name="nacimiento"></param>
-        /// <returns></returns>
-        private static int? CalcularEdadMeses(DateTime? nacimiento)
-        {
-            if(nacimiento == null) return null;
-            //dia actual
-            var hoy = DateTime.UtcNow;
-
-            //calculo los meses dependiendo el utc de nacimiento cargado contra el dia de hoy
-            var meses = ((hoy.Year - nacimiento.Value.Year)*12) + hoy.Month - nacimiento.Value.Month;
-
-
-            if(hoy.Day < nacimiento.Value.Day)
-                meses--;
-
-            return meses < 0 ? 0 : meses;
-
-        }
 
     }
 }
