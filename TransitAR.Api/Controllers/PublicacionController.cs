@@ -78,7 +78,7 @@ namespace TransitAR.Api.Controllers
             var publicacion = await _publicacionService.CrearPublicacionAsync(request, refugioId.Value);
 
             if (publicacion is null)
-                return BadRequest(new { mensaje = "La mascota no existe, no pertenece al refugio, o ya tiene una publicacion abierta." });
+                return BadRequest(new { mensaje = "La mascota no existe, no pertenece al refugio, o ya tiene una publicacion abierta o hay un error en los datos de la publicacion" });
 
             return Ok(publicacion);
         }

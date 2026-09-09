@@ -60,6 +60,10 @@ namespace TransitAR.Api.Services
             if (refugioId == Guid.Empty)
                 return null;
 
+            //el tipo tiene que ser adopcion o transito, nunca 0 
+            if (!Enum.IsDefined(request.Tipo))
+                return null;
+
             //la mascota tiene que existir y ser del refugio autenticado
             var mascotaPropia = await _context.Mascotas
                 .AnyAsync(m => m.Id == request.MascotaId && m.RefugioId == refugioId);
@@ -99,6 +103,10 @@ namespace TransitAR.Api.Services
         public async Task<PublicacionResponse?> ActualizarPublicacionAsync(Guid id, PublicacionRequest request, Guid refugioId)
         {
             if (request == null)
+                return null;
+
+            //el tipo tiene que ser adopcion o transito, nunca 0 
+            if (!Enum.IsDefined(request.Tipo))
                 return null;
 
             var publicacion = await _context.Publicaciones
