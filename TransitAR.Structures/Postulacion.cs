@@ -23,6 +23,11 @@ namespace TransitAR.Structures
         /// </summary>
         public Guid PublicacionId { get; set; }
 
+        // <summary>
+        /// Publicacion completa para comparar con id  (navegacion EF CORE)
+        /// </summary>
+        public Publicacion? Publicacion { get; set; }
+
         /// <summary>
         /// Persona que se postula
         /// </summary>
