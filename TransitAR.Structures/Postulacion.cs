@@ -23,7 +23,7 @@ namespace TransitAR.Structures
         /// </summary>
         public Guid PublicacionId { get; set; }
 
-        // <summary>
+        /// <summary>
         /// Publicacion completa para comparar con id  (navegacion EF CORE)
         /// </summary>
         public Publicacion? Publicacion { get; set; }
@@ -32,6 +32,11 @@ namespace TransitAR.Structures
         /// Persona que se postula
         /// </summary>
         public Guid UsuarioId { get; set; }
+
+        /// <summary>
+        /// Perfil del usuario, para uso de EFCORE
+        /// </summary>
+        public Usuario? Usuario { get; set; }
 
         /// <summary>
         /// Estado actual de la postulacion. Aceptada, pendiente o rechazada
