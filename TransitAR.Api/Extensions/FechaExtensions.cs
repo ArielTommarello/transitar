@@ -11,7 +11,7 @@
         /// </summary>
         public static int? EdadEnMeses(this DateTime? nacimiento)
         {
-            if (nacimiento is null)
+            if (nacimiento == null)
                 return null;
 
             var hoy = DateTime.UtcNow;

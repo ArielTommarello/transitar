@@ -35,7 +35,7 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ListarMisPostulaciones()
         {
             var usuarioId = User.ObtenerUsuarioId();
-            if (usuarioId is null)
+            if (usuarioId == null)
                 return Forbid();
 
             return Ok(await _postulacionService.ListarMisPostulacionesAsync(usuarioId.Value));
@@ -49,12 +49,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ObtenerPostulacion(Guid id)
         {
             var usuarioId = User.ObtenerUsuarioId();
-            if (usuarioId is null)
+            if (usuarioId == null)
                 return Forbid();
 
             var postulacion = await _postulacionService.ObtenerPostulacionAsync(id, usuarioId.Value);
 
-            if (postulacion is null)
+            if (postulacion == null)
                 return NotFound();
 
             return Ok(postulacion);
@@ -68,7 +68,7 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> Postularse([FromBody] PostulacionRequest request)
         {
             var usuarioId = User.ObtenerUsuarioId();
-            if (usuarioId is null)
+            if (usuarioId == null)
                 return Forbid();
 
             //puede estar vacia, pero no puedo tener horarios random o no validos
@@ -78,7 +78,7 @@ namespace TransitAR.Api.Controllers
 
             var resultado = await _postulacionService.PostularseAsync(request, usuarioId.Value);
 
-            if (resultado.Postulacion is null)
+            if (resultado.Postulacion == null)
                 return BadRequest(new { mensaje = resultado.Error });
 
             return Ok(resultado.Postulacion);
@@ -92,12 +92,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> RetirarPostulacion(Guid id)
         {
             var usuarioId = User.ObtenerUsuarioId();
-            if (usuarioId is null)
+            if (usuarioId == null)
                 return Forbid();
 
             var resultado = await _postulacionService.RetirarPostulacionAsync(id, usuarioId.Value);
 
-            if (resultado.Postulacion is null)
+            if (resultado.Postulacion == null)
                 return BadRequest(new { mensaje = resultado.Error });
 
             return Ok(resultado.Postulacion);

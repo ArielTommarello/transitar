@@ -28,7 +28,7 @@ namespace TransitAR.Api.Services
                 .Include(p => p.Contactos)
                 .FirstOrDefaultAsync(p => p.UsuarioId == usuarioId);
 
-            return perfil is null ? null : PerfilDTO(perfil);
+            return perfil == null ? null : PerfilDTO(perfil);
         }
 
         ///<inheritdoc/>
@@ -86,7 +86,7 @@ namespace TransitAR.Api.Services
                 .Include(p => p.Contactos)
                 .FirstOrDefaultAsync(p => p.UsuarioId == usuarioId);
 
-            if (perfil is null)
+            if (perfil == null)
                 return null;
 
             //UsuarioId y FechaCompletado no se cambian
@@ -118,7 +118,7 @@ namespace TransitAR.Api.Services
             {
                 var enviado = request.Contactos.FirstOrDefault(c => c.Tipo == existente.Tipo);
 
-                if (enviado is null)
+                if (enviado == null)
                     _context.ContactoPostulantes.Remove(existente);
                 else
                     existente.Url = enviado.Url.Trim();

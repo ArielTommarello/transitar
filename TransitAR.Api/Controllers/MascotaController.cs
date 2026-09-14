@@ -41,7 +41,7 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ListarMascotas()
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             var mascotas = await _mascotaService.ListarMascotasAsync(refugioId.Value);
@@ -56,12 +56,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ObtenerMascota(Guid id)
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             var mascota = await _mascotaService.ObtenerMascotaAsync(id, refugioId.Value);
 
-            if (mascota is null)
+            if (mascota == null)
                 return NotFound();
 
             return Ok(mascota);
@@ -75,12 +75,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> CrearMascota([FromBody] MascotaRequest request)
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             var mascota = await _mascotaService.CrearMascotaAsync(request, refugioId.Value);
 
-            if (mascota is null)
+            if (mascota == null)
                 return BadRequest(new { mensaje = "La especie o la condicion indicada no existe." });
 
             return Ok(mascota);
@@ -95,12 +95,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ActualizarMascota(Guid id, [FromBody] MascotaRequest request)
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             var mascota = await _mascotaService.ActualizarMascotaAsync(id, request, refugioId.Value);
 
-            if (mascota is null)
+            if (mascota == null)
                 return NotFound();
 
             return Ok(mascota);
@@ -114,7 +114,7 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> EliminarMascota(Guid id)
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             if (!await _mascotaService.EliminarMascotaAsync(id, refugioId.Value))

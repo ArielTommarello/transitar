@@ -19,14 +19,17 @@ namespace TransitAR.Api.Controllers
     {
 
         private readonly IPublicacionService _publicacionService;
+        private readonly IPostulacionService _postulacionService;
 
-        /// <summary>
-        /// Inicializa el servicio de publicaicones
-        /// </summary>
-        /// <param name="publicacionService"></param>
-        public PublicacionController(IPublicacionService publicacionService)
+         /// <summary>
+         /// Inicializa el contexto de Publicaicones
+         /// </summary>
+         /// <param name="publicacionService"></param>
+         /// <param name="postulacionService"></param>
+        public PublicacionController(IPublicacionService publicacionService, IPostulacionService postulacionService)
         {
             _publicacionService = publicacionService;
+            _postulacionService = postulacionService;
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ListarPublicaciones()
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             return Ok(await _publicacionService.ListarPublicacionesAsync(refugioId.Value));
@@ -52,12 +55,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ObtenerPublicacion(Guid id)
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             var publicacion = await _publicacionService.ObtenerPublicacionAsync(id, refugioId.Value);
 
-            if (publicacion is null)
+            if (publicacion == null)
                 return NotFound();
 
             return Ok(publicacion);
@@ -72,12 +75,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> CrearPublicacion([FromBody] PublicacionRequest request)
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             var publicacion = await _publicacionService.CrearPublicacionAsync(request, refugioId.Value);
 
-            if (publicacion is null)
+            if (publicacion == null)
                 return BadRequest(new { mensaje = "La mascota no existe, no pertenece al refugio, o ya tiene una publicacion abierta o hay un error en los datos de la publicacion" });
 
             return Ok(publicacion);
@@ -93,12 +96,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ActualizarPublicacion(Guid id, [FromBody] PublicacionRequest request)
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             var publicacion = await _publicacionService.ActualizarPublicacionAsync(id, request, refugioId.Value);
 
-            if (publicacion is null)
+            if (publicacion == null)
                 return NotFound();
 
             return Ok(publicacion);
@@ -115,16 +118,80 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> CambiarEstado(Guid id, EstadoPublicacion estado)
         {
             var refugioId = User.ObtenerRefugioId();
-            if (refugioId is null)
+            if (refugioId == null)
                 return Forbid();
 
             var publicacion = await _publicacionService.CambiarEstadoAsync(id, estado, refugioId.Value);
 
-            if (publicacion is null)
+            if (publicacion == null)
                 return NotFound();
 
             return Ok(publicacion);
         }
+
+
+
+        //endopoints para las publicaciones desde la vista del refugio
+
+        /// <summary>
+        /// Devuelvo la lista de todas las posutlaicones del refugio en base a la publicacion
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id:guid}/postulaciones")]
+        public async Task<IActionResult> ListarPostulaciones(Guid id)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            return Ok(await _postulacionService.ListarPostulacionesDePublicacionAsync(id, refugioId.Value));
+        }
+
+        /// <summary>
+        /// Acepta un candidato que se postulao en la publicacion
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="postulacionId"></param>
+        /// <returns></returns>
+        [HttpPatch("{id:guid}/postulaciones/{postulacionId:guid}/aceptar")]
+        public async Task<IActionResult> AceptarPostulacion(Guid id, Guid postulacionId)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            var resultado = await _postulacionService.AceptarAsync(id, postulacionId, refugioId.Value);
+
+            if (resultado.Postulacion == null)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(resultado.Postulacion);
+        }
+
+        /// <summary>
+        /// Rechaza un candidato que se postulao en la publicacion
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="postulacionId"></param>
+        /// <param name="observacion"></param>
+        /// <returns></returns>
+        [HttpPatch("{id:guid}/postulaciones/{postulacionId:guid}/rechazar")]
+        public async Task<IActionResult> RechazarPostulacion(Guid id, Guid postulacionId,[FromBody] string? observacion)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            var resultado = await _postulacionService.RechazarAsync(id, postulacionId, observacion, refugioId.Value);
+
+            if (resultado.Postulacion == null)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(resultado.Postulacion);
+        }
+
+
 
 
         /// <summary>
@@ -150,7 +217,7 @@ namespace TransitAR.Api.Controllers
         {
             var publicacion = await _publicacionService.ObtenerActivaAsync(id);
 
-            if (publicacion is null)
+            if (publicacion == null)
                 return NotFound();
 
             return Ok(publicacion);

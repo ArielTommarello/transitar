@@ -47,7 +47,7 @@ namespace TransitAR.Api.Services
                 .Select(p => new { Publicacion = p, Cantidad = p.Postulaciones.Count })
                 .FirstOrDefaultAsync();
 
-            return dato is null ? null : PublicacionDTO(dato.Publicacion, dato.Cantidad);
+            return dato == null ? null : PublicacionDTO(dato.Publicacion, dato.Cantidad);
         }
 
 
@@ -112,7 +112,7 @@ namespace TransitAR.Api.Services
             var publicacion = await _context.Publicaciones
                 .FirstOrDefaultAsync(p => p.Id == id && p.Mascota!.RefugioId == refugioId);
 
-            if (publicacion is null)
+            if (publicacion == null)
                 return null;
 
             //MascotaId no se toca cambiar de mascota seria otra publicacion o otra mascota (cada mascota solo tiene una publicacion)
@@ -135,7 +135,7 @@ namespace TransitAR.Api.Services
             var publicacion = await _context.Publicaciones
                 .FirstOrDefaultAsync(p => p.Id == id && p.Mascota!.RefugioId == refugioId);
 
-            if (publicacion is null)
+            if (publicacion == null)
                 return null;
 
             publicacion.Estado = estado;
@@ -174,7 +174,7 @@ namespace TransitAR.Api.Services
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Refugio)
                 .FirstOrDefaultAsync(p => p.Id == id && p.Estado == EstadoPublicacion.Activa);
 
-            return publicacion is null ? null : PublicacionPublicaDTO(publicacion);
+            return publicacion == null ? null : PublicacionPublicaDTO(publicacion);
         }
 
 

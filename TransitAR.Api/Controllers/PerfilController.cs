@@ -35,12 +35,12 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ObtenerPerfil()
         {
             var usuarioId = User.ObtenerUsuarioId();
-            if (usuarioId is null)
+            if (usuarioId == null)
                 return Forbid();
 
             var perfil = await _perfilService.ObtenerPerfilAsync(usuarioId.Value);
 
-            if (perfil is null)
+            if (perfil == null)
                 return NotFound(new { mensaje = "Todavia no completaste tu perfil." });
 
             return Ok(perfil);
@@ -54,16 +54,16 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> CrearPerfil([FromBody] PerfilRequest request)
         {
             var usuarioId = User.ObtenerUsuarioId();
-            if (usuarioId is null)
+            if (usuarioId == null)
                 return Forbid();
 
             var error = ValidarRequest(request);
-            if (error is not null)
+            if (error != null)
                 return BadRequest(new { mensaje = error });
 
             var perfil = await _perfilService.CrearPerfilAsync(request, usuarioId.Value);
 
-            if (perfil is null)
+            if (perfil == null)
                 return Conflict(new { mensaje = "Ya hay un perfil cargado. Por favor recuperalo y completalo" });
 
             return Ok(perfil);
@@ -77,16 +77,16 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ActualizarPerfil([FromBody] PerfilRequest request)
         {
             var usuarioId = User.ObtenerUsuarioId();
-            if (usuarioId is null)
+            if (usuarioId == null)
                 return Forbid();
 
             var error = ValidarRequest(request);
-            if (error is not null)
+            if (error != null)
                 return BadRequest(new { mensaje = error });
 
             var perfil = await _perfilService.ActualizarPerfilAsync(request, usuarioId.Value);
 
-            if (perfil is null)
+            if (perfil == null)
                 return NotFound(new { mensaje = "Todavia no completaste tu perfil. Por favor crealo y completalo para poder postularte" });
 
             return Ok(perfil);
