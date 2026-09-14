@@ -177,13 +177,13 @@ namespace TransitAR.Api.Controllers
         /// <param name="observacion"></param>
         /// <returns></returns>
         [HttpPatch("{id:guid}/postulaciones/{postulacionId:guid}/rechazar")]
-        public async Task<IActionResult> RechazarPostulacion(Guid id, Guid postulacionId,[FromBody] string? observacion)
+        public async Task<IActionResult> RechazarPostulacion(Guid id, Guid postulacionId,[FromBody] RechazoRequest request)
         {
             var refugioId = User.ObtenerRefugioId();
             if (refugioId == null)
                 return Forbid();
 
-            var resultado = await _postulacionService.RechazarAsync(id, postulacionId, observacion, refugioId.Value);
+            var resultado = await _postulacionService.RechazarAsync(id, postulacionId, request?.Observacion, refugioId.Value);
 
             if (resultado.Postulacion == null)
                 return BadRequest(new { mensaje = resultado.Error });
