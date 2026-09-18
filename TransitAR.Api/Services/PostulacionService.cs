@@ -209,13 +209,13 @@ namespace TransitAR.Api.Services
             if (postulacion == null)
                 return Error("Esa postulacion no pertenece a esta publicacion.");
 
-            //La postulacion tiene que estar pendiente, no aceptada o rechazada
-            if (postulacion.Estado != EstadoPostulacion.Pendiente)
-                return Error("Solo se pueden aceptar postulaciones pendientes.");
-
             //chequeo que sea el primero en se aceptado
             if (publicacion.Postulaciones.Any(p => p.Estado == EstadoPostulacion.Aceptada))
                 return Error("Ya aceptaste a un candidato. Resolve esa postulacion antes de aceptar otra.");
+
+            //La postulacion tiene que estar pendiente, no aceptada o rechazada
+            if (postulacion.Estado != EstadoPostulacion.Pendiente)
+                return Error("Solo se pueden aceptar postulaciones pendientes.");          
 
             var fechaActual = DateTime.UtcNow;
 
@@ -262,7 +262,7 @@ namespace TransitAR.Api.Services
                 return Error("Esa postulacion ya estaba resuelta.");
 
 
-            var Aceptada = postulacion.Estado == EstadoPostulacion.Aceptada;
+            var fueAceptada = postulacion.Estado == EstadoPostulacion.Aceptada;
 
             postulacion.Estado = EstadoPostulacion.Rechazada;
             postulacion.FechaResolucion = DateTime.UtcNow;
@@ -271,7 +271,7 @@ namespace TransitAR.Api.Services
                 : observacion.Trim();
 
             //si era el aceptado , se reabre la postualcion par aque ingresen nuevos candidatos y se revisa entre los que estaban
-            if (Aceptada)
+            if (fueAceptada)
             {
                 foreach (var otra in publicacion.Postulaciones.Where(p => p.Estado == EstadoPostulacion.EnEspera))
                     otra.Estado = EstadoPostulacion.Pendiente;
