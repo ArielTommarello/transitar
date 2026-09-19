@@ -23,9 +23,20 @@ namespace TransitAR.Structures
         public Guid PostulacionId { get; set; }
 
         /// <summary>
+        ///  Navegacion a la postulacion, para navegacion (EFCORE)
+        /// </summary>
+        public Postulacion? Postulacion { get; set; }
+
+        /// <summary>
         /// Mascota que se entrego. Esta repetido en la  cadena Postulacion - Publicacion - Mascota, pero permite armar el historial del animal  y la agenda del refugio con una sola consulta (uso mas facil de linq)
         /// </summary>
         public Guid MascotaId { get; set; }
+
+
+        /// <summary>
+        /// Navegacion a la mascota, para el filtro por refugio y animal (EFCORE)
+        /// </summary>
+        public Mascota? Mascota { get; set; }
 
         /// <summary>
         /// Fecha en que el refugio entrego el animal
