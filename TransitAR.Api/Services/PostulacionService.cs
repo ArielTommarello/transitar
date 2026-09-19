@@ -86,7 +86,7 @@ namespace TransitAR.Api.Services
                 .CountAsync(p => p.UsuarioId == usuarioId
                               && (p.Estado == EstadoPostulacion.Pendiente
                                || p.Estado == EstadoPostulacion.EnEspera
-                               || p.Estado == EstadoPostulacion.Aceptada));
+                               || (p.Estado == EstadoPostulacion.Aceptada && p.Tenencia == null)));
 
             //Se cumplio la cantidad ed postulaciones que peude hacer el usuario
             if (abiertas >= cupo)
