@@ -65,19 +65,28 @@ namespace TransitAR.Api.Services
                 return null;
 
             //la mascota tiene que existir y ser del refugio autenticado
-            var mascotaPropia = await _context.Mascotas
-                .AnyAsync(m => m.Id == request.MascotaId && m.RefugioId == refugioId);
+            //var mascotaPropia = await _context.Mascotas
+            //    .AnyAsync(m => m.Id == request.MascotaId && m.RefugioId == refugioId);
 
-            if (!mascotaPropia)
+            var mascota = await _context.Mascotas
+                 .FirstOrDefaultAsync(m => m.Id == request.MascotaId && m.RefugioId == refugioId);
+
+            //if (!mascotaPropia)
+            //    return null;
+
+            if (mascota == null)
+                return null;
+
+            if (mascota.Estado != EstadoMascota.EnRefugio)
                 return null;
 
             //no puede haber dos publicaciones abiertas sobre la misma mascota
-            var yaTieneAbierta = await _context.Publicaciones
-                .AnyAsync(p => p.MascotaId == request.MascotaId
-                            && p.Estado != EstadoPublicacion.Cerrada);
+            //var yaTieneAbierta = await _context.Publicaciones
+            //    .AnyAsync(p => p.MascotaId == request.MascotaId
+            //                && p.Estado != EstadoPublicacion.Cerrada);
 
-            if (yaTieneAbierta)
-                return null;
+            //if (yaTieneAbierta)
+            //    return null;
 
             var publicacion = new Publicacion
             {
