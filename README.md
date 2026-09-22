@@ -15,7 +15,7 @@ de la Tecnicatura Universitaria en Programación — UTN.
 - **Base de datos:** SQL Server
 - **Frontend:** ASP.NET Core Razor Pages + Bootstrap
 - **Autenticación:** JWT + BCrypt
-- **Testing:** xUnit / Moq
+- **Testing:** xUnit / EF CORE InMemory
 
 ## Estructura del proyecto
 
@@ -23,7 +23,7 @@ de la Tecnicatura Universitaria en Programación — UTN.
 |---|---|
 | `TransitAR.Api` | API REST: controllers, EF Core, autenticación |
 | `TransitAR.Web` | Interfaz de usuario (Razor Pages) |
-| `TransitAR.Structures` | DTOs y enums compartidos entre Api y Web |
+| `TransitAR.Structures` | Entidades, 'DbContext', Migrations, DTOs y enums compartidos entre Api y Web |
 
 ## Estado del proyecto
 
