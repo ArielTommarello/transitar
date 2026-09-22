@@ -22,17 +22,6 @@ namespace TransitAR.Api.Services
 
 
         ///<inheritdoc/>
-        public async Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId)
-        {
-            var tenencias = await ConsultaCompleta()
-                .Where(t => t.Mascota!.RefugioId == refugioId)
-                .OrderByDescending(t => t.FechaInicio)
-                .ToListAsync();
-
-            return tenencias.Select(TenenciaDTO).ToList();
-        }
-
-        ///<inheritdoc/>
         public async Task<TenenciaResponse?> ObtenerTenenciaAsync(Guid id, Guid refugioId)
         {
             var tenencia = await ConsultaCompleta()
@@ -121,6 +110,35 @@ namespace TransitAR.Api.Services
             };
         }
 
+
+        //para refugio (agenda tenencias)
+
+        ///<inheritdoc/>
+        public async Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId, TipoPublicacion? modalidad, bool? enCurso, bool vencidas)
+        {
+            var ahora = DateTime.UtcNow;
+
+            var consulta = ConsultaCompleta()
+                .Where(t => t.Mascota!.RefugioId == refugioId);
+
+            //filtro por modalidad (para no tener problema en caso de adopcion)
+            if (modalidad != null)
+                consulta = consulta.Where(t => t.Modalidad == modalidad.Value);
+
+            //filtro para cerradas o en transito
+            if (enCurso != null)
+                consulta = enCurso.Value ? consulta.Where(t => t.FechaFinReal == null) : consulta.Where(t => t.FechaFinReal != null);
+
+            //repito condicion del DTO para vencidas (EstaVencida).
+            if (vencidas)
+                consulta = consulta.Where(t => t.Modalidad == TipoPublicacion.Transito && t.FechaFinReal == null && t.FechaFinEstimada != null && t.FechaFinEstimada.Value.Date < ahora.Date);
+
+            var tenencias = await consulta
+                .OrderByDescending(t => t.FechaInicio)
+                .ToListAsync();
+
+            return tenencias.Select(TenenciaDTO).ToList();
+        }
 
 
         //uso en devoluciones
@@ -240,7 +258,7 @@ namespace TransitAR.Api.Services
             ObservacionCierre = t.ObservacionCierre,
             FinalizoBien = t.FinalizoBien,
 
-            EstaVencida = t.Modalidad == TipoPublicacion.Transito && t.FechaFinReal == null && t.FechaFinEstimada != null && t.FechaFinEstimada < DateTime.UtcNow
+            EstaVencida = t.Modalidad == TipoPublicacion.Transito && t.FechaFinReal == null && t.FechaFinEstimada != null && t.FechaFinEstimada.Value.Date < DateTime.UtcNow.Date
         };
 
 

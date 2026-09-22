@@ -11,11 +11,6 @@ namespace TransitAR.Api.Services
     {
 
         /// <summary>
-        /// Lista las tenencias de los animales del refugio (orden desc)
-        /// </summary>
-        Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId);
-
-        /// <summary>
         /// Devuelve una tenencia de un animal del refugio por id
         /// </summary>
         Task<TenenciaResponse?> ObtenerTenenciaAsync(Guid id, Guid refugioId);
@@ -24,6 +19,21 @@ namespace TransitAR.Api.Services
         /// Confirma la entrega de una postulacion aceptada crea la tenencia, cierra la publicacion, libera a los que estaban en espera y cambia el estado de la mascota
         /// </summary>
         Task<TenenciaResult> ConfirmarEntregaAsync(TenenciaRequest request, Guid refugioId);
+
+
+        //agenda para refugio (para vencimiento de tenencias)
+
+        /// <summary>
+        /// Lista las tenencias de los animales del refugio, con filtros opcionales y permite filtrar para ver vencimientos cercanos en agenda
+        /// </summary>
+        /// <param name="refugioId"></param>
+        /// <param name="modalidad"></param>
+        /// <param name="enCurso"></param>
+        /// <param name="vencidas"></param>
+        /// <returns></returns>
+        Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId, TipoPublicacion? modalidad, bool? enCurso, bool vencidas);
+
+
 
 
         //uso en devolucion puede ser transito o adopcion (contempla el caso del transito que queire adoptar)

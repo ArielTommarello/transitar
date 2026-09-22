@@ -30,22 +30,6 @@ namespace TransitAR.Api.Controllers
         }
 
 
-
-        /// <summary>
-        /// Lista las tenencias de los animales del refugio 
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> ListarTenencias()
-        {
-            var refugioId = User.ObtenerRefugioId();
-            if (refugioId == null)
-                return Forbid();
-
-            return Ok(await _tenenciaService.ListarTenenciasAsync(refugioId.Value));
-        }
-
-
-
         /// <summary>
         /// Devuelve una tenencia de un animal del refugio por id
         /// </summary>
@@ -87,6 +71,29 @@ namespace TransitAR.Api.Controllers
             return Ok(resultado.Tenencia);
         }
 
+
+        //agenda para refugios (filtro por vencimiento en tenencias) y listo las tenencias
+
+        /// <summary>
+        /// Lista las tenencia de los animales del refugio con filtros opcionales, se usa para tener  los vencimientos cercanos de las tenencias (transitos)
+        /// </summary>
+        /// <param name="modalidad"></param>
+        /// <param name="enCurso"></param>
+        /// <param name="vencidas"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> ListarTenencias([FromQuery] TipoPublicacion? modalidad, [FromQuery] bool? enCurso, [FromQuery] bool vencidas = false)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            //diferencio de adopcion que no teiene vencimiento y no tendriamos que ver en la agenda 
+            if (modalidad != null && !Enum.IsDefined(modalidad.Value))
+                return BadRequest(new { mensaje = "La modalidad indicada no es valida." });
+
+            return Ok(await _tenenciaService.ListarTenenciasAsync(refugioId.Value, modalidad, enCurso, vencidas));
+        }
 
 
         //uso en devoluciones

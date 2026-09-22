@@ -28,7 +28,7 @@ namespace TransitAR.Structures
         public string Descripcion { get; set; } = string.Empty;
 
         /// <summary>
-        /// Zona donde esta la mascota
+        /// Zona donde esta la mascota. Sirve para filtrar por cercania
         /// </summary>
         public string Ubicacion { get; set; } = string.Empty;
 
@@ -93,7 +93,7 @@ namespace TransitAR.Structures
         public string RefugioNombre { get; set; } = string.Empty;
 
         /// <summary>
-        /// Localidad del refugio, para filtrar por cercania
+        /// Localidad del refugio, solo para informacion en las tarjetas
         /// </summary>
         public string? RefugioLocalidad { get; set; }
 
