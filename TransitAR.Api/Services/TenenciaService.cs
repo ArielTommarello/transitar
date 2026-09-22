@@ -121,6 +121,86 @@ namespace TransitAR.Api.Services
             };
         }
 
+
+
+        //uso en devoluciones
+
+        ///<inheritdoc/>
+        public async Task<TenenciaResult> DevolverAsync(Guid id, DevolucionRequest request, Guid refugioId)
+        {
+            //no existe
+            if (request == null)
+                return Error("No se recibieron los datos de la devolucion.");
+
+            var tenencia = await _context.Tenencias
+                .Include(t => t.Mascota)
+                .FirstOrDefaultAsync(t => t.Id == id && t.Mascota!.RefugioId == refugioId);
+
+            //no existe la tenecia (nuca lo aceptamos()
+            if (tenencia == null)
+                return Error("No encontramos esa tenencia.");
+
+            //problemas generales con la tenencia
+            if (tenencia.FechaFinReal != null)
+                return Error("Esta tenencia ya estaba cerrada.");
+
+            var ahora = DateTime.UtcNow;
+
+            tenencia.FechaFinReal = ahora;
+            tenencia.FinalizoBien = request.FinalizoBien;
+            tenencia.ObservacionCierre = string.IsNullOrWhiteSpace(request.ObservacionCierre)
+                ? null : request.ObservacionCierre.Trim();
+
+            //el animal vuelve a estar disponible: el refugio puede publicarlo de nuevo (nueva publicaion)
+            tenencia.Mascota!.Estado = EstadoMascota.EnRefugio;
+
+            await _context.SaveChangesAsync();
+
+            return new TenenciaResult
+            {
+                Tenencia = await ObtenerTenenciaAsync(id, refugioId)
+            };
+        }
+
+
+        ///<inheritdoc/>
+        public async Task<TenenciaResult> ConvertirAAdopcionAsync(Guid id, Guid refugioId)
+        {
+            var tenencia = await _context.Tenencias
+                .Include(t => t.Mascota)
+                .FirstOrDefaultAsync(t => t.Id == id && t.Mascota!.RefugioId == refugioId);
+
+            //no existe la tenencia
+            if (tenencia == null)
+                return Error("No encontramos esa tenencia.");
+
+
+            //problemas varios tenecia
+            if (tenencia.FechaFinReal != null)
+                return Error("Esta tenencia ya estaba cerrada.");
+
+            //flag para mostrar que solo sea de transsito a adopcion , no se peude de adopcion a transito o adopcion a adopcion
+            if (tenencia.Modalidad != TipoPublicacion.Transito)
+                return Error("Solo se puede convertir un transito: esta tenencia ya es una adopcion.");
+
+            //trabajamos sobre misma tenencia, esta en el mismo lado
+
+            tenencia.Modalidad = TipoPublicacion.Adopcion;
+            tenencia.FechaConversion = DateTime.UtcNow;
+            tenencia.FechaFinEstimada = null;
+
+            //pasa a adoptada
+            tenencia.Mascota!.Estado = EstadoMascota.Adoptada;
+
+            await _context.SaveChangesAsync();
+
+            return new TenenciaResult
+            {
+                Tenencia = await ObtenerTenenciaAsync(id, refugioId)
+            };
+        }
+
+
         /// <summary>
         /// Consulta base con las navegaciones que necesita el DTO
         /// </summary>

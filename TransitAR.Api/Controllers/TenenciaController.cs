@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TransitAR.Api.Extensions;
 using TransitAR.Api.Services;
 using TransitAR.Structures;
+using TransitAR.Structures.Requests;
 
 namespace TransitAR.Api.Controllers
 {
@@ -86,6 +87,48 @@ namespace TransitAR.Api.Controllers
             return Ok(resultado.Tenencia);
         }
 
+
+
+        //uso en devoluciones
+
+        /// <summary>
+        /// Cierra una tenencia cuando el animal vuelve al refugio. La mascota queda disponible para publicarse de nuevo
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="request"></param>
+        [HttpPatch("{id:guid}/devolver")]
+        public async Task<IActionResult> Devolver(Guid id, [FromBody] DevolucionRequest request)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            var resultado = await _tenenciaService.DevolverAsync(id, request, refugioId.Value);
+
+            if (resultado.Tenencia == null)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(resultado.Tenencia);
+        }
+
+        /// <summary>
+        /// Convierte un transito en curso en una adopcion definitiva , no creo una tenencia nueva porque el animal nunca se movio de esa casa
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpPatch("{id:guid}/convertir")]
+        public async Task<IActionResult> ConvertirAAdopcion(Guid id)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            var resultado = await _tenenciaService.ConvertirAAdopcionAsync(id, refugioId.Value);
+
+            if (resultado.Tenencia == null)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(resultado.Tenencia);
+        }
 
     }
 }

@@ -25,5 +25,18 @@ namespace TransitAR.Api.Services
         /// </summary>
         Task<TenenciaResult> ConfirmarEntregaAsync(TenenciaRequest request, Guid refugioId);
 
+
+        //uso en devolucion puede ser transito o adopcion (contempla el caso del transito que queire adoptar)
+
+        /// <summary>
+        /// Cierra una tenencia cuando el animal vuelve al refugio
+        /// </summary>
+        Task<TenenciaResult> DevolverAsync(Guid id, DevolucionRequest request, Guid refugioId);
+
+        /// <summary>
+        /// Convierte un transito en curso en una adopcion definitiva
+        /// </summary>
+        Task<TenenciaResult> ConvertirAAdopcionAsync(Guid id, Guid refugioId);
+
     }
 }
