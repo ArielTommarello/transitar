@@ -49,18 +49,19 @@ namespace TransitAR.Api.Services
         Task<PublicacionResponse?> CambiarEstadoAsync(Guid id, EstadoPublicacion estado, Guid refugioId);
 
         //VISTA PUBLICA
-
-        /// <summary>
-        /// Lista las publicaciones activas para que los visitantes o postulantes puedan ver
-        /// </summary>
-        /// <returns></returns>
-        Task<List<PublicacionPublicaResponse>> ListarActivasAsync();
-
+        
         /// <summary>
         /// Obtiene las publicaciones activas para el postulante
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         Task<PublicacionPublicaResponse?> ObtenerActivaAsync(Guid id);
+
+
+        //para la visual de usuario
+        /// <summary>
+        /// Lista las publicaciones activas de todos los refugios ,todos los filtros son opcionales (usado para que los usuarios peudan ver todas las ofetas)
+        /// </summary>
+        Task<List<PublicacionPublicaResponse>> ListarActivasAsync(TipoPublicacion? tipo, Guid? especieId,Tamanio? tamanio,Sexo? sexo,string? ubicacion);
     }
 }

@@ -191,20 +191,32 @@ namespace TransitAR.Api.Controllers
             return Ok(resultado.Postulacion);
         }
 
-
-
-
         /// <summary>
-        /// Lista todas las publicaciones activas de TODOS los refugios, es publico y pueden verlo gente sin registrar
+        ///  Lista todas las publciaciones activas de los refugio, uso publico para que lo vea el usuario. Todos los filtros opcionales
         /// </summary>
+        /// <param name="tipo"></param>
+        /// <param name="especieId"></param>
+        /// <param name="tamanio"></param>
+        /// <param name="sexo"></param>
+        /// <param name="ubicacion"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("activas")]
-        public async Task<IActionResult> ListarPublicacionesActivas()
+        public async Task<IActionResult> ListarPublicacionesActivas([FromQuery] TipoPublicacion? tipo,[FromQuery] Guid? especieId,[FromQuery] Tamanio? tamanio,[FromQuery] Sexo? sexo,[FromQuery] string? ubicacion)
         {
-            return Ok(await _publicacionService.ListarActivasAsync());
+            if (tipo != null && !Enum.IsDefined(tipo.Value))
+                return BadRequest(new { mensaje = "El tipo de publicacion indicado no es valido." });
+
+            if (tamanio != null && !Enum.IsDefined(tamanio.Value))
+                return BadRequest(new { mensaje = "El tamaño indicado no es valido." });
+
+            if (sexo != null && !Enum.IsDefined(sexo.Value))
+                return BadRequest(new { mensaje = "El sexo indicado no es valido." });
+
+            return Ok(await _publicacionService.ListarActivasAsync(tipo, especieId, tamanio, sexo, ubicacion));
         }
 
+                  
 
         /// <summary>
         /// Devuelve una publicaicon activa, es publico y pueden verlo gente sin registrar

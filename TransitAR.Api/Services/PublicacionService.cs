@@ -161,20 +161,6 @@ namespace TransitAR.Api.Services
 
 
         ///<inheritdoc/>
-        public async Task<List<PublicacionPublicaResponse>> ListarActivasAsync()
-        {
-            var publicaciones = await _context.Publicaciones
-                .AsNoTracking()
-                .Include(p => p.Mascota)!.ThenInclude(m => m!.Especie)
-                .Include(p => p.Mascota)!.ThenInclude(m => m!.Refugio)
-                .Where(p => p.Estado == EstadoPublicacion.Activa)
-                .OrderByDescending(p => p.FechaPublicacion)
-                .ToListAsync();
-
-            return publicaciones.Select(PublicacionPublicaDTO).ToList();
-        }
-
-        ///<inheritdoc/>
         public async Task<PublicacionPublicaResponse?> ObtenerActivaAsync(Guid id)
         {
             var publicacion = await _context.Publicaciones
@@ -186,6 +172,45 @@ namespace TransitAR.Api.Services
             return publicacion == null ? null : PublicacionPublicaDTO(publicacion);
         }
 
+
+        //VISTA PUBLICA - para la visual del usuario
+
+        ///<inheritdoc/>
+        public async Task<List<PublicacionPublicaResponse>> ListarActivasAsync(TipoPublicacion? tipo,Guid? especieId,Tamanio? tamanio,Sexo? sexo,string? ubicacion)
+        {
+            //primer consulta,todas las publicaciones
+            var consulta = _context.Publicaciones
+                .AsNoTracking()
+                .Include(p => p.Mascota)!.ThenInclude(m => m!.Especie)
+                .Include(p => p.Mascota)!.ThenInclude(m => m!.Refugio)
+                .Where(p => p.Estado == EstadoPublicacion.Activa);
+
+            //filtro de tipo
+            if (tipo != null)
+                consulta = consulta.Where(p => p.Tipo == tipo.Value);
+
+            //filtro de especie
+            if (especieId != null)
+                consulta = consulta.Where(p => p.Mascota!.EspecieId == especieId.Value);
+
+            //filtro de tamanio
+            if (tamanio != null)
+                consulta = consulta.Where(p => p.Mascota!.Tamanio == tamanio.Value);
+
+            //filtro de sexo
+            if (sexo != null)
+                consulta = consulta.Where(p => p.Mascota!.Sexo == sexo.Value);
+
+            //filtrar por ubicaicon
+            if (!string.IsNullOrWhiteSpace(ubicacion))
+                consulta = consulta.Where(p => p.Ubicacion.Contains(ubicacion.Trim()));
+
+            var publicaciones = await consulta
+                .OrderByDescending(p => p.FechaPublicacion)
+                .ToListAsync();
+
+            return publicaciones.Select(PublicacionPublicaDTO).ToList();
+        }
 
 
         /// <summary>
