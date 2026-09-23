@@ -42,7 +42,7 @@ namespace TransitAR.Api.Controllers
             var perfil = await _refugioService.ObtenerPerfilAsync(refugioId.Value);
 
             if (perfil == null)
-                return NotFound();
+                return NotFound(new { mensaje = "No encontramos el perfil del refugio." });
 
             return Ok(perfil);
         }
@@ -72,7 +72,7 @@ namespace TransitAR.Api.Controllers
             var perfil = await _refugioService.ActualizarPerfilAsync(request, refugioId.Value);
 
             if (perfil == null)
-                return NotFound();
+                return NotFound(new { mensaje = "No encontramos el perfil del refugio." });
 
             return Ok(perfil);
         }
