@@ -218,6 +218,34 @@ namespace TransitAR.Api.Services
             };
         }
 
+        //HISTORIAL DE TENENCIAS (USO REFUGIOS)
+
+        ///<inheritdoc/>
+        public async Task<List<HistorialTenenciaResponse>?> ObtenerHistorialPostulanteAsync(Guid usuarioId, Guid refugioId)
+        {
+            if (usuarioId == Guid.Empty || refugioId == Guid.Empty)
+                return null;
+
+            //solo se ve el historial de alguien que se postulo alguna vez a una publicacion de este refugio
+            var sePostulo = await _context.Postulaciones
+                .AnyAsync(p => p.UsuarioId == usuarioId
+                            && p.Publicacion!.Mascota!.RefugioId == refugioId);
+
+            if (!sePostulo)
+                return null;
+
+            //nueva consulta para tener Mascota.Refugio 
+            var tenencias = await _context.Tenencias
+                .AsNoTracking()
+                .Include(t => t.Mascota)!
+                    .ThenInclude(m => m!.Refugio)
+                .Include(t => t.Postulacion)
+                .Where(t => t.Postulacion!.UsuarioId == usuarioId)
+                .OrderByDescending(t => t.FechaInicio)
+                .ToListAsync();
+
+            return tenencias.Select(HistorialDTO).ToList();
+        }
 
         /// <summary>
         /// Consulta base con las navegaciones que necesita el DTO
@@ -233,6 +261,16 @@ namespace TransitAR.Api.Services
         /// Resultado error, en caso de no completarse bien la tenencia
         /// </summary>
         private static TenenciaResult Error(string mensaje) => new() { Error = mensaje };
+
+
+        /// <summary>
+        /// Un transito en curso con la fecha pactada ya pasada lo usan los dos DTO (listarTenenciaAsync no se toca, usa sql yef opara escribir)
+        /// </summary>
+        private static bool EsVencida(Tenencia t, DateTime ahora) =>
+            t.Modalidad == TipoPublicacion.Transito
+            && t.FechaFinReal == null
+            && t.FechaFinEstimada != null
+            && t.FechaFinEstimada.Value.Date < ahora.Date;
 
         /// <summary>
         /// Pasa la entidad al DTO de salida, calculando si el transito esta vencido
@@ -258,8 +296,36 @@ namespace TransitAR.Api.Services
             ObservacionCierre = t.ObservacionCierre,
             FinalizoBien = t.FinalizoBien,
 
-            EstaVencida = t.Modalidad == TipoPublicacion.Transito && t.FechaFinReal == null && t.FechaFinEstimada != null && t.FechaFinEstimada.Value.Date < DateTime.UtcNow.Date
+            EstaVencida = EsVencida(t, DateTime.UtcNow)
         };
+
+
+        //DTO PARA HISTORIAL DE TENENCIAS
+        /// <summary>
+        /// Pasa la entidad al DTO que ve un refugio evaluando a un candidato
+        /// </summary>
+        private static HistorialTenenciaResponse HistorialDTO(Tenencia t)
+        {
+            var ahora = DateTime.UtcNow;
+            var hasta = t.FechaFinReal ?? ahora;
+
+            return new()
+            {
+                Id = t.Id,
+                MascotaNombre = t.Mascota?.Nombre ?? string.Empty,
+                RefugioNombre = t.Mascota?.Refugio?.Nombre ?? string.Empty,
+                Modalidad = t.Modalidad,
+                FechaInicio = t.FechaInicio,
+                FechaFinEstimada = t.FechaFinEstimada,
+                FechaFinReal = t.FechaFinReal,
+                FechaConversion = t.FechaConversion,
+                FinalizoBien = t.FinalizoBien,
+                ObservacionCierre = t.ObservacionCierre,
+                EnCurso = t.FechaFinReal == null,
+                VencidaEnCurso = EsVencida(t, ahora),
+                DuracionEnDias = (int)(hasta.Date - t.FechaInicio.Date).TotalDays
+            };
+        }
 
 
     }

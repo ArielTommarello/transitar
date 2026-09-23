@@ -137,5 +137,26 @@ namespace TransitAR.Api.Controllers
             return Ok(resultado.Tenencia);
         }
 
+
+        //USO PARA HISTORIAL DE TENENCIAS (USO PARA REFUGIOS)
+        /// <summary>
+        /// Devuelve el historial de tenencias de un postulante para que el refugio puedea evalaur el cancidato. Tiene antecedentes con otros refugios
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        [HttpGet("postulante/{usuarioId:guid}")]
+        public async Task<IActionResult> ObtenerHistorialPostulante(Guid usuarioId)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            var historial = await _tenenciaService.ObtenerHistorialPostulanteAsync(usuarioId, refugioId.Value);
+
+            if (historial == null)
+                return NotFound(new { mensaje = "No encontramos postulaciones de esa persona en tus publicaciones." });
+
+            return Ok(historial);
+        }
     }
 }

@@ -48,5 +48,15 @@ namespace TransitAR.Api.Services
         /// </summary>
         Task<TenenciaResult> ConvertirAAdopcionAsync(Guid id, Guid refugioId);
 
+
+        //USO PARA HISTORIAL DE TENENCIAS (USO DE REFUGIO)
+        /// <summary>
+        /// Devuelve el historial de tenencias de un postulante para que el refugio puedea evalaur el cancidato. Tiene antecedentes con otros refugios
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="refugioId"></param>
+        /// <returns></returns>
+        Task<List<HistorialTenenciaResponse>?> ObtenerHistorialPostulanteAsync(Guid usuarioId, Guid refugioId);
+
     }
 }
