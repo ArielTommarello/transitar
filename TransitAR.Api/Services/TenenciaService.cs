@@ -234,19 +234,24 @@ namespace TransitAR.Api.Services
             if (!sePostulo)
                 return null;
 
-            //nueva consulta para tener Mascota.Refugio 
-            var tenencias = await _context.Tenencias
-                .AsNoTracking()
-                .Include(t => t.Mascota)!
-                    .ThenInclude(m => m!.Refugio)
-                .Include(t => t.Postulacion)
-                .Where(t => t.Postulacion!.UsuarioId == usuarioId)
-                .OrderByDescending(t => t.FechaInicio)
-                .ToListAsync();
+            //unificacion para usar tenencias con mascota
 
-            return tenencias.Select(HistorialDTO).ToList();
+            return await TenenciasAsync(usuarioId);
         }
 
+
+        //HISTORIAL DE TENENCIAS (USO USUARIOS)     
+
+        ///<inheritdoc/>
+        public async Task<List<HistorialTenenciaResponse>> ObtenerMisTenenciasAsync(Guid usuarioId)
+        {
+            if (usuarioId == Guid.Empty)
+                return new List<HistorialTenenciaResponse>();
+
+            return await TenenciasAsync(usuarioId);
+        }
+
+    
         /// <summary>
         /// Consulta base con las navegaciones que necesita el DTO
         /// </summary>
@@ -325,6 +330,23 @@ namespace TransitAR.Api.Services
                 VencidaEnCurso = EsVencida(t, ahora),
                 DuracionEnDias = (int)(hasta.Date - t.FechaInicio.Date).TotalDays
             };
+        }
+
+        /// <summary>
+        /// Las tenencias de un postulante, sin control de acceso , remplaza al DTO en la busqueda esta para tener mascota.
+        /// </summary> 
+        private async Task<List<HistorialTenenciaResponse>> TenenciasAsync(Guid usuarioId)
+        {
+            var tenencias = await _context.Tenencias
+                .AsNoTracking()
+                .Include(t => t.Mascota)!
+                    .ThenInclude(m => m!.Refugio)
+                .Include(t => t.Postulacion)
+                .Where(t => t.Postulacion!.UsuarioId == usuarioId)
+                .OrderByDescending(t => t.FechaInicio)
+                .ToListAsync();
+
+            return tenencias.Select(HistorialDTO).ToList();
         }
 
 

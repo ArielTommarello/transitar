@@ -18,14 +18,16 @@ namespace TransitAR.Api.Controllers
     {
 
         private readonly IPostulacionService _postulacionService;
+        private readonly ITenenciaService _tenenciaService;
 
         /// <summary>
         /// Inicializa el servicio de postulaciones
         /// </summary>
         /// <param name="postulacionService"></param>
-        public PostulacionController(IPostulacionService postulacionService)
+        public PostulacionController(IPostulacionService postulacionService, ITenenciaService tenenciaService)
         {
             _postulacionService = postulacionService;
+            _tenenciaService = tenenciaService;
         }
 
         /// <summary>
@@ -102,6 +104,22 @@ namespace TransitAR.Api.Controllers
 
             return Ok(resultado.Postulacion);
         }
+
+        /// <summary>
+        /// Devuelve las tenencias del postulante,se ve que  mascota se posutlo, como termino y que observo los refugios (para verlo siempre tuvo que estar postulado a algo, por eso esta aca)
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpGet("tenencias")]
+        public async Task<IActionResult> ListarMisTenencias()
+        {
+            var usuarioId = User.ObtenerUsuarioId();
+            if (usuarioId == null)
+                return Forbid();
+
+            return Ok(await _tenenciaService.ObtenerMisTenenciasAsync(usuarioId.Value));
+        }
+
 
     }
 }
