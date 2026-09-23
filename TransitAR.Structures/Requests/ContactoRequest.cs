@@ -21,7 +21,7 @@ namespace TransitAR.Structures
         /// Direccion del perfil
         /// </summary>
         [Required]
-        [MaxLength(450)]
+        [MaxLength(250)]
         public string Url { get; set; } = string.Empty;
 
     }
