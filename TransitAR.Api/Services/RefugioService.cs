@@ -67,9 +67,13 @@ namespace TransitAR.Api.Services
         /// </summary>
         private void SincronizarContactos(Refugio refugio, RefugioRequest request)
         {
+
+            var enviados = request.Contactos ?? new List<ContactoRequest>();
+
             foreach (var existente in refugio.Contactos.ToList())
             {
-                var enviado = request.Contactos.FirstOrDefault(c => c.Tipo == existente.Tipo);
+                //var enviado = request.Contactos.FirstOrDefault(c => c.Tipo == existente.Tipo);
+                var enviado = enviados.FirstOrDefault(c => c.Tipo == existente.Tipo);
 
                 if (enviado == null)
                     _context.ContactosRefugio.Remove(existente);

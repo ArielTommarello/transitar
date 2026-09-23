@@ -8,7 +8,7 @@ using TransitAR.Structures;
 namespace TransitAR.Api.Controllers
 {
     /// <summary>
-    /// Implementacion del perfil del refugio. Se identifica por el RefugioId que llega del token. Tiene mensjae de rechazo automatico
+    /// perfil del refugio. Se identifica por el RefugioId que llega del token. Tiene mensjae de rechazo automatico
     /// </summary>
     
 
@@ -61,7 +61,7 @@ namespace TransitAR.Api.Controllers
 
             var contactos = request.Contactos ?? new List<ContactoRequest>();
 
-            //el guid unico de ContactoRefugio no se peude tener dos del mismo tipo
+            //el indice unico de ContactoRefugio no se peude tener dos del mismo tipo
             if (contactos.GroupBy(c => c.Tipo).Any(g => g.Count() > 1))
                 return BadRequest(new { mensaje = "No se puede cargar mas de un contacto del mismo tipo." });
 
