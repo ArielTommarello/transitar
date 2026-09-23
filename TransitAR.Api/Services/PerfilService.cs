@@ -59,7 +59,10 @@ namespace TransitAR.Api.Services
                 FechaCompletado = DateTime.UtcNow
             };
 
-            foreach (var contacto in request.Contactos)
+            //arreglo contactos (error con null)
+            var enviados = request.Contactos ?? new List<ContactoRequest>();
+
+            foreach (var contacto in enviados)
             {
                 perfil.Contactos.Add(new ContactoPostulante
                 {
@@ -114,9 +117,12 @@ namespace TransitAR.Api.Services
         /// </summary>
         private void SincronizarContactos(PerfilPostulante perfil, PerfilRequest request)
         {
+
+            var enviados = request.Contactos ?? new List<ContactoRequest>();
+
             foreach (var existente in perfil.Contactos.ToList())
             {
-                var enviado = request.Contactos.FirstOrDefault(c => c.Tipo == existente.Tipo);
+                var enviado = enviados.FirstOrDefault(c => c.Tipo == existente.Tipo);
 
                 if (enviado == null)
                     _context.ContactoPostulantes.Remove(existente);
@@ -124,7 +130,7 @@ namespace TransitAR.Api.Services
                     existente.Url = enviado.Url.Trim();
             }
 
-            foreach (var enviado in request.Contactos)
+            foreach (var enviado in enviados)
             {
                 if (!perfil.Contactos.Any(c => c.Tipo == enviado.Tipo))
                 {

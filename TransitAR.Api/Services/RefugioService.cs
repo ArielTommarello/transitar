@@ -81,7 +81,7 @@ namespace TransitAR.Api.Services
                     existente.Url = enviado.Url.Trim();
             }
 
-            foreach (var enviado in request.Contactos)
+            foreach (var enviado in enviados)
             {
                 if (!refugio.Contactos.Any(c => c.Tipo == enviado.Tipo))
                 {

@@ -98,13 +98,15 @@ namespace TransitAR.Api.Controllers
         /// <param name="request"></param>
         private static string? ValidarRequest(PerfilRequest request)
         {
+            var contactos = request.Contactos ?? new List<ContactoRequest>();
+
             if (!Enum.IsDefined(request.Seleccion))
                 return "Debes seleccionar una opcion: adoptar, transitar o ambas.";
 
-            if (request.Contactos.Any(c => !Enum.IsDefined(c.Tipo)))
+            if (contactos.Any(c => !Enum.IsDefined(c.Tipo)))
                 return "Alguna de las redes cargadas tiene un error o tipo no correcto";
 
-            if (request.Contactos.Select(c => c.Tipo).Distinct().Count() != request.Contactos.Count)
+            if (contactos.Select(c => c.Tipo).Distinct().Count() != contactos.Count)
                 return "No se puede cargar dos veces la misma red social. Por favor eliminala o modifica la enterior";
 
             return null;
