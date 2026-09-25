@@ -51,5 +51,10 @@ namespace TransitAR.Structures
         /// </summary>
         public DateTime? FechaLectura { get; set; }
 
+        // <summary>
+        /// Fotos o videos que que van de adjunto a un mensaje, peude estar null
+        /// </summary>
+        public List<AdjuntoMensaje> Adjuntos { get; set; } = new();
+
     }
 }

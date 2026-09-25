@@ -64,6 +64,11 @@ namespace TransitAR.Structures
         //PChat interno entre refugio y postulante
         public DbSet<Mensaje> Mensajes { get; set; }
 
+        /// <summary>
+        /// Adjuntos de los mensajes del chat
+        /// </summary>
+        public DbSet<AdjuntoMensaje> AdjuntosMensaje { get; set; }
+
         //Configuracion para los modos de delete, 2 tipos de relacion refugio Tenencia . Si borro un refugio, se borrarian las mascotas y demas por defecto
         //Relacion tenencia - mascota 2 caminos error FK
         protected override void OnModelCreating(ModelBuilder modelBuilder)
