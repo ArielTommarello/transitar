@@ -24,6 +24,11 @@ namespace TransitAR.Structures
         public Guid PostulacionId { get; set; }
 
         /// <summary>
+        /// Navegacion a la postulacion, para el control  al descargar un adjunto (EFCORE)
+        /// </summary>
+        public Postulacion? Postulacion { get; set; }
+
+        /// <summary>
         /// Usuario que envio el mensaje. Puede ser el postulante o la persona del refugio
         /// </summary>
         [ForeignKey(nameof(Emisor))]
