@@ -47,9 +47,9 @@ namespace TransitAR.Structures
         public DateTime FechaEnvio { get; set; }
 
         /// <summary>
-        /// Indica si el destinatario ya lo leyo
+        /// Indica si el destinatario ya lo leyo , cambio a fechar y hora para calcular. Null si no lo leyo.
         /// </summary>
-        public bool Leido { get; set; }
+        public DateTime? FechaLectura { get; set; }
 
     }
 }
