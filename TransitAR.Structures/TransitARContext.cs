@@ -94,6 +94,22 @@ namespace TransitAR.Structures
               new Condicion { Id = Guid.Parse("22222222-2222-2222-2222-222222222202"), Nombre = "En tratamiento" },
               new Condicion { Id = Guid.Parse("22222222-2222-2222-2222-222222222203"), Nombre = "Discapacidad permanente" }
                 );
+
+
+            //Admin unico, para no crear endpoint que cree administrado. Unico que existe. Cambiar a futuro
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario
+                {
+                    Id = Guid.Parse("99999999-9999-9999-9999-999999999901"),
+                    Email = "admin@transitar.org",
+                    PasswordHash = "$2a$11$tAW0hYZZe7.WzbuJyz7WAuYyM.TVAcKXeWohP07LjbQGv7Yh6wMi.",
+                    Nombre = "Administrador",
+                    Apellido = "TransitAR",
+                    Rol = RolUsuario.Admin,
+                    Activo = true,
+                    FechaAlta = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                }
+            );
         }
 
     }
