@@ -183,7 +183,7 @@ namespace TransitAR.Api.Services
                 .AsNoTracking()
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Especie)
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Refugio)
-                .Where(p => p.Estado == EstadoPublicacion.Activa);
+                .Where(p => p.Estado == EstadoPublicacion.Activa && p.Mascota!.Refugio!.Activo);
 
             //filtro de tipo
             if (tipo != null)

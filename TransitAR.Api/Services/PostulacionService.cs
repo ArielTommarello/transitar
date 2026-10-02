@@ -71,6 +71,10 @@ namespace TransitAR.Api.Services
             if (publicacion.Estado != EstadoPublicacion.Activa)
                 return Error("La publicacion ya no esta recibiendo postulaciones o se encuentra pausada.");
 
+            //un refugio bloqueado no recibe postulaciones en caso de link guardado o directo
+            if (!await _context.Mascotas.AnyAsync(m => m.Id == publicacion.MascotaId && m.Refugio!.Activo))
+                return Error("La publicacion ya no esta recibiendo postulaciones o se encuentra pausada.");
+
             ////Postulacion unica por persona, sino se vuelve reptitivo, sirve como flag para mostras "estas postualdo"
             //var yaPostulado = await _context.Postulaciones
             //    .AnyAsync(p => p.PublicacionId == request.PublicacionId && p.UsuarioId == usuarioId);
