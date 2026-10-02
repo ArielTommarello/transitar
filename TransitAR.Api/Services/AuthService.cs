@@ -126,6 +126,10 @@ namespace TransitAR.Api.Services
             //valido si esta activo
             if (!usuario.Activo) return null;
 
+            // si pertenece a un refugio bloqueado tampoco puede loguearse
+            if (usuario.RefugioId != null && !await _context.Refugios.AnyAsync(r => r.Id == usuario.RefugioId && r.Activo))
+                return null;
+
             //claims
             var claims = new List<Claim>
             {

@@ -50,6 +50,7 @@ builder.Services.AddScoped<IPostulacionService, PostulacionService>();
 builder.Services.AddScoped<ITenenciaService, TenenciaService>();
 builder.Services.AddScoped<IRefugioService, RefugioService>();
 builder.Services.AddScoped<IMensajeService, MensajeService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 //reviso que tenga la configuracion de la clave
 var jwtKey = builder.Configuration["Jwt:Key"]

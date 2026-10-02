@@ -167,7 +167,7 @@ namespace TransitAR.Api.Services
                 .AsNoTracking()
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Especie)
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Refugio)
-                .FirstOrDefaultAsync(p => p.Id == id && p.Estado == EstadoPublicacion.Activa);
+                .FirstOrDefaultAsync(p => p.Id == id && p.Estado == EstadoPublicacion.Activa && p.Mascota!.Refugio!.Activo);
 
             return publicacion == null ? null : PublicacionPublicaDTO(publicacion);
         }
