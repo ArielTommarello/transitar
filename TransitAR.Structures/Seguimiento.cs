@@ -20,6 +20,10 @@ namespace TransitAR.Structures
         public Guid TenenciaId { get; set; }
 
         /// <summary>
+        /// NAvegacion a la tenencia, para tener refgugio y mascota (EFCORE)
+        /// </summary>
+         public Tenencia? Tenencia { get; set; }
+        /// <summary>
         /// Fecha para la que se agendo el control o seguimiento
         /// </summary>
         public DateTime FechaProgramada { get; set; }
