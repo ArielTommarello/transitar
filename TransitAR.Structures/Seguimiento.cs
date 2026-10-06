@@ -34,6 +34,11 @@ namespace TransitAR.Structures
         public DateTime? FechaRealizada { get; set; }
 
         /// <summary>
+        /// En que estado queda el seguimiento..Inicia en pendiente, y luego  peude pasarse a cancelado-reprogramado o realizado
+        /// </summary>
+        public EstadoSeguimiento Estado {  get; set; } = EstadoSeguimiento.Pendiente;
+
+        /// <summary>
         /// Observacion de parte del refugio sobre el control en puntual. Sirve para dejar registro de un problema sin necesidad de cerrar la tenencia
         /// </summary>
         [MaxLength(1000)]
