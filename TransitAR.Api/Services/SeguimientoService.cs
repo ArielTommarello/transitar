@@ -4,7 +4,7 @@ using TransitAR.Structures.Requests;
 
 namespace TransitAR.Api.Services
 {
-    public class SeguimientoService
+    public class SeguimientoService : ISeguimientoService
     {
         private readonly TransitARContext _context;
 
