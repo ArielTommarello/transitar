@@ -167,6 +167,7 @@ namespace TransitAR.Api.Services
             Id = s.Id,
             TenenciaId = s.TenenciaId,
             MascotaId = s.Tenencia?.MascotaId ?? Guid.Empty,
+            PostulacionId = s.Tenencia?.PostulacionId ?? Guid.Empty,
             MascotaNombre = s.Tenencia?.Mascota?.Nombre ?? string.Empty,
             PersonaNombre = $"{s.Tenencia?.Postulacion?.Usuario?.Nombre} {s.Tenencia?.Postulacion?.Usuario?.Apellido}".Trim(),
             RefugioNombre = s.Tenencia?.Mascota?.Refugio?.Nombre ?? string.Empty,
