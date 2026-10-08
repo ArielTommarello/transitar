@@ -156,6 +156,7 @@ namespace TransitAR.Api.Services
 
             var tenencia = await _context.Tenencias
                 .Include(t => t.Mascota)
+                .Include(t => t.Seguimientos)
                 .FirstOrDefaultAsync(t => t.Id == id && t.Mascota!.RefugioId == refugioId);
 
             //no existe la tenecia (nuca lo aceptamos()
@@ -175,6 +176,13 @@ namespace TransitAR.Api.Services
 
             //el animal vuelve a estar disponible: el refugio puede publicarlo de nuevo (nueva publicaion)
             tenencia.Mascota!.Estado = EstadoMascota.EnRefugio;
+
+            //si hay controles pendientes y se devolvio , se cancelan asi no quedan vencidos apra toda la vida
+            foreach (var pendiente in tenencia.Seguimientos.Where(s => s.Estado == EstadoSeguimiento.Pendiente))
+            {
+                pendiente.Estado = EstadoSeguimiento.Cancelado;
+                pendiente.Observacion = "Cancelado automaticamente: la tenencia finalizo.";
+            }
 
             await _context.SaveChangesAsync();
 
