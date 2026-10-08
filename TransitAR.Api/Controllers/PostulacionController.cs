@@ -19,15 +19,17 @@ namespace TransitAR.Api.Controllers
 
         private readonly IPostulacionService _postulacionService;
         private readonly ITenenciaService _tenenciaService;
+        private readonly ISeguimientoService _seguimientoService;
 
         /// <summary>
         /// Inicializa el servicio de postulaciones
         /// </summary>
         /// <param name="postulacionService"></param>
-        public PostulacionController(IPostulacionService postulacionService, ITenenciaService tenenciaService)
+        public PostulacionController(IPostulacionService postulacionService, ITenenciaService tenenciaService, ISeguimientoService seguimientoService)
         {
             _postulacionService = postulacionService;
             _tenenciaService = tenenciaService;
+            _seguimientoService = seguimientoService;
         }
 
         /// <summary>
@@ -120,6 +122,23 @@ namespace TransitAR.Api.Controllers
             return Ok(await _tenenciaService.ObtenerMisTenenciasAsync(usuarioId.Value));
         }
 
+
+
+        //SEGUIMIENTO DEL POSTULANTE EN UN TRANSITO O ADOPCION
+        [HttpGet("seguimientos")]
+        public async Task<IActionResult> ListarMisSeguimientos([FromQuery] EstadoSeguimiento? estado)
+        {
+            //busco usuario
+            var usuarioId = User.ObtenerUsuarioId();
+            if (usuarioId == null)
+                return Forbid();
+
+            if (estado != null && !Enum.IsDefined(estado.Value))
+                return BadRequest(new { mensaje = "El estado indicado no es valido o correcto." });
+
+            //refugioId ntiene que ser null, asi  el servicio lo trata como postulante y filtra por sus tenencias
+            return Ok(await _seguimientoService.ListarAsync(usuarioId.Value, null, estado, false, null));
+        }
 
     }
 }

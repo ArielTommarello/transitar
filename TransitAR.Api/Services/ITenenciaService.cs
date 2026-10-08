@@ -31,8 +31,7 @@ namespace TransitAR.Api.Services
         /// <param name="enCurso"></param>
         /// <param name="vencidas"></param>
         /// <returns></returns>
-        Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId, TipoPublicacion? modalidad, bool? enCurso, bool vencidas);
-
+        Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId, TipoPublicacion? modalidad, bool? enCurso, bool vencidas,bool sinControles);
 
 
 

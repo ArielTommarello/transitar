@@ -22,6 +22,11 @@ namespace TransitAR.Structures.Requests
         public Guid TenenciaId { get; set; }
 
         /// <summary>
+        /// Postulacion de la que nacio la tenencia, y ahi esta la conversacion. Asi puede abrirse el chat directo apra que el postulante coordine en caso de reporgramar o algo que no le gusto.
+        /// </summary>
+        public Guid PostulacionId { get; set; }
+
+        /// <summary>
         /// Id de la mascota a la que se le hace el seguimiento, usado para filtrar
         /// </summary>
         public Guid MascotaId { get; set; }

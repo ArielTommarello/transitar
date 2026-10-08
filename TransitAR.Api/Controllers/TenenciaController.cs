@@ -80,9 +80,10 @@ namespace TransitAR.Api.Controllers
         /// <param name="modalidad"></param>
         /// <param name="enCurso"></param>
         /// <param name="vencidas"></param>
+        /// <param name="sinControles">lo agrego para que salga una alerta si no hay controles para seguimiento de la tenencia</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> ListarTenencias([FromQuery] TipoPublicacion? modalidad, [FromQuery] bool? enCurso, [FromQuery] bool vencidas = false)
+        public async Task<IActionResult> ListarTenencias([FromQuery] TipoPublicacion? modalidad, [FromQuery] bool? enCurso, [FromQuery] bool vencidas = false, [FromQuery] bool sinControles = false)
         {
             var refugioId = User.ObtenerRefugioId();
             if (refugioId == null)
@@ -92,8 +93,8 @@ namespace TransitAR.Api.Controllers
             if (modalidad != null && !Enum.IsDefined(modalidad.Value))
                 return BadRequest(new { mensaje = "La modalidad indicada no es valida." });
 
-            return Ok(await _tenenciaService.ListarTenenciasAsync(refugioId.Value, modalidad, enCurso, vencidas));
-        }
+            return Ok(await _tenenciaService.ListarTenenciasAsync(refugioId.Value, modalidad, enCurso, vencidas, sinControles));
+        } 
 
 
         //uso en devoluciones

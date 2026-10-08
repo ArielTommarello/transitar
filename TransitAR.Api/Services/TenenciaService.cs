@@ -114,7 +114,7 @@ namespace TransitAR.Api.Services
         //para refugio (agenda tenencias)
 
         ///<inheritdoc/>
-        public async Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId, TipoPublicacion? modalidad, bool? enCurso, bool vencidas)
+        public async Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId, TipoPublicacion? modalidad, bool? enCurso, bool vencidas, bool sinControles)
         {
             var ahora = DateTime.UtcNow;
 
@@ -132,6 +132,10 @@ namespace TransitAR.Api.Services
             //repito condicion del DTO para vencidas (EstaVencida).
             if (vencidas)
                 consulta = consulta.Where(t => t.Modalidad == TipoPublicacion.Transito && t.FechaFinReal == null && t.FechaFinEstimada != null && t.FechaFinEstimada.Value.Date < ahora.Date);
+
+            //para generar una alerta a las tenencias que no tienen ningun control agendado, no hace falta usarlo, pero si que se note que no tienen nada agendado
+            if(sinControles)
+                consulta = consulta.Where(t => !t.Seguimientos.Any(s => s.Estado == EstadoSeguimiento.Pendiente));
 
             var tenencias = await consulta
                 .OrderByDescending(t => t.FechaInicio)
