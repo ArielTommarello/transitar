@@ -1,4 +1,5 @@
 ﻿using BCrypt.Net;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -51,8 +52,20 @@ namespace TransitAR.Api.Services
             };
 
 
-            _context.Usuarios.Add(postulante); 
-            await _context.SaveChangesAsync();  
+            _context.Usuarios.Add(postulante);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                //arreglo de error doble click o email registrado al mismo teimpo.
+                if (await EmailEnUsoAsync(request.Email))
+                    return null;
+
+                throw;
+            }
+
             return postulante;
         }
 
