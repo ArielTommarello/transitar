@@ -1,0 +1,79 @@
+﻿@page
+@model TransitAR.Web.Pages.Cuenta.RegistroRefugioModel
+@{
+    ViewData["Title"] = "Registrar refugio";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <h1 class="h3 mb-1">Registrar refugio</h1>
+        <p class="text-muted mb-4">Vas a quedar como responsable de la cuenta del refugio.</p>
+
+        @if (Model.Error != null)
+        {
+            <div class="alert alert-danger">@Model.Error</div>
+        }
+
+        <form method="post">
+            <h2 class="h6 text-uppercase text-muted mt-2">El refugio</h2>
+
+            <div class="mb-3">
+                <label asp-for="Datos.NombreRefugio" class="form-label">Nombre del refugio</label>
+                <input asp-for="Datos.NombreRefugio" class="form-control" />
+                <span asp-validation-for="Datos.NombreRefugio" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Datos.Localidad" class="form-label">Localidad</label>
+                    <input asp-for="Datos.Localidad" class="form-control" />
+                    <span asp-validation-for="Datos.Localidad" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Datos.Direccion" class="form-label">Dirección <span class="text-muted">(opcional)</span></label>
+                    <input asp-for="Datos.Direccion" class="form-control" />
+                </div>
+            </div>
+
+            <h2 class="h6 text-uppercase text-muted mt-3">La persona responsable</h2>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Datos.Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Datos.Nombre" class="form-control" />
+                    <span asp-validation-for="Datos.Nombre" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Datos.Apellido" class="form-label">Apellido</label>
+                    <input asp-for="Datos.Apellido" class="form-control" />
+                    <span asp-validation-for="Datos.Apellido" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Datos.Email" class="form-label">Email</label>
+                    <input asp-for="Datos.Email" class="form-control" autocomplete="email" />
+                    <span asp-validation-for="Datos.Email" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Datos.Telefono" class="form-label">Teléfono <span class="text-muted">(opcional)</span></label>
+                    <input asp-for="Datos.Telefono" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Datos.Password" class="form-label">Contraseña</label>
+                <input asp-for="Datos.Password" type="password" class="form-control" autocomplete="new-password" />
+                <div class="form-text">Mínimo 8 caracteres.</div>
+                <span asp-validation-for="Datos.Password" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Registrar refugio</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

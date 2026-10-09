@@ -14,8 +14,6 @@ namespace TransitAR.Web.Pages.Cuenta
     public class LoginModel : PageModel
     {
 
-
-
         private readonly ApiClient _api;
 
         public LoginModel(ApiClient api)
@@ -33,6 +31,12 @@ namespace TransitAR.Web.Pages.Cuenta
         /// Mensaje de error de la API
         /// </summary>
         public string? Error { get; set; }
+
+        /// <summary>
+        /// Mensaje que deja el registro finalizado
+        /// </summary>
+        [TempData]
+        public string? Mensaje { get; set; }
 
         public void OnGet()
         {
