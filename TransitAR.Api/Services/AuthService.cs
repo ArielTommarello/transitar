@@ -108,8 +108,19 @@ namespace TransitAR.Api.Services
             };
 
             _context.Refugios.Add(refugio);
-            _context.Usuarios.Add(usuarioRefugio);
-            await _context.SaveChangesAsync();
+            _context.Usuarios.Add(usuarioRefugio);           
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                //arreglo de error doble click o email registrado al mismo teimpo.
+                if (await EmailEnUsoAsync(request.Email))
+                    return null;
+
+                throw;
+            }            
             return usuarioRefugio;
         }
 
