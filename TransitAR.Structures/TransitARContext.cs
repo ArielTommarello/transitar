@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,6 +111,23 @@ namespace TransitAR.Structures
                     FechaAlta = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 }
             );
+
+            //Arreglo de fechas. Fechas en UTC sin zona. 
+            var comoUtc = new ValueConverter<DateTime, DateTime>(
+                v => v,
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+            var comoUtcNullable = new ValueConverter<DateTime?, DateTime?>(
+                v => v,
+                v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
+
+            foreach (var propiedad in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetProperties()))
+            {
+                if (propiedad.ClrType == typeof(DateTime))
+                    propiedad.SetValueConverter(comoUtc);
+                else if (propiedad.ClrType == typeof(DateTime?))
+                    propiedad.SetValueConverter(comoUtcNullable);
+            }
         }
 
     }

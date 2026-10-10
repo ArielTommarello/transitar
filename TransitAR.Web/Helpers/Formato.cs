@@ -77,5 +77,29 @@ namespace TransitAR.Web.Helpers
         }
 
 
+        //Arreglo de formato de hora UTC
+
+        /// <summary>
+        /// Zona horaria de Argentina (-3)
+        /// </summary>
+        private static readonly TimeZoneInfo ZonaArgentina =
+            TimeZoneInfo.FindSystemTimeZoneById("America/Argentina/Buenos_Aires");
+
+        /// <summary>
+        /// Un momento guardado en UTC, en hora argentina con fecha y hora. Para mensajes, lecturas, publicaciones
+        /// </summary>
+        public static string Instante(DateTime utc) =>
+            TimeZoneInfo.ConvertTimeFromUtc(utc, ZonaArgentina).ToString("dd/MM/yyyy HH:mm");
+
+        /// <summary>
+        /// Solo la fecha en UTC, en hora argentina
+        /// </summary>
+        public static string FechaDe(DateTime utc) =>
+            TimeZoneInfo.ConvertTimeFromUtc(utc, ZonaArgentina).ToString("dd/MM/yyyy");
+
+        /// <summary>
+        /// Un dia del calendario que eligio una persona (un control, una devolucion pactada) Se muestra como viene, pero con formato de vista argentina
+        /// </summary>
+        public static string Dia(DateTime dia) => dia.ToString("dd/MM/yyyy");
     }
 }
