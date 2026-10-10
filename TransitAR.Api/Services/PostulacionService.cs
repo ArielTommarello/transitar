@@ -111,9 +111,7 @@ namespace TransitAR.Api.Services
                 existente.Estado = EstadoPostulacion.Pendiente;
                 existente.FechaPostulacion = DateTime.UtcNow;
                 existente.FechaResolucion = null;
-                existente.ObservacionRechazo = null;
-                existente.DisponibilidadFecha = request.DisponibilidadFecha;
-                existente.DisponibilidadHorario = request.DisponibilidadHorario;
+                existente.ObservacionRechazo = null;                
 
                 await _context.SaveChangesAsync();
 
@@ -130,9 +128,7 @@ namespace TransitAR.Api.Services
                 Id = Guid.NewGuid(),
                 PublicacionId = request.PublicacionId,
                 UsuarioId = usuarioId,
-                Estado = EstadoPostulacion.Pendiente,
-                DisponibilidadFecha = request.DisponibilidadFecha,
-                DisponibilidadHorario = request.DisponibilidadHorario,
+                Estado = EstadoPostulacion.Pendiente,               
                 FechaPostulacion = DateTime.UtcNow
             };
 
@@ -330,9 +326,7 @@ namespace TransitAR.Api.Services
         private static PostulacionResponse PostulacionDTO(Postulacion p) => new()
         {
             Id = p.Id,
-            Estado = p.Estado,
-            DisponibilidadFecha = p.DisponibilidadFecha,
-            DisponibilidadHorario = p.DisponibilidadHorario,
+            Estado = p.Estado,           
             FechaPostulacion = p.FechaPostulacion,
             FechaResolucion = p.FechaResolucion,
             MotivoRechazo = ResolverMotivoRechazo(p),
@@ -356,8 +350,6 @@ namespace TransitAR.Api.Services
         {
             Id = p.Id,
             Estado = p.Estado,
-            DisponibilidadFecha = p.DisponibilidadFecha,
-            DisponibilidadHorario = p.DisponibilidadHorario,
             FechaPostulacion = p.FechaPostulacion,
             FechaResolucion = p.FechaResolucion,
 
@@ -373,6 +365,7 @@ namespace TransitAR.Api.Services
             TieneOtrasMascotas = p.Usuario?.Perfil?.TieneOtrasMascotas ?? false,
             DetalleOtrasMascotas = p.Usuario?.Perfil?.DetalleOtrasMascotas,
             HorasSoloPorDia = p.Usuario?.Perfil?.HorasSoloPorDia,
+            DisponibilidadHorario = p.Usuario?.Perfil?.DisponibilidadHorario,
             CercaniaVeterinaria = p.Usuario?.Perfil?.CercaniaVeterinaria,
             ExperienciaPrevia = p.Usuario?.Perfil?.ExperienciaPrevia,
             MotivoPostulacion = p.Usuario?.Perfil?.MotivoPostulacion,

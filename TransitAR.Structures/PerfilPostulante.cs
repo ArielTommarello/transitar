@@ -64,6 +64,11 @@ namespace TransitAR.Structures
         public int? HorasSoloPorDia { get; set; }
 
         /// <summary>
+        /// Franja horaria en la que puede recibir al refugio o comunicarse. (Null si no le puso nada)
+        /// </summary>
+        public DisponibilidadHorario? DisponibilidadHorario { get; set; }
+
+        /// <summary>
         /// Requerimiento , si tiene cercania a una veterinaria, toma mas valor en caso de transitos
         /// </summary>
         [MaxLength(250)]

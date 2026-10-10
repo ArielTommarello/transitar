@@ -103,6 +103,9 @@ namespace TransitAR.Api.Controllers
             if (!Enum.IsDefined(request.Seleccion))
                 return "Debes seleccionar una opcion: adoptar, transitar o ambas.";
 
+            if (request.DisponibilidadHorario.HasValue && !Enum.IsDefined(request.DisponibilidadHorario.Value))
+                return "La disponibilidad horaria indicada no es valida.";
+
             if (contactos.Any(c => !Enum.IsDefined(c.Tipo)))
                 return "Alguna de las redes cargadas tiene un error o tipo no correcto";
 

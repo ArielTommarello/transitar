@@ -53,6 +53,7 @@ namespace TransitAR.Api.Services
                 TieneOtrasMascotas = request.TieneOtrasMascotas,
                 DetalleOtrasMascotas = request.DetalleOtrasMascotas?.Trim(),
                 HorasSoloPorDia = request.HorasSoloPorDia,
+                DisponibilidadHorario = request.DisponibilidadHorario,
                 CercaniaVeterinaria = request.CercaniaVeterinaria?.Trim(),
                 ExperienciaPrevia = request.ExperienciaPrevia?.Trim(),
                 MotivoPostulacion = request.MotivoPostulacion.Trim(),
@@ -101,6 +102,7 @@ namespace TransitAR.Api.Services
             perfil.TieneOtrasMascotas = request.TieneOtrasMascotas;
             perfil.DetalleOtrasMascotas = request.DetalleOtrasMascotas?.Trim();
             perfil.HorasSoloPorDia = request.HorasSoloPorDia;
+            perfil.DisponibilidadHorario = request.DisponibilidadHorario;
             perfil.CercaniaVeterinaria = request.CercaniaVeterinaria?.Trim();
             perfil.ExperienciaPrevia = request.ExperienciaPrevia?.Trim();
             perfil.MotivoPostulacion = request.MotivoPostulacion.Trim();
@@ -160,6 +162,7 @@ namespace TransitAR.Api.Services
             TieneOtrasMascotas = p.TieneOtrasMascotas,
             DetalleOtrasMascotas = p.DetalleOtrasMascotas,
             HorasSoloPorDia = p.HorasSoloPorDia,
+            DisponibilidadHorario = p.DisponibilidadHorario,
             CercaniaVeterinaria = p.CercaniaVeterinaria,
             ExperienciaPrevia = p.ExperienciaPrevia,
             //podria dar null, entonces lo exijo en la api y no tengo que cambiar todo el DTO , en caso de que no quieran tener esto obligatorio los del refugio

@@ -17,15 +17,5 @@ namespace TransitAR.Structures
         /// </summary>
         public Guid PublicacionId { get; set; }
 
-        /// <summary>
-        /// Fecha en la que el postulante puede coordinar la visita o tiene disponibilidad
-        /// </summary>
-        public DateTime? DisponibilidadFecha { get; set; }
-
-        /// <summary>
-        /// Disponibilidad horaria en la que puede coordinar
-        /// </summary>
-        public DisponibilidadHorario? DisponibilidadHorario { get; set; }
-
     }
 }

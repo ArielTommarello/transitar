@@ -44,16 +44,6 @@ namespace TransitAR.Structures
         public EstadoPostulacion Estado { get; set; }
 
         /// <summary>
-        /// Fecha en la que el postulante puede coordinar la visita, ayuda a coordinar de manera mas rapida
-        /// </summary>
-        public DateTime? DisponibilidadFecha { get; set; }
-
-        /// <summary>
-        /// Franja horaria en la que el postulante puede coordinar , para una mejor comunicacion
-        /// </summary>
-        public DisponibilidadHorario? DisponibilidadHorario { get; set; }
-
-        /// <summary>
         /// Fecha en que la persona se postulo a la publicaicon
         /// </summary>
         public DateTime FechaPostulacion { get; set; }

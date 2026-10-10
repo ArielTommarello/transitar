@@ -22,16 +22,6 @@ namespace TransitAR.Structures.Requests
         public EstadoPostulacion Estado { get; set; }
 
         /// <summary>
-        /// Fecha que el postulante puso para la visita
-        /// </summary>
-        public DateTime? DisponibilidadFecha { get; set; }
-
-        /// <summary>
-        /// Disponibilidad horaria que puso el postulante
-        /// </summary>
-        public DisponibilidadHorario? DisponibilidadHorario { get; set; }
-
-        /// <summary>
         /// Fecha en la que se postulo
         /// </summary>
         public DateTime FechaPostulacion { get; set; }

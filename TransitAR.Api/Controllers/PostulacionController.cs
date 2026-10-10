@@ -73,12 +73,7 @@ namespace TransitAR.Api.Controllers
         {
             var usuarioId = User.ObtenerUsuarioId();
             if (usuarioId == null)
-                return Forbid();
-
-            //puede estar vacia, pero no puedo tener horarios random o no validos
-            if (request.DisponibilidadHorario.HasValue
-             && !Enum.IsDefined(request.DisponibilidadHorario.Value))
-                return BadRequest(new { mensaje = "La disponibilidad horaria indicada no es valida o no es correcta." });
+                return Forbid();                      
 
             var resultado = await _postulacionService.PostularseAsync(request, usuarioId.Value);
 
