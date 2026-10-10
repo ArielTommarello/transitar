@@ -1,0 +1,40 @@
+﻿@model PublicacionPublicaResponse
+
+@{
+    var foto = Formato.PrimeraFoto(Model.FotosUrl);
+}
+
+<div class="card h-100">
+    @if (foto != null)
+    {
+        <img src="@foto" class="card-img-top tarjeta-foto" alt="Foto de @Model.MascotaNombre" />
+    }
+    else
+    {
+        <div class="card-img-top tarjeta-foto tarjeta-sin-foto">Sin foto</div>
+    }
+
+    <div class="card-body">
+        <span class="badge @(Model.Tipo == TipoPublicacion.Adopcion ? "bg-success" : "bg-info text-dark") mb-2">
+            @Formato.Tipo(Model.Tipo)
+        </span>
+
+        <h2 class="h5 card-title mb-1">@Model.MascotaNombre</h2>
+        <p class="text-muted small mb-2">
+            @Model.EspecieNombre · @Formato.Sexo(Model.Sexo) · @Formato.Tamanio(Model.Tamanio) · @Formato.Edad(Model.EdadAproximadaMeses)
+        </p>
+
+        <p class="card-text">@Model.Titulo</p>
+
+        @if (Model.Tipo == TipoPublicacion.Transito && Model.PlazoEstimado != null)
+        {
+            <p class="small mb-0">Tránsito por @Model.PlazoEstimado días</p>
+        }
+    </div>
+
+    <div class="card-footer bg-white small text-muted">
+        @Model.Ubicacion · @Model.RefugioNombre
+    </div>
+
+    <a asp-page="/Publicaciones/Detalle" asp-route-id="@Model.Id" class="stretched-link" aria-label="Ver @Model.MascotaNombre"></a>
+</div>

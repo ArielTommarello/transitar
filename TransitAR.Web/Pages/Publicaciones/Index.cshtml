@@ -1,0 +1,79 @@
+﻿@page
+@model TransitAR.Web.Pages.Publicaciones.IndexModel
+@{
+    ViewData["Title"] = "Publicaciones";
+}
+
+<h1 class="h3 mb-3">Animales buscando hogar</h1>
+
+<form method="get" class="row g-2 align-items-end mb-4">
+    <div class="col-6 col-md-2">
+        <label asp-for="Tipo" class="form-label small">Tipo</label>
+        <select asp-for="Tipo" class="form-select">
+            <option value="">Todos</option>
+            <option value="Adopcion">Adopción</option>
+            <option value="Transito">Tránsito</option>
+        </select>
+    </div>
+
+    <div class="col-6 col-md-2">
+        <label asp-for="EspecieId" class="form-label small">Especie</label>
+        <select asp-for="EspecieId" asp-items="@(new SelectList(Model.Especies, "Id", "Nombre"))" class="form-select">
+            <option value="">Todas</option>
+        </select>
+    </div>
+
+    <div class="col-6 col-md-2">
+        <label asp-for="Tamanio" class="form-label small">Tamaño</label>
+        <select asp-for="Tamanio" class="form-select">
+            <option value="">Todos</option>
+            <option value="Chico">Chico</option>
+            <option value="Mediano">Mediano</option>
+            <option value="Grande">Grande</option>
+        </select>
+    </div>
+
+    <div class="col-6 col-md-2">
+        <label asp-for="Sexo" class="form-label small">Sexo</label>
+        <select asp-for="Sexo" class="form-select">
+            <option value="">Todos</option>
+            <option value="Macho">Macho</option>
+            <option value="Hembra">Hembra</option>
+        </select>
+    </div>
+
+    <div class="col-12 col-md-2">
+        <label asp-for="Ubicacion" class="form-label small">Zona</label>
+        <input asp-for="Ubicacion" class="form-control" placeholder="Ej: Lomas" />
+    </div>
+
+    <div class="col-12 col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-grow-1">Buscar</button>
+        <a asp-page="/Publicaciones/Index" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+</form>
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+else if (Model.Publicaciones.Count == 0)
+{
+    <div class="text-center text-muted py-5">
+        <p class="mb-1">No encontramos animales con esos filtros.</p>
+        <a asp-page="/Publicaciones/Index">Ver todos</a>
+    </div>
+}
+else
+{
+    <p class="text-muted small">@Model.Publicaciones.Count resultado(s)</p>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+        @foreach (var publicacion in Model.Publicaciones)
+        {
+            <div class="col">
+                <partial name="_TarjetaPublicacion" model="publicacion" />
+            </div>
+        }
+    </div>
+}
