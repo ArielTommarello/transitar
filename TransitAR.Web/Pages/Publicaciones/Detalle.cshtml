@@ -1,0 +1,128 @@
+﻿@page "{id:guid}"
+@model TransitAR.Web.Pages.Publicaciones.DetalleModel
+@{
+    ViewData["Title"] = Model.Publicacion?.MascotaNombre ?? "Publicación";
+}
+
+@if (Model.Publicacion == null)
+{
+    <div class="text-center py-5">
+        <h1 class="h4">Esta publicación ya no está disponible</h1>
+        <p class="text-muted">Puede que el animal ya haya encontrado hogar.</p>
+        <a asp-page="/Publicaciones/Index" class="btn btn-primary">Ver otras publicaciones</a>
+    </div>
+    return;
+}
+
+@{
+    var p = Model.Publicacion;
+    var fotos = Formato.Fotos(p.FotosUrl, p.FotosUrlExtra);
+}
+
+<a asp-page="/Publicaciones/Index" class="small">&larr; Volver a publicaciones</a>
+
+<div class="row g-4 mt-1">
+    <div class="col-md-7">
+        @if (fotos.Count == 0)
+        {
+            <div class="detalle-foto tarjeta-sin-foto rounded">Sin fotos</div>
+        }
+        else if (fotos.Count == 1)
+        {
+            <img src="@fotos[0]" class="detalle-foto rounded" alt="Foto de @p.MascotaNombre" />
+        }
+        else
+        {
+            <div id="fotos" class="carousel slide">
+                <div class="carousel-inner rounded">
+                    @for (var i = 0; i < fotos.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@fotos[i]" class="detalle-foto" alt="Foto @(i + 1) de @p.MascotaNombre" />
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#fotos" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#fotos" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        }
+
+        <h2 class="h5 mt-4">Sobre esta publicación</h2>
+        <p class="texto-con-saltos">@p.Descripcion</p>
+    </div>
+
+    <div class="col-md-5">
+        <span class="badge @(p.Tipo == TipoPublicacion.Adopcion ? "bg-success" : "bg-info text-dark") mb-2">
+            @Formato.Tipo(p.Tipo)
+        </span>
+
+        <h1 class="h3 mb-1">@p.MascotaNombre</h1>
+        <p class="text-muted">@p.Titulo</p>
+
+        <ul class="list-unstyled mb-3">
+            <li><strong>Especie:</strong> @p.EspecieNombre</li>
+            <li><strong>Sexo:</strong> @Formato.Sexo(p.Sexo)</li>
+            <li><strong>Tamaño:</strong> @Formato.Tamanio(p.Tamanio)</li>
+            <li><strong>Edad:</strong> @Formato.Edad(p.EdadAproximadaMeses)</li>
+            <li><strong>Vacunado:</strong> @(p.Vacunado ? "Sí" : "No")</li>
+            @if (p.Tipo == TipoPublicacion.Transito && p.PlazoEstimado != null)
+            {
+                <li><strong>Tránsito por:</strong> @p.PlazoEstimado días</li>
+            }
+        </ul>
+
+        <p class="mb-1"><strong>@p.RefugioNombre</strong></p>
+        <p class="text-muted small">
+            @p.Ubicacion · Publicado el @Formato.FechaDe(p.FechaPublicacion)
+        </p>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                @if (Model.Mensaje != null)
+                {
+                    <div class="alert alert-success mb-0">@Model.Mensaje</div>
+                }
+                else if (!User.Identity!.IsAuthenticated)
+                {
+                    <p class="mb-2">¿Te interesa @(p.Tipo == TipoPublicacion.Adopcion ? "adoptar" : "transitar") a @p.MascotaNombre?</p>
+                    <a asp-page="/Cuenta/Login" asp-route-returnUrl="@($"{Request.Path}")" class="btn btn-primary w-100">
+                        Iniciá sesión para postularte
+                    </a>
+                }
+                else if (User.IsInRole("Usuario"))
+                {
+                    @if (Model.Error != null)
+                    {
+                        <div class="alert alert-danger">@Model.Error</div>
+                    }
+
+                    @if (Model.MiPostulacion != null && Model.MiPostulacion.Estado != EstadoPostulacion.Retirada)
+                    {
+                        <button type="button" class="btn btn-secondary w-100" disabled>Ya te postulaste</button>
+                        <p class="small text-muted mt-2 mb-0">
+                            Te postulaste el @Formato.FechaDe(Model.MiPostulacion.FechaPostulacion).
+                        </p>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="Postular">
+                            <button type="submit" class="btn btn-primary w-100">
+                                @(Model.MiPostulacion != null ? "Volver a postularme" : "Postularme")
+                            </button>
+                        </form>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted small mb-0">Las postulaciones son para personas que quieren adoptar o transitar.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -59,22 +59,36 @@ namespace TransitAR.Web.Helpers
         }
 
         /// <summary>
+        /// Todas las fotos de una o mas las de la mascota que sumo la publicacion.Puede estar vacia
+        /// </summary>
+        public static List<string> Fotos(params string?[] listasJson)
+        {
+            var fotos = new List<string>();
+
+            foreach (var json in listasJson)
+            {
+                if (string.IsNullOrWhiteSpace(json))
+                    continue;
+
+                try
+                {
+                    fotos.AddRange(JsonSerializer.Deserialize<List<string>>(json) ?? new());
+                }
+                catch (JsonException)
+                {
+                   //si guardo mal una lista no romep las demas
+                }
+            }
+
+            return fotos;
+        }
+
+
+        /// <summary>
         /// Primera foto de la lista para el animal, sino null si no hay
         /// </summary>
-        public static string? PrimeraFoto(string? fotosJson)
-        {
-            if (string.IsNullOrWhiteSpace(fotosJson))
-                return null;
-
-            try
-            {
-                return JsonSerializer.Deserialize<List<string>>(fotosJson)?.FirstOrDefault();
-            }
-            catch (JsonException)
-            {
-                return null;
-            }
-        }
+        public static string? PrimeraFoto(string? fotosJson) => 
+            Fotos(fotosJson).FirstOrDefault();
 
 
         //Arreglo de formato de hora UTC
