@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 using TransitAR.Structures;
 
 namespace TransitAR.Api.Services
@@ -48,9 +49,9 @@ namespace TransitAR.Api.Services
                 Seleccion = request.Seleccion,                
                 TipoVivienda = request.TipoVivienda.Trim(),
                 TienePatio = request.TienePatio,
-                PatioCerrado = request.PatioCerrado,
+                PatioCerrado = request.TienePatio && request.PatioCerrado,
                 TieneOtrasMascotas = request.TieneOtrasMascotas,
-                DetalleOtrasMascotas = request.DetalleOtrasMascotas?.Trim(),
+                DetalleOtrasMascotas = request.TieneOtrasMascotas ? request.DetalleOtrasMascotas?.Trim() : null,
                 HorasSoloPorDia = request.HorasSoloPorDia,
                 DisponibilidadHorario = request.DisponibilidadHorario,
                 CercaniaVeterinaria = request.CercaniaVeterinaria?.Trim(),
@@ -96,9 +97,9 @@ namespace TransitAR.Api.Services
             perfil.Seleccion = request.Seleccion;            
             perfil.TipoVivienda = request.TipoVivienda.Trim();
             perfil.TienePatio = request.TienePatio;
-            perfil.PatioCerrado = request.PatioCerrado;
+            perfil.PatioCerrado = request.TienePatio && request.PatioCerrado;
             perfil.TieneOtrasMascotas = request.TieneOtrasMascotas;
-            perfil.DetalleOtrasMascotas = request.DetalleOtrasMascotas?.Trim();
+            perfil.DetalleOtrasMascotas = request.TieneOtrasMascotas ? request.DetalleOtrasMascotas?.Trim() : null;
             perfil.HorasSoloPorDia = request.HorasSoloPorDia;
             perfil.DisponibilidadHorario = request.DisponibilidadHorario;
             perfil.CercaniaVeterinaria = request.CercaniaVeterinaria?.Trim();
