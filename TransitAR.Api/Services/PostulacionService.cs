@@ -357,7 +357,7 @@ namespace TransitAR.Api.Services
             Nombre = p.Usuario?.Nombre ?? string.Empty,
             Apellido = p.Usuario?.Apellido ?? string.Empty,
 
-            FotoUrl = p.Usuario?.Perfil?.FotoUrl,
+            FotoPerfil = p.Usuario?.Perfil?.FotoPerfil != null,
             Seleccion = p.Usuario?.Perfil?.Seleccion ?? default,
             TipoVivienda = p.Usuario?.Perfil?.TipoVivienda,
             TienePatio = p.Usuario?.Perfil?.TienePatio ?? false,

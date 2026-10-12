@@ -53,9 +53,10 @@ namespace TransitAR.Structures
         public string Apellido { get; set; } = string.Empty;
 
         /// <summary>
-        /// Foto de perfil publica del postulante
+        /// Si hay foto de perfil
         /// </summary>
-        public string? FotoUrl { get; set; }
+
+        public bool FotoPerfil { get; set; }
 
         /// <summary>
         /// Si busca adoptar, transitar o ambas

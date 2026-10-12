@@ -45,8 +45,7 @@ namespace TransitAR.Api.Services
             {
                 Id = Guid.NewGuid(),
                 UsuarioId = usuarioId,
-                Seleccion = request.Seleccion,
-                FotoUrl = request.FotoUrl?.Trim(),
+                Seleccion = request.Seleccion,                
                 TipoVivienda = request.TipoVivienda.Trim(),
                 TienePatio = request.TienePatio,
                 PatioCerrado = request.PatioCerrado,
@@ -94,8 +93,7 @@ namespace TransitAR.Api.Services
                 return null;
 
             //UsuarioId y FechaCompletado no se cambian
-            perfil.Seleccion = request.Seleccion;
-            perfil.FotoUrl = request.FotoUrl?.Trim();
+            perfil.Seleccion = request.Seleccion;            
             perfil.TipoVivienda = request.TipoVivienda.Trim();
             perfil.TienePatio = request.TienePatio;
             perfil.PatioCerrado = request.PatioCerrado;
@@ -147,6 +145,39 @@ namespace TransitAR.Api.Services
             }
         }
 
+
+        ///<inheritdoc/>
+        public async Task<bool> CambiarFotoAsync(Guid usuarioId, ArchivoAdjunto foto)
+        {
+            var perfil = await _context.PerfilPostulantes.FirstOrDefaultAsync(p => p.UsuarioId == usuarioId);
+            if (perfil == null)
+                return false;
+
+            //remplazo la anterior si ya hay una
+            perfil.FotoPerfil = foto.Contenido;
+            perfil.FotoContentType = foto.ContentType;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        ///<inheritdoc/>
+        public async Task<ArchivoAdjunto?> ObtenerFotoAsync(Guid usuarioId)
+        {
+            //EFCORE para traer osol colimnas de fotos y no todo
+            return await _context.PerfilPostulantes
+                .AsNoTracking()
+                .Where(p => p.UsuarioId == usuarioId && p.FotoPerfil != null)
+                .Select(p => new ArchivoAdjunto
+                {
+                    NombreArchivo = "foto",
+                    ContentType = p.FotoContentType ?? "image/jpeg",
+                    Contenido = p.FotoPerfil!
+                })
+                .FirstOrDefaultAsync();
+        }
+
+
         /// <summary>
         /// Obtengo el dto del perfil para no tener toda la entidad, y poder calcular los valores, de esta manera menos cosas para cargar cuando se pidan
         /// </summary>
@@ -154,7 +185,7 @@ namespace TransitAR.Api.Services
         {
             Id = p.Id,
             Seleccion = p.Seleccion,
-            FotoUrl = p.FotoUrl,
+            FotoPerfil = p.FotoPerfil != null,
             //podria dar null, entonces lo exijo en la api y no tengo que cambiar todo el DTO , en caso de que no quieran tener esto obligatorio los del refugio
             TipoVivienda = p.TipoVivienda ?? string.Empty,
             TienePatio = p.TienePatio,

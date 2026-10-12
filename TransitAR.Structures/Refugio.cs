@@ -28,10 +28,15 @@ namespace TransitAR.Structures
         public string? Descripcion { get; set; }
 
         /// <summary>
-        /// Logo publico del refugio
+        /// Foto de perfil guardada en la base 
         /// </summary>
-        [MaxLength(450)]
-        public string? LogoUrl { get; set; }
+        public byte[]? FotoPerfil { get; set; }
+
+        /// <summary>
+        /// Tipo de la imagen (image/jpeg, image/png o image/webp) para poder mostrarla
+        /// </summary>
+        [MaxLength(100)]
+        public string? FotoContentType { get; set; }
 
         /// <summary>
         /// Email con el que se registro y usa de contacto con la pagina el refugio.

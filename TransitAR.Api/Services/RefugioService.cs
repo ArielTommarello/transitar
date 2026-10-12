@@ -47,8 +47,7 @@ namespace TransitAR.Api.Services
 
             //Id, FechaAlta y Activo no se cambian
             refugio.Nombre = request.Nombre.Trim();
-            refugio.Descripcion = request.Descripcion?.Trim();
-            refugio.LogoUrl = request.LogoUrl?.Trim();
+            refugio.Descripcion = request.Descripcion?.Trim();            
             refugio.Email = request.Email.Trim().ToLowerInvariant();
             refugio.Telefono = request.Telefono?.Trim();
             refugio.Direccion = request.Direccion?.Trim();
@@ -96,6 +95,38 @@ namespace TransitAR.Api.Services
             }
         }
 
+
+        ///<inheritdoc/>
+        public async Task<bool> CambiarFotoAsync(Guid refugioId, ArchivoAdjunto foto)
+        {
+            var refugio = await _context.Refugios.FirstOrDefaultAsync(r => r.Id == refugioId);
+            if (refugio == null)
+                return false;
+
+            //remplazo la anterior si ya hay una
+            refugio.FotoPerfil = foto.Contenido;
+            refugio.FotoContentType = foto.ContentType;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        ///<inheritdoc/>
+        public async Task<ArchivoAdjunto?> ObtenerFotoAsync(Guid refugioId)
+        {
+            //EFCORE para traer osol colimnas de fotos y no todo
+            return await _context.Refugios
+                .AsNoTracking()
+                .Where(r => r.Id == refugioId && r.FotoPerfil != null)
+                .Select(r => new ArchivoAdjunto
+                {
+                    NombreArchivo = "logo",
+                    ContentType = r.FotoContentType ?? "image/jpeg",
+                    Contenido = r.FotoPerfil!
+                })
+                .FirstOrDefaultAsync();
+        }
+
         /// <summary>
         /// Pasa la entidad al DTO de salida
         /// </summary>
@@ -104,7 +135,7 @@ namespace TransitAR.Api.Services
             Id = r.Id,
             Nombre = r.Nombre,
             Descripcion = r.Descripcion,
-            LogoUrl = r.LogoUrl,
+            FotoPerfil = r.FotoPerfil != null,
             Email = r.Email,
             Telefono = r.Telefono,
             Direccion = r.Direccion,

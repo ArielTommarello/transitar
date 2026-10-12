@@ -291,9 +291,12 @@ namespace TransitAR.Structures.Migrations
                     b.Property<DateTime>("FechaCompletado")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FotoUrl")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("FotoContentType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<byte[]>("FotoPerfil")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int?>("HorasSoloPorDia")
                         .HasColumnType("int");
@@ -438,13 +441,16 @@ namespace TransitAR.Structures.Migrations
                     b.Property<DateTime>("FechaAlta")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FotoContentType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<byte[]>("FotoPerfil")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("Localidad")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
-
-                    b.Property<string>("LogoUrl")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MensajeRechazoAutomatico")
                         .HasMaxLength(800)

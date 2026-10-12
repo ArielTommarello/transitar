@@ -27,12 +27,6 @@ namespace TransitAR.Structures
         public string? Descripcion { get; set; }
 
         /// <summary>
-        /// Logo del refugio
-        /// </summary>
-        [MaxLength(450)]
-        public string? LogoUrl { get; set; }
-
-        /// <summary>
         /// Mail de contacto del refugio, el que ve la gente. Es el mail de contacto, no tiene porque ser con el que se registro el refugio, ese esta en usuario
         /// </summary>
         [Required]

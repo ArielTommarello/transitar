@@ -28,10 +28,10 @@ namespace TransitAR.Structures
         public SeleccionUsuario Seleccion { get; set; }
 
         /// <summary>
-        /// Foto de perfil publica del postulante
+        /// Si hay foto de perfil
         /// </summary>
         
-        public string? FotoUrl { get; set; }
+        public bool FotoPerfil { get; set; }
 
         /// <summary>
         /// Tipo de vivienda donde estaria el anima, distincion en depto ph o casa. (ejemplo gatos van a depto algunos)

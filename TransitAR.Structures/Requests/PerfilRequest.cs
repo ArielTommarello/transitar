@@ -21,12 +21,6 @@ namespace TransitAR.Structures
         public SeleccionUsuario Seleccion { get; set; }
 
         /// <summary>
-        /// Foto de perfil publica del postulante
-        /// </summary>
-        [MaxLength(450)]
-        public string? FotoUrl { get; set; }
-
-        /// <summary>
         /// Tipo de vivienda donde estaria el anima, distincion en depto ph o casa. (ejemplo gatos van a depto algunos)
         /// </summary>
         [Required]

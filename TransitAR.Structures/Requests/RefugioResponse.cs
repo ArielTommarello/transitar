@@ -27,9 +27,10 @@ namespace TransitAR.Structures.Requests
         public string? Descripcion { get; set; }
 
         /// <summary>
-        /// Logo del refugio
+        /// Si hay foto de perfil
         /// </summary>
-        public string? LogoUrl { get; set; }
+
+        public bool FotoPerfil { get; set; }
 
         /// <summary>
         /// Mail de contacto del refugio

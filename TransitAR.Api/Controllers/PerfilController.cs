@@ -18,14 +18,16 @@ namespace TransitAR.Api.Controllers
     public class PerfilController : ControllerBase
     {
         private readonly IPerfilService _perfilService;
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// Inicializa el servicio de perfil
         /// </summary>
         /// <param name="perfilService"></param>
-        public PerfilController(IPerfilService perfilService)
+        public PerfilController(IPerfilService perfilService, IConfiguration configuration)
         {
             _perfilService = perfilService;
+            _configuration = configuration; 
         }
 
         /// <summary>
@@ -115,6 +117,46 @@ namespace TransitAR.Api.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Sube o cambia una foto de perfil del postulante
+        /// </summary>
+        /// <param name="foto"></param>
+        /// <returns></returns>
 
+        [HttpPut("foto")]
+        public async Task<IActionResult> CambiarFoto(IFormFile foto)
+        {
+            var usuarioId = User.ObtenerUsuarioId();
+            if (usuarioId == null)
+                return Forbid();
+
+            var maxMB = _configuration.GetValue<int?>("Reglas:FotoPerfilMaxMB") ?? 5;
+            var error = FotoPerfilArchivo.Validar(foto, maxMB);
+            if (error != null)
+                return BadRequest(new { mensaje = error });
+
+            var guardada = await _perfilService.CambiarFotoAsync(usuarioId.Value, await FotoPerfilArchivo.LeerAsync(foto));
+            if (!guardada)
+                return NotFound(new { mensaje = "Debes completar tu perfil antes de subir una foto." });
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Devuevle la foto de perfil de un psotulante publico. Uso allowanonymous para la img y que no se tenga que suar la authorize para el perfil
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        [HttpGet("{usuarioId:guid}/foto")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObtenerFoto(Guid usuarioId)
+        {
+            var foto = await _perfilService.ObtenerFotoAsync(usuarioId);
+
+            if (foto == null)
+                return NotFound();
+
+            return File(foto.Contenido, foto.ContentType);
+        }
     }
 }

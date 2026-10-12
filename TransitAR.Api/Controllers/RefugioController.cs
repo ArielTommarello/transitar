@@ -18,14 +18,16 @@ namespace TransitAR.Api.Controllers
     public class RefugioController : ControllerBase
     {
         private readonly IRefugioService _refugioService;
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// Inicializa el servicio del perfil del refugio
         /// </summary>
         /// <param name="refugioService"></param>
-        public RefugioController(IRefugioService refugioService)
+        public RefugioController(IRefugioService refugioService, IConfiguration configuration)
         {
             _refugioService = refugioService;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -77,6 +79,45 @@ namespace TransitAR.Api.Controllers
             return Ok(perfil);
         }
 
+        /// <summary>
+        /// Sube o cambia la foto de perfil de un refugio
+        /// </summary>
+        /// <param name="foto"></param>
+        /// <returns></returns>
+        [HttpPut("foto")]
+        public async Task<IActionResult> CambiarFoto(IFormFile foto)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
 
+            var maxMB = _configuration.GetValue<int?>("Reglas:FotoPerfilMaxMB") ?? 5;
+            var error = FotoPerfilArchivo.Validar(foto, maxMB);
+            if (error != null)
+                return BadRequest(new { mensaje = error });
+
+            var guardada = await _refugioService.CambiarFotoAsync(refugioId.Value, await FotoPerfilArchivo.LeerAsync(foto));
+            if (!guardada)
+                return NotFound(new { mensaje = "No encontramos el perfil del refugio." });
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Muestra la foto de perfil del refugio publico
+        /// </summary>
+        /// <param name="refugioId"></param>
+        /// <returns></returns>
+        [HttpGet("{refugioId:guid}/foto")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObtenerFoto(Guid refugioId)
+        {
+            var foto = await _refugioService.ObtenerFotoAsync(refugioId);
+
+            if (foto == null)
+                return NotFound();
+
+            return File(foto.Contenido, foto.ContentType);
+        }
     }
 }

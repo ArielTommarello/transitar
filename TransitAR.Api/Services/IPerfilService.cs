@@ -19,5 +19,20 @@ namespace TransitAR.Api.Services
         /// </summary>
         Task<PerfilResponse?> ActualizarPerfilAsync(PerfilRequest request, Guid usuarioId);
 
+        /// <summary>
+        /// Guarda o cambia la foto de perfil. Puede no tener una.
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="foto"></param>
+        /// <returns></returns>
+        Task<bool> CambiarFotoAsync(Guid usuarioId, ArchivoAdjunto foto);
+
+        /// <summary>
+        /// Obtiene la foto de perfil , peude no tener una
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        Task<ArchivoAdjunto?> ObtenerFotoAsync(Guid usuarioId);
+
     }
 }

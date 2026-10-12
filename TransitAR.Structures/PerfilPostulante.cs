@@ -26,10 +26,15 @@ namespace TransitAR.Structures
         public SeleccionUsuario Seleccion { get; set; }
 
         /// <summary>
-        /// Foto de perfil publica del usuario
+        /// Foto de perfil que esta en la base. 
         /// </summary>
-        [MaxLength(450)]
-        public string? FotoUrl { get; set; }
+        public byte[]? FotoPerfil { get; set; }
+
+        /// <summary>
+        /// Tipo de la imagen (image/jpeg, image/png o image/webp) para poder mostrarla
+        /// </summary>
+        [MaxLength(100)]
+        public string? FotoContentType { get; set; }
 
         /// <summary>
         /// Tipo de vivienda donde estar ael animal en transito o adoptadp
