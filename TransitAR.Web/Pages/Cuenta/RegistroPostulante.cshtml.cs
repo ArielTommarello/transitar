@@ -98,8 +98,8 @@ namespace TransitAR.Web.Pages.Cuenta
                 new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
                 propiedades);
 
-            
-            return RedirectToPage("/Index");
+            //solo si es la primera vez
+            return RedirectToPage("/Postulante/Perfil");
         }
     }
 }

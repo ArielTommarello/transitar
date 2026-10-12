@@ -1,0 +1,189 @@
+﻿@page
+@model TransitAR.Web.Pages.Postulante.PerfilModel
+@{
+    ViewData["Title"] = Model.EsNuevo ? "Completá tu perfil" : "Mi perfil";
+
+    //5 redes (se muestran si tienen datos)
+    var redes = new[]
+    {
+        (Tipo: TipoContacto.Instagram, Nombre: "Instagram", Ejemplo: "https://instagram.com/tu_usuario"),
+        (Tipo: TipoContacto.Facebook, Nombre: "Facebook", Ejemplo: "https://facebook.com/tu_usuario"),
+        (Tipo: TipoContacto.WhatsApp, Nombre: "WhatsApp", Ejemplo: "https://wa.me/5491112345678"),
+        (Tipo: TipoContacto.Tiktok, Nombre: "TikTok", Ejemplo: "https://tiktok.com/@@tu_usuario"),
+        (Tipo: TipoContacto.SitioWeb, Nombre: "Sitio web", Ejemplo: "https://...")
+    };
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1 class="h3 mb-1">@ViewData["Title"]</h1>
+
+        @if (Model.EsNuevo)
+        {
+            <p class="text-muted mb-4">
+                Es lo que va a ver el refugio cuando te postules. Lo completás una sola vez y después lo podés cambiar cuando quieras.
+            </p>
+        }
+
+        @if (Model.Mensaje != null)
+        {
+            <div class="alert alert-success">@Model.Mensaje</div>
+        }
+
+        @if (Model.Error != null)
+        {
+            <div class="alert alert-danger">@Model.Error</div>
+        }
+
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="EsNuevo" />
+            <input type="hidden" asp-for="TieneFoto" />
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            @* ---------- Sobre vos ---------- *@
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Sobre vos</h2>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        @if (Model.TieneFoto)
+                        {
+                            <img src="@Model.UrlFoto" class="perfil-foto rounded-circle" alt="Tu foto de perfil" />
+                        }
+                        else
+                        {
+                            <div class="perfil-foto perfil-sin-foto rounded-circle">Sin foto</div>
+                        }
+
+                        <div class="flex-grow-1">
+                            <label asp-for="Foto" class="form-label">Foto de perfil <span class="text-muted">(opcional)</span></label>
+                            <input asp-for="Foto" type="file" class="form-control" accept="image/jpeg,image/png,image/webp" />
+                            <div class="form-text">jpg, png o webp, hasta 5 MB. Si elegís una nueva, reemplaza la anterior.</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">¿Qué querés hacer?</label>
+                        <div class="form-check form-check-inline">
+                            <input asp-for="Datos.Seleccion" type="radio" value="Adoptante" class="form-check-input" id="sel-adoptar" />
+                            <label class="form-check-label" for="sel-adoptar">Adoptar</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input asp-for="Datos.Seleccion" type="radio" value="Transito" class="form-check-input" id="sel-transitar" />
+                            <label class="form-check-label" for="sel-transitar">Transitar</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input asp-for="Datos.Seleccion" type="radio" value="Ambos" class="form-check-input" id="sel-ambos" />
+                            <label class="form-check-label" for="sel-ambos">Las dos</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label asp-for="Datos.MotivoPostulacion" class="form-label">¿Por qué querés adoptar o transitar?</label>
+                        <textarea asp-for="Datos.MotivoPostulacion" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Datos.MotivoPostulacion" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            @* ---------- Casa ---------- *@
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Tu casa</h2>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.TipoVivienda" class="form-label">Tipo de vivienda</label>
+                            <select asp-for="Datos.TipoVivienda" class="form-select">
+                                <option value="">Elegí una opción</option>
+                                <option>Departamento</option>
+                                <option>Casa</option>
+                                <option>PH</option>
+                                <option>Otro</option>
+                            </select>
+                            <span asp-validation-for="Datos.TipoVivienda" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.DisponibilidadHorario" class="form-label">¿Cuándo te puede visitar el refugio?</label>
+                            <select asp-for="Datos.DisponibilidadHorario" class="form-select">
+                                <option value="">Sin indicar</option>
+                                <option value="Maniana">Mañana</option>
+                                <option value="Tarde">Tarde</option>
+                                <option value="Noche">Noche</option>
+                                <option value="TodoElDia">Todo el día</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input asp-for="Datos.TienePatio" class="form-check-input" />
+                            <label asp-for="Datos.TienePatio" class="form-check-label">Tengo patio</label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Datos.PatioCerrado" class="form-check-input" />
+                            <label asp-for="Datos.PatioCerrado" class="form-check-label">El patio está cerrado</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input asp-for="Datos.TieneOtrasMascotas" class="form-check-input" />
+                            <label asp-for="Datos.TieneOtrasMascotas" class="form-check-label">Tengo otras mascotas</label>
+                        </div>
+                        <textarea asp-for="Datos.DetalleOtrasMascotas" class="form-control mt-2" rows="2"
+                                  placeholder="Contanos cuáles: especie, edad, si se llevan bien con otros animales"></textarea>
+                        <span asp-validation-for="Datos.DetalleOtrasMascotas" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.HorasSoloPorDia" class="form-label">¿Cuántas horas por día quedaría solo?</label>
+                            <input asp-for="Datos.HorasSoloPorDia" type="number" min="0" max="24" class="form-control" />
+                            <span asp-validation-for="Datos.HorasSoloPorDia" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.CercaniaVeterinaria" class="form-label">¿Tenés una veterinaria cerca?</label>
+                            <input asp-for="Datos.CercaniaVeterinaria" class="form-control" placeholder="Ej: a 5 cuadras, atiende 24 hs" />
+                            <span asp-validation-for="Datos.CercaniaVeterinaria" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label asp-for="Datos.ExperienciaPrevia" class="form-label">Experiencia con animales <span class="text-muted">(opcional)</span></label>
+                        <textarea asp-for="Datos.ExperienciaPrevia" class="form-control" rows="3"
+                                  placeholder="Si tuviste mascotas, si ya transitaste o adoptaste antes"></textarea>
+                        <span asp-validation-for="Datos.ExperienciaPrevia" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            @* ---------- Redes ---------- *@
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-1">Tus redes</h2>
+                    <p class="text-muted small mb-3">Opcional. Le sirven al refugio para conocerte un poco más.</p>
+
+                    @foreach (var red in redes)
+                    {
+                        <div class="mb-2">
+                            <label class="form-label small mb-1" for="red-@red.Tipo">@red.Nombre</label>
+                            <input name="Redes[@red.Tipo]" id="red-@red.Tipo" class="form-control"
+                                   value="@Model.Redes.GetValueOrDefault(red.Tipo)" placeholder="@red.Ejemplo" maxlength="250" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mb-5">
+                @(Model.EsNuevo ? "Guardar y continuar" : "Guardar cambios")
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -39,6 +39,11 @@ namespace TransitAR.Web.Pages.Publicaciones
         [TempData]
         public string? Mensaje { get; set; }
 
+        /// <summary>
+        /// Marca si falta el perfil de la persona que se quiere ostular (muestra una leyenda)
+        /// </summary>
+        public bool FaltaPerfil { get; set; }
+
         public async Task OnGetAsync(Guid id)
         {
             await CargarAsync(id);
@@ -61,6 +66,8 @@ namespace TransitAR.Web.Pages.Publicaciones
             {
                 //errores (sin perfil, cupo lleno, ya postulado o otros)
                 Error = respuesta.Error;
+                var perfil = await _api.GetAsync<PerfilResponse>("api/Perfil");
+                FaltaPerfil = perfil.Estado == StatusCodes.Status404NotFound;
                 await CargarAsync(id);
                 return Page();
             }

@@ -99,7 +99,15 @@
                 {
                     @if (Model.Error != null)
                     {
-                        <div class="alert alert-danger">@Model.Error</div>
+                        <div class="alert alert-danger">
+                            @Model.Error
+                            @if (Model.FaltaPerfil)
+                            {
+                                <a asp-page="/Postulante/Perfil" asp-route-returnUrl="@Request.Path" class="btn btn-sm btn-primary mt-2 d-block">
+                                    Completá tu perfil
+                                </a>
+                            }
+                        </div>
                     }
 
                     @if (Model.MiPostulacion != null && Model.MiPostulacion.Estado != EstadoPostulacion.Retirada)

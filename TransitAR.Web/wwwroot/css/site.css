@@ -54,3 +54,20 @@ body {
 .texto-con-saltos {
     white-space: pre-line;
 }
+
+/* Perfil Postulante */
+.perfil-foto {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.perfil-sin-foto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-size: 0.8rem;
+}

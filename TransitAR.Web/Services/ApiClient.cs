@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 
 namespace TransitAR.Web.Services
 {
@@ -47,6 +48,26 @@ namespace TransitAR.Web.Services
         public async Task<ApiRespuesta<T>> DeleteAsync<T>(string ruta) =>
             await LeerAsync<T>(await _http.DeleteAsync(ruta));
 
+
+        /// <summary>
+        /// Fotos de perfil, put con el arvhico en IFORMFILE
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ruta"></param>
+        /// <param name="archivo"></param>
+        /// <param name="nombreCampo"></param>
+        /// <returns></returns>
+        public async Task<ApiRespuesta<T>> PutArchivoAsync<T>(string ruta, IFormFile archivo, string nombreCampo)
+        {
+            using var contenido = new MultipartFormDataContent();
+            using var stream = archivo.OpenReadStream();
+
+            var parte = new StreamContent(stream);
+            parte.Headers.ContentType = new MediaTypeHeaderValue(archivo.ContentType);
+            contenido.Add(parte, nombreCampo, archivo.FileName);
+
+            return await LeerAsync<T>(await _http.PutAsync(ruta, contenido));
+        }
         /// <summary>
         /// Convierte la respuesta HTTP en una ApiRespuesta   
         /// </summary>
@@ -86,6 +107,11 @@ namespace TransitAR.Web.Services
             };
         }
 
+
+
+
+
+
         /// <summary>
         /// Mensaje por defecto en caso de no tener uno de la API
         /// </summary>
@@ -96,6 +122,20 @@ namespace TransitAR.Web.Services
             HttpStatusCode.NotFound => "No hemos encontrado lo que estabas buscando, intentalo nuevamente.",
             _ => "Ocurrio un error. Por favor intenta de nuevo."
         };
+
+
+        /// <summary>
+        /// Direccion completa de la foto de un postulante (conexion a la api por una imagne , forma standard)
+        /// </summary>
+        public string UrlFotoPostulante(Guid usuarioId) =>
+            new Uri(_http.BaseAddress!, $"api/Perfil/{usuarioId}/foto").ToString();
+
+        /// <summary>
+        /// Direccion completa del logo de un refugio (conexion a la api por una imagne , forma standard)
+        /// </summary>
+        public string UrlFotoRefugio(Guid refugioId) =>
+            new Uri(_http.BaseAddress!, $"api/Refugio/{refugioId}/foto").ToString();
+
 
         /// <summary>
         /// errrores que devuelve la Api
