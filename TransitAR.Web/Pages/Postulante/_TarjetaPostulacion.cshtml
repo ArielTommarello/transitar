@@ -1,0 +1,69 @@
+﻿@model TransitAR.Structures.Requests.PostulacionResponse
+
+@{
+    var foto = Formato.PrimeraFoto(Model.FotosUrl);
+    var aclaracion = Formato.AclaracionEstado(Model.Estado);
+    var sePuedeRetirar = Model.Estado == EstadoPostulacion.Pendiente || Model.Estado == EstadoPostulacion.EnEspera;
+}
+
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-auto">
+            <a asp-page="/Publicaciones/Detalle" asp-route-id="@Model.PublicacionId">
+                @if (foto != null)
+                {
+                    <img src="@foto" class="postulacion-foto rounded-start" alt="Foto de @Model.MascotaNombre" />
+                }
+                else
+                {
+                    <div class="postulacion-foto tarjeta-sin-foto rounded-start">Sin foto</div>
+                }
+            </a>
+        </div>
+
+        <div class="col">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                    <div>
+                        <a asp-page="/Publicaciones/Detalle" asp-route-id="@Model.PublicacionId" class="h6 mb-0 text-decoration-none">
+                            @Model.MascotaNombre
+                        </a>
+                        <span class="text-muted small">· @Model.EspecieNombre · @Formato.Tipo(Model.Tipo)</span>
+                        <div class="small">@Model.PublicacionTitulo</div>
+                        <div class="small text-muted">@Model.RefugioNombre</div>
+                    </div>
+
+                    <span class="badge @Formato.ColorEstado(Model.Estado)">@Formato.Estado(Model.Estado)</span>
+                </div>
+
+                @if (aclaracion != null)
+                {
+                    <p class="small mb-1 mt-2">@aclaracion</p>
+                }
+
+                @if (Model.Estado == EstadoPostulacion.Rechazada && Model.MotivoRechazo != null)
+                {
+                    <p class="small mb-1 mt-2"><strong>Motivo:</strong> @Model.MotivoRechazo</p>
+                }
+
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <span class="small text-muted">
+                        Te postulaste el @Formato.FechaDe(Model.FechaPostulacion)
+                        @if (Model.FechaResolucion != null)
+                        {
+                            <text>· Resuelta el @Formato.FechaDe(Model.FechaResolucion.Value)</text>
+                        }
+                    </span>
+
+                    @if (sePuedeRetirar)
+                    {
+                        <form method="post" asp-page-handler="Retirar" asp-route-id="@Model.Id"
+                              onsubmit="return confirm('¿Seguro que querés retirarte de esta postulación?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Retirarme</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

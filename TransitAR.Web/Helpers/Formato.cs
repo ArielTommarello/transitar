@@ -115,5 +115,50 @@ namespace TransitAR.Web.Helpers
         /// Un dia del calendario que eligio una persona (un control, una devolucion pactada) Se muestra como viene, pero con formato de vista argentina
         /// </summary>
         public static string Dia(DateTime dia) => dia.ToString("dd/MM/yyyy");
+
+
+
+        //FORMATO PARA POSTULACIONES
+        /// <summary>
+        /// Como ve el postulante el estado de la postulacion
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <returns></returns>
+        public static string Estado(EstadoPostulacion estado) => estado switch
+        {
+            EstadoPostulacion.Pendiente => "En evaluación",
+            EstadoPostulacion.EnEspera => "En espera",
+            EstadoPostulacion.Aceptada => "¡Te eligieron!",
+            EstadoPostulacion.Rechazada => "No fuiste seleccionado",
+            EstadoPostulacion.Retirada => "Retirada",
+            _ => string.Empty
+        };
+
+        /// <summary>
+        /// Regla para color de bootstrap para los estado de postulacion (sigo la regla en todo el programa)
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <returns></returns>
+        public static string ColorEstado(EstadoPostulacion estado) => estado switch
+        {
+            EstadoPostulacion.Pendiente => "bg-warning text-dark",
+            EstadoPostulacion.EnEspera => "bg-info text-dark",
+            EstadoPostulacion.Aceptada => "bg-success",
+            EstadoPostulacion.Rechazada => "bg-danger",
+            _ => "bg-secondary"
+        };
+
+        /// <summary>
+        /// Aclaraciones para el postulante en caso de respuesta en Estado (Rechazada uso de la api) 
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <returns></returns>
+        public static string? AclaracionEstado(EstadoPostulacion estado) => estado switch
+        {
+            EstadoPostulacion.Pendiente => "El refugio todavía no la revisó.",
+            EstadoPostulacion.EnEspera => "El refugio está avanzando con otra persona. Si no se concreta, puede volver a vos.",
+            EstadoPostulacion.Aceptada => "Coordiná la entrega con el refugio.",
+            _ => null
+        };
     }
 }

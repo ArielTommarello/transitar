@@ -1,0 +1,53 @@
+﻿@page
+@model TransitAR.Web.Pages.Postulante.PostulacionesModel
+@{
+    ViewData["Title"] = "Mis postulaciones";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <h1 class="h3 mb-4">Mis postulaciones</h1>
+
+        @if (Model.Mensaje != null)
+        {
+                <div class="alert alert-success">@Model.Mensaje</div>
+        }
+
+        @if (Model.Error != null)
+        {
+                <div class="alert alert-danger">@Model.Error</div>
+        }
+
+        @if (!Model.EnCurso.Any() && !Model.Finalizadas.Any())
+        {
+                <div class="text-center py-5">
+                    <p class="text-muted">Todavía no te postulaste a ninguna publicación.</p>
+                    <a asp-page="/Publicaciones/Index" class="btn btn-primary">Ver publicaciones</a>
+                </div>
+        }
+        else
+        {
+                <h2 class="h5 mb-3">En curso</h2>
+
+            @if (!Model.EnCurso.Any())
+            {
+                        <p class="text-muted small">No tenés postulaciones en curso.</p>
+            }
+
+            @foreach (var postulacion in Model.EnCurso)
+            {
+                        <partial name="_TarjetaPostulacion" model="postulacion" />
+            }
+
+            @if (Model.Finalizadas.Any())
+            {
+                        <h2 class="h5 mt-5 mb-3">Finalizadas</h2>
+
+                @foreach (var postulacion in Model.Finalizadas)
+                {
+                                <partial name="_TarjetaPostulacion" model="postulacion" />
+                }
+            }
+        }
+    </div>
+</div>
