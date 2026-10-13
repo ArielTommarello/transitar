@@ -48,17 +48,15 @@ namespace TransitAR.Web.Pages.Postulante
                 return;
             }
 
-            //separo, ya tengo orden en la api
+            //separo, ya tengo orden en la api (puede ser adopcion o transito asignado en algun momento)
             EnCurso = respuesta.Datos
-                .Where(p => p.Estado == EstadoPostulacion.Pendiente
-                         || p.Estado == EstadoPostulacion.EnEspera
-                         || p.Estado == EstadoPostulacion.Aceptada)
-                .ToList();
+                 .Where(p => p.Estado == EstadoPostulacion.Pendiente
+                          || p.Estado == EstadoPostulacion.EnEspera
+                          || (p.Estado == EstadoPostulacion.Aceptada && !p.TieneTenencia))
+                 .ToList();
 
-            Finalizadas = respuesta.Datos
-                .Where(p => p.Estado == EstadoPostulacion.Rechazada
-                         || p.Estado == EstadoPostulacion.Retirada)
-                .ToList();
+            //finalizadsas, todas las que no son las encurso
+            Finalizadas = respuesta.Datos.Except(EnCurso).ToList();
         }
 
         /// <summary>

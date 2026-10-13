@@ -2,7 +2,9 @@
 
 @{
     var foto = Formato.PrimeraFoto(Model.FotosUrl);
-    var aclaracion = Formato.AclaracionEstado(Model.Estado);
+    //aceptada y ya entregada (el proceso termino bien)
+    var entregada = Model.Estado == EstadoPostulacion.Aceptada && Model.TieneTenencia;
+    var aclaracion = entregada ? "Ya está con vos. La encontrás en Mis tenencias." : Formato.AclaracionEstado(Model.Estado);
     var sePuedeRetirar = Model.Estado == EstadoPostulacion.Pendiente || Model.Estado == EstadoPostulacion.EnEspera;
 }
 
@@ -33,7 +35,7 @@
                         <div class="small text-muted">@Model.RefugioNombre</div>
                     </div>
 
-                    <span class="badge @Formato.ColorEstado(Model.Estado)">@Formato.Estado(Model.Estado)</span>
+                    <span class="badge @Formato.ColorEstado(Model.Estado)">@(entregada ? "Entregada" : Formato.Estado(Model.Estado))</span>
                 </div>
 
                 @if (aclaracion != null)

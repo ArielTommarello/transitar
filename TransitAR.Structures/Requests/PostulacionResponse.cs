@@ -71,6 +71,11 @@ namespace TransitAR.Structures.Requests
         /// </summary>
         public string RefugioNombre { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Si tiene postualcion aceptada y tenencia (para verificar si fue entregado)
+        /// </summary>
+        public bool TieneTenencia { get; set; }
+
 
     }
 }

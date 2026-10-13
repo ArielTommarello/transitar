@@ -300,7 +300,8 @@ namespace TransitAR.Api.Services
                         .ThenInclude(m => m!.Especie)
                 .Include(p => p.Publicacion)!
                     .ThenInclude(pub => pub!.Mascota)!
-                        .ThenInclude(m => m!.Refugio);
+                        .ThenInclude(m => m!.Refugio)
+                .Include(p => p.Tenencia);
 
         /// <summary>
         /// Manejo del error y dice cual es
@@ -330,6 +331,7 @@ namespace TransitAR.Api.Services
             FechaPostulacion = p.FechaPostulacion,
             FechaResolucion = p.FechaResolucion,
             MotivoRechazo = ResolverMotivoRechazo(p),
+            TieneTenencia = p.Tenencia != null,
 
             PublicacionId = p.PublicacionId,
             PublicacionTitulo = p.Publicacion?.Titulo ?? string.Empty,

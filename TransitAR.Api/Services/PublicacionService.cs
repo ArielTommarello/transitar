@@ -142,17 +142,37 @@ namespace TransitAR.Api.Services
         public async Task<PublicacionResponse?> CambiarEstadoAsync(Guid id, EstadoPublicacion estado, Guid refugioId)
         {
             var publicacion = await _context.Publicaciones
-                .FirstOrDefaultAsync(p => p.Id == id && p.Mascota!.RefugioId == refugioId);
+                 .Include(p => p.Postulaciones)
+                     .ThenInclude(po => po.Tenencia)
+                 .FirstOrDefaultAsync(p => p.Id == id && p.Mascota!.RefugioId == refugioId);
+
 
             if (publicacion == null)
                 return null;
+
+            var ahora = DateTime.UtcNow;
 
             publicacion.Estado = estado;
 
             //al cerrar se marca la fecha; si se vuelve a abrir se vuelve a cambiar
             publicacion.FechaCierre = estado == EstadoPublicacion.Cerrada
-                ? DateTime.UtcNow
+                ? ahora
                 : null;
+
+            //cierre a mano para que las postulaciones que estaban abiertas se le cierran al postulante.
+            if (estado == EstadoPublicacion.Cerrada)
+            {
+                foreach (var abierta in publicacion.Postulaciones.Where(p =>
+                             p.Estado == EstadoPostulacion.Pendiente
+                          || p.Estado == EstadoPostulacion.EnEspera
+                          || (p.Estado == EstadoPostulacion.Aceptada && p.Tenencia == null)))
+                {
+                    abierta.Estado = EstadoPostulacion.Rechazada;
+                    abierta.FechaResolucion = ahora;
+                    abierta.ObservacionRechazo = MotivoCierre;
+                }
+            }
+
 
             await _context.SaveChangesAsync();
 
@@ -258,6 +278,12 @@ namespace TransitAR.Api.Services
             RefugioNombre = p.Mascota?.Refugio?.Nombre ?? string.Empty,
             RefugioLocalidad = p.Mascota?.Refugio?.Localidad
         };
+
+
+        /// <summary>
+        /// Motivo para el postulante si el refugio cierra la publicacion
+        /// </summary>
+        private const string MotivoCierre = "El refugio cerro la publicacion.";
 
 
     }
