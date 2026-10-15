@@ -340,7 +340,10 @@ namespace TransitAR.Api.Services
                 ObservacionCierre = t.ObservacionCierre,
                 EnCurso = t.FechaFinReal == null,
                 VencidaEnCurso = EsVencida(t, ahora),
-                DuracionEnDias = (int)(hasta.Date - t.FechaInicio.Date).TotalDays
+                DuracionEnDias = (int)(hasta.Date - t.FechaInicio.Date).TotalDays,
+                PostulacionId = t.PostulacionId,
+                EspecieNombre = t.Mascota?.Especie?.Nombre ?? string.Empty,
+                FotosUrl = t.Mascota?.FotosUrl,
             };
         }
 
@@ -353,6 +356,8 @@ namespace TransitAR.Api.Services
                 .AsNoTracking()
                 .Include(t => t.Mascota)!
                     .ThenInclude(m => m!.Refugio)
+                .Include(t => t.Mascota)!
+                    .ThenInclude(m => m!.Especie)
                 .Include(t => t.Postulacion)
                 .Where(t => t.Postulacion!.UsuarioId == usuarioId)
                 .OrderByDescending(t => t.FechaInicio)

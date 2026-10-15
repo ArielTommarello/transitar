@@ -76,5 +76,20 @@ namespace TransitAR.Structures.Requests
         /// Dias que duro la tenencia si todavia esta en curso son los dias que pasaron hasta hoy ( mirar EnCurso para saber cual de los dos es)
         /// </summary>
         public int DuracionEnDias { get; set; }
+
+        /// <summary>
+        /// Postualcion de la que sale el historial de la tenencia (uso para abrir el chat con el refugio)
+        /// </summary>
+        public Guid PostulacionId { get; set; }
+
+        /// <summary>
+        /// Especie de la mascota para poder usar  en el seguimiento e historial web
+        /// </summary>
+        public string EspecieNombre { get; set; }
+
+        /// <summary>
+        /// Fotos de la mascota para mostrar en la tarjeta del histroail y tenencia
+        /// </summary>
+        public string? FotosUrl { get; set; }
     }
 }

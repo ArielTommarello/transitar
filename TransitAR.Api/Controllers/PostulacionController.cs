@@ -20,16 +20,18 @@ namespace TransitAR.Api.Controllers
         private readonly IPostulacionService _postulacionService;
         private readonly ITenenciaService _tenenciaService;
         private readonly ISeguimientoService _seguimientoService;
+        private readonly IMascotaService _mascotaService;
 
         /// <summary>
         /// Inicializa el servicio de postulaciones
         /// </summary>
         /// <param name="postulacionService"></param>
-        public PostulacionController(IPostulacionService postulacionService, ITenenciaService tenenciaService, ISeguimientoService seguimientoService)
+        public PostulacionController(IPostulacionService postulacionService, ITenenciaService tenenciaService, ISeguimientoService seguimientoService, IMascotaService mascotaService)
         {
             _postulacionService = postulacionService;
             _tenenciaService = tenenciaService;
             _seguimientoService = seguimientoService;
+            _mascotaService = mascotaService; 
         }
 
         /// <summary>
@@ -133,6 +135,30 @@ namespace TransitAR.Api.Controllers
 
             //refugioId ntiene que ser null, asi  el servicio lo trata como postulante y filtra por sus tenencias
             return Ok(await _seguimientoService.ListarAsync(usuarioId.Value, null, estado, false, null));
+        }
+
+
+
+        //DATOS DE MASCOTA PARA LA TENENCIA O POSTULACIONES
+
+        /// <summary>
+        ///  Datos de la mascota para una tenencia propia
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("tenencias/{id:guid}/mascota")]
+        public async Task<IActionResult> ObtenerMascotaDeMiTenencia(Guid id)
+        {
+            var usuarioId = User.ObtenerUsuarioId();
+            if (usuarioId == null)
+                return Forbid();
+
+            var mascota = await _mascotaService.ObtenerMascotaDeTenenciaAsync(id, usuarioId.Value);
+
+            if (mascota == null)
+                return NotFound(new { mensaje = "No encontramos esa tenencia entre las tuyas." });
+
+            return Ok(mascota);
         }
 
     }

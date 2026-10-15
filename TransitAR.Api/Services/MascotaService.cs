@@ -55,6 +55,27 @@ namespace TransitAR.Api.Services
         }
 
 
+        ///<inheritdoc/>
+        public async Task<MascotaResponse?> ObtenerMascotaDeTenenciaAsync(Guid tenenciaId, Guid usuarioId)
+        {
+            //la tenencia tiene que ser de esta persona (por su postulacion)
+            var mascotaId = await _context.Tenencias
+                .Where(t => t.Id == tenenciaId && t.Postulacion!.UsuarioId == usuarioId)
+                .Select(t => (Guid?)t.MascotaId)
+                .FirstOrDefaultAsync();
+
+            if (mascotaId == null)
+                return null;
+
+            var mascota = await _context.Mascotas
+                .AsNoTracking()
+                .Include(m => m.Especie)
+                .Include(m => m.Condicion)
+                .FirstOrDefaultAsync(m => m.Id == mascotaId);
+
+            return mascota == null ? null : MascotaDTO(mascota);
+        }
+
 
 
         ///<inheritdoc/>

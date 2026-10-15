@@ -48,5 +48,12 @@ namespace TransitAR.Api.Services
         /// <returns></returns>
         Task<bool> EliminarMascotaAsync(Guid id, Guid refugioId);
 
+        /// <summary>
+        /// Masctoa de una tenencia del postulante , para usar en la ficha de la tenencia (null si no tiene)
+        /// </summary>
+        /// <param name="tenenciaId"></param>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        Task<MascotaResponse?> ObtenerMascotaDeTenenciaAsync(Guid tenenciaId, Guid usuarioId);
     }
 }
