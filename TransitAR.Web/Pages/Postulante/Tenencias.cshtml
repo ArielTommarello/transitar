@@ -1,0 +1,49 @@
+﻿@page
+@model TransitAR.Web.Pages.Postulante.TenenciasModel
+@{
+    ViewData["Title"] = "Mis tenencias";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <h1 class="h3 mb-4">Mis tenencias</h1>
+
+        @if (Model.Error != null)
+        {
+            <div class="alert alert-danger">@Model.Error</div>
+        }
+
+        @if (!Model.ConVos.Any() && !Model.Anteriores.Any())
+        {
+            <div class="text-center py-5">
+                <p class="text-muted mb-0">Todavía no tenés animales a cargo.</p>
+                <p class="text-muted">Cuando un refugio te entregue uno, lo vas a ver acá.</p>
+                <a asp-page="/Publicaciones/Index" class="btn btn-primary">Ver publicaciones</a>
+            </div>
+        }
+        else
+        {
+            <h2 class="h5 mb-3">Con vos ahora</h2>
+
+            @if (!Model.ConVos.Any())
+            {
+                <p class="text-muted small">Ahora no tenés ningún animal a cargo.</p>
+            }
+
+            @foreach (var tenencia in Model.ConVos)
+            {
+                <partial name="_TarjetaTenencia" model="tenencia" />
+            }
+
+            @if (Model.Anteriores.Any())
+            {
+                <h2 class="h5 mt-5 mb-3">Anteriores</h2>
+
+                @foreach (var tenencia in Model.Anteriores)
+                {
+                    <partial name="_TarjetaTenencia" model="tenencia" />
+                }
+            }
+        }
+    </div>
+</div>

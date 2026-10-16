@@ -1,0 +1,56 @@
+﻿@model TransitAR.Structures.Requests.HistorialTenenciaResponse
+
+@{
+    var foto = Formato.PrimeraFoto(Model.FotosUrl);
+    var veredicto = Formato.VeredictoTenencia(Model);
+}
+
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-auto">
+            @if (foto != null)
+            {
+                <img src="@foto" class="postulacion-foto rounded-start" alt="Foto de @Model.MascotaNombre" />
+            }
+            else
+            {
+                <div class="postulacion-foto tarjeta-sin-foto rounded-start">Sin foto</div>
+            }
+        </div>
+
+        <div class="col">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                    <div>
+                        <span class="h6 mb-0">@Model.MascotaNombre</span>
+                        <span class="text-muted small">· @Model.EspecieNombre · @Formato.Tipo(Model.Modalidad)</span>
+                        <div class="small text-muted">@Model.RefugioNombre</div>
+                    </div>
+
+                    <span class="badge @Formato.ColorTenencia(Model)">@Formato.EtiquetaTenencia(Model)</span>
+                </div>
+
+                <p class="small mb-1 mt-2">@Formato.TextoTenencia(Model)</p>
+
+                @if (Model.EnCurso)
+                {
+                    <p class="small text-muted mb-1">Hace @Formato.Dias(Model.DuracionEnDias) que está con vos.</p>
+                }
+
+                @if (veredicto != null)
+                {
+                    <p class="small mb-1"><strong>@veredicto</strong></p>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.ObservacionCierre))
+                {
+                    <p class="small mb-1 texto-con-saltos">Comentario del refugio: @Model.ObservacionCierre</p>
+                }
+
+                <div class="text-end mt-2">
+                    <a asp-page="/Postulante/Tenencia" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">Ver ficha</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

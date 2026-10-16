@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using TransitAR.Structures;
+using TransitAR.Structures.Requests;
 
 namespace TransitAR.Web.Helpers
 {
@@ -160,5 +161,76 @@ namespace TransitAR.Web.Helpers
             EstadoPostulacion.Aceptada => "Coordiná la entrega con el refugio.",
             _ => null
         };
+
+
+        /// <summary>
+        /// Etiqueta de la card de una tenencia como la ve el postulante
+        /// </summary>
+        public static string EtiquetaTenencia(HistorialTenenciaResponse t)
+        {
+            if (t.FechaFinReal != null)
+                return t.Modalidad == TipoPublicacion.Adopcion ? "Adopción devuelta" : "Devuelto";
+
+            if (t.Modalidad == TipoPublicacion.Adopcion)
+                return "Adoptado";
+
+            return t.VencidaEnCurso ? "Devolución pendiente" : "En tránsito";
+        }
+
+        /// <summary>
+        /// Diferenciacion de colores de la etiqueta
+        /// </summary>
+        public static string ColorTenencia(HistorialTenenciaResponse t)
+        {
+            if (t.FechaFinReal != null)
+                return t.Modalidad == TipoPublicacion.Adopcion ? "bg-danger" : "bg-secondary";
+
+            if (t.Modalidad == TipoPublicacion.Adopcion)
+                return "bg-success";
+
+            return t.VencidaEnCurso ? "bg-warning text-dark" : "bg-info text-dark";
+        }
+
+        /// <summary>
+        /// Texto que explica en que quedo la tenencia
+        /// </summary>
+        public static string TextoTenencia(HistorialTenenciaResponse t)
+        {
+            //Si volvio al refugio
+            if (t.FechaFinReal != null)
+                return t.Modalidad == TipoPublicacion.Adopcion
+                    ? $"La adopción terminó: volvió al refugio el {FechaDe(t.FechaFinReal.Value)}, después de {Dias(t.DuracionEnDias)}."
+                    : $"Estuvo con vos {Dias(t.DuracionEnDias)}, hasta el {FechaDe(t.FechaFinReal.Value)}.";
+
+            //adopcion en curso, directa o convertida desde un transito
+            if (t.Modalidad == TipoPublicacion.Adopcion)
+                return t.FechaConversion != null
+                    ? $"Empezó como tránsito y lo adoptaste el {FechaDe(t.FechaConversion.Value)}."
+                    : $"Es parte de tu familia desde el {FechaDe(t.FechaInicio)}.";
+
+            //transito en curso
+            if (t.VencidaEnCurso)
+                return "La fecha pactada ya pasó. Coordiná la devolución con el refugio.";
+
+            //la fecha pactada es un dia del calendario hacia adelante
+            return t.FechaFinEstimada != null
+                ? $"Hasta el {Dia(t.FechaFinEstimada.Value)}."
+                : "Sin fecha de devolución pactada.";
+        }
+
+        /// <summary>
+        /// Veredicto final  que indico el refugio al cerrar (null si la tenencia sigue en curso)
+        /// </summary>
+        public static string? VeredictoTenencia(HistorialTenenciaResponse t) => t.FinalizoBien switch
+        {
+            true => "El refugio indicó que terminó bien.",
+            false => "El refugio indicó que hubo inconvenientes.",
+            null => null
+        };
+
+        /// <summary>
+        /// Cantidad de dias conversion para la teneinca
+        /// </summary>
+        public static string Dias(int dias) => dias == 1 ? "1 día" : $"{dias} días";
     }
 }
