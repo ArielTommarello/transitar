@@ -6,6 +6,10 @@ using TransitAR.Web.Services;
 
 namespace TransitAR.Web.Pages.Postulante
 {
+
+    /// <summary>
+    /// Perfil del postulante, debe completarlo para poder postualrse, de esa manera mejor control para los refugios
+    /// </summary>
     public class PerfilModel : PageModel
     {
         private readonly ApiClient _api;

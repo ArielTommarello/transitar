@@ -1,0 +1,159 @@
+﻿@page
+@model TransitAR.Web.Pages.Refugio.PerfilModel
+@{
+    ViewData["Title"] = "Perfil del refugio";
+
+    //iniciales del refugio para cuando no hay logo (como Azure)
+    var iniciales = string.Concat((Model.Datos.Nombre ?? string.Empty)
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+        .Take(2)
+        .Select(p => char.ToUpper(p[0])));
+
+    //las cinco redes fijas
+    var redes = new[]
+    {
+        (Tipo: TipoContacto.Instagram, Nombre: "Instagram", Ejemplo: "https://instagram.com/tu_refugio"),
+        (Tipo: TipoContacto.Facebook, Nombre: "Facebook", Ejemplo: "https://facebook.com/tu_refugio"),
+        (Tipo: TipoContacto.WhatsApp, Nombre: "WhatsApp", Ejemplo: "https://wa.me/5491112345678"),
+        (Tipo: TipoContacto.Tiktok, Nombre: "TikTok", Ejemplo: "https://tiktok.com/@@tu_refugio"),
+        (Tipo: TipoContacto.SitioWeb, Nombre: "Sitio web", Ejemplo: "https://...")
+    };
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1 class="h3 mb-3">Perfil del refugio</h1>
+
+        @if (Model.FaltaCompletar)
+        {
+            <div class="alert alert-info d-flex justify-content-between align-items-center gap-3">
+                <span>Completá los datos de tu refugio para que la gente te conozca: una descripción, tu logo y tus redes.</span>
+                <a asp-page="/Index" class="btn btn-sm btn-outline-secondary flex-shrink-0">Más tarde</a>
+            </div>
+        }
+
+        @if (Model.Mensaje != null)
+        {
+            <div class="alert alert-success">@Model.Mensaje</div>
+        }
+
+        @if (Model.Error != null)
+        {
+            <div class="alert alert-danger">@Model.Error</div>
+        }
+
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="TieneFoto" />
+
+            @* - El refugio - *@
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">El refugio</h2>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        @if (Model.TieneFoto)
+                        {
+                            <img src="@Model.UrlFoto" class="perfil-foto rounded" alt="Logo de @Model.Datos.Nombre" />
+                        }
+                        else
+                        {
+                            <div class="perfil-foto perfil-sin-foto logo-iniciales rounded">@iniciales</div>
+                        }
+
+                        <div class="flex-grow-1">
+                            <label asp-for="Foto" class="form-label">Logo <span class="text-muted">(opcional)</span></label>
+                            <input asp-for="Foto" type="file" class="form-control" accept="image/jpeg,image/png,image/webp" />
+                            <div class="form-text">jpg, png o webp, hasta 5 MB. Si elegís uno nuevo, reemplaza al anterior.</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Datos.Nombre" class="form-label">Nombre del refugio</label>
+                        <input asp-for="Datos.Nombre" class="form-control" />
+                        <span asp-validation-for="Datos.Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-0">
+                        <label asp-for="Datos.Descripcion" class="form-label">Descripción</label>
+                        <textarea asp-for="Datos.Descripcion" class="form-control" rows="4"
+                                  placeholder="Contá quiénes son, desde cuándo rescatan, qué animales reciben, cómo se puede ayudar"></textarea>
+                        <span asp-validation-for="Datos.Descripcion" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            @* - Contacto - *@
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Contacto</h2>
+
+                    <div class="mb-3">
+                        <label asp-for="Datos.Email" class="form-label">Email de contacto</label>
+                        <input asp-for="Datos.Email" class="form-control" />
+                        <div class="form-text">Es el que ve la gente. No cambia el email con el que iniciás sesión.</div>
+                        <span asp-validation-for="Datos.Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.Telefono" class="form-label">Teléfono <span class="text-muted">(opcional)</span></label>
+                            <input asp-for="Datos.Telefono" class="form-control" />
+                            <span asp-validation-for="Datos.Telefono" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.Localidad" class="form-label">Localidad</label>
+                            <input asp-for="Datos.Localidad" class="form-control" placeholder="Ej: Lomas de Zamora" />
+                            <span asp-validation-for="Datos.Localidad" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label asp-for="Datos.Direccion" class="form-label">Dirección <span class="text-muted">(opcional)</span></label>
+                        <input asp-for="Datos.Direccion" class="form-control" />
+                        <span asp-validation-for="Datos.Direccion" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            @* - Redes - *@
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-1">Redes</h2>
+                    <p class="text-muted small mb-3">Opcional. Ayudan a que la gente conozca tu trabajo.</p>
+
+                    @foreach (var red in redes)
+                    {
+                        <div class="mb-2">
+                            <label class="form-label small mb-1" for="red-@red.Tipo">@red.Nombre</label>
+                            <input name="Redes[@red.Tipo]" id="red-@red.Tipo" class="form-control"
+                                   value="@Model.Redes.GetValueOrDefault(red.Tipo)" placeholder="@red.Ejemplo" maxlength="250" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* - Postulaciones - *@
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-1">Postulaciones</h2>
+                    <p class="text-muted small mb-3">
+                        Es el mensaje que reciben las personas que no fueron elegidas cuando entregás un animal a otra.
+                        Si lo dejás vacío, se usa el mensaje del sistema que ves de ejemplo.
+                    </p>
+
+                    <label asp-for="Datos.MensajeRechazoAutomatico" class="form-label">Mensaje para quienes no fueron elegidos</label>
+                    <textarea asp-for="Datos.MensajeRechazoAutomatico" class="form-control" rows="3"
+                              placeholder="El refugio selecciono a otro candidato para esta publicacion."></textarea>
+                    <span asp-validation-for="Datos.MensajeRechazoAutomatico" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mb-5">Guardar cambios</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -97,8 +97,9 @@ namespace TransitAR.Web.Pages.Cuenta
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
                 propiedades);
-                        
-            return RedirectToPage("/Index");
+
+            //la primera vez teine que completar datos (puede hacerlo mas tarde, tiene un boton)
+            return RedirectToPage("/Refugio/Perfil");
         }
     }
 }

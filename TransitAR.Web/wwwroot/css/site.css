@@ -83,3 +83,11 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+/* Refugio */
+
+/* Logo del refugio cuando no hay imagen */
+.logo-iniciales {
+    font-size: 1.75rem;
+    font-weight: 600;
+}

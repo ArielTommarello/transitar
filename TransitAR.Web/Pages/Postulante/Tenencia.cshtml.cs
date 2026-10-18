@@ -6,6 +6,10 @@ using TransitAR.Web.Services;
 
 namespace TransitAR.Web.Pages.Postulante
 {
+    /// <summary>
+    /// Ficha de la tenencia en si de un postulante, tiene controles de seguimiento, descripcion de la mascota y observaciones en caso de tenerla.
+    /// Muestra el proximo control
+    /// </summary>
     public class TenenciaModel : PageModel
     {
         private readonly ApiClient _api;
