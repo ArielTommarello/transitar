@@ -1,0 +1,167 @@
+﻿@page "{id:guid}"
+@model TransitAR.Web.Pages.Postulante.TenenciaModel
+@{
+    ViewData["Title"] = Model.Mascota?.Nombre ?? "Tenencia";
+}
+
+<a asp-page="/Postulante/Tenencias" class="small">&larr; Volver a Mis tenencias</a>
+
+@if (Model.Tenencia == null || Model.Mascota == null)
+{
+    <div class="text-center py-5">
+        <h1 class="h4">No encontramos esta tenencia</h1>
+        <p class="text-muted">El link esta mal o que no es una de tus tenencias.</p>
+        <a asp-page="/Postulante/Tenencias" class="btn btn-primary">Ir a Mis tenencias</a>
+    </div>
+    return;
+}
+
+@{
+    var m = Model.Mascota;
+    var t = Model.Tenencia;
+    var fotos = Formato.Fotos(m.FotosUrl);
+    var veredicto = Formato.VeredictoTenencia(t);
+    var proximo = Model.ProximoControl;
+}
+
+<div class="row g-4 mt-1">
+    @* --- Carta de presentacion -- *@
+    <div class="col-md-6">
+        <div class="card h-100">
+            @if (fotos.Count == 0)
+            {
+                <div class="detalle-foto tarjeta-sin-foto rounded-top">Sin fotos</div>
+            }
+            else if (fotos.Count == 1)
+            {
+                <img src="@fotos[0]" class="detalle-foto rounded-top" alt="Foto de @m.Nombre" />
+            }
+            else
+            {
+                <div id="fotos" class="carousel slide">
+                    <div class="carousel-inner rounded-top">
+                        @for (var i = 0; i < fotos.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@fotos[i]" class="detalle-foto" alt="Foto @(i + 1) de @m.Nombre" />
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#fotos" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#fotos" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+            }
+
+            <div class="card-body">
+                <h1 class="h3 mb-1">@m.Nombre</h1>
+                <p class="text-muted mb-3">@m.EspecieNombre@(string.IsNullOrWhiteSpace(m.Raza) ? "" : $" · {m.Raza}")</p>
+
+                <ul class="list-unstyled mb-0">
+                    <li><strong>Sexo:</strong> @Formato.Sexo(m.Sexo)</li>
+                    <li><strong>Edad:</strong> @Formato.Edad(m.EdadAproximadaMeses)</li>
+                    <li><strong>Tamaño:</strong> @Formato.Tamanio(m.Tamanio)</li>
+                    <li><strong>Salud:</strong> @m.CondicionNombre</li>
+                    <li><strong>Vacunado:</strong> @(m.Vacunado ? "Sí" : "No")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @* -- Tenencia -- *@
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h2 class="h5 mb-0">@Formato.Tipo(t.Modalidad)</h2>
+                    <span class="badge @Formato.ColorTenencia(t)">@Formato.EtiquetaTenencia(t)</span>
+                </div>
+
+                <p class="mb-3">@Formato.TextoTenencia(t)</p>
+
+                <ul class="list-unstyled small mb-3">
+                    <li><strong>Refugio:</strong> @t.RefugioNombre</li>
+                    <li><strong>Te lo entregaron el:</strong> @Formato.FechaDe(t.FechaInicio)</li>
+                    @if (t.FechaFinEstimada != null)
+                    {
+                        <li><strong>Devolución pactada:</strong> @Formato.Dia(t.FechaFinEstimada.Value)</li>
+                    }
+                    @if (t.FechaConversion != null)
+                    {
+                        <li><strong>Pasó a adopción el:</strong> @Formato.FechaDe(t.FechaConversion.Value)</li>
+                    }
+                    @if (t.FechaFinReal != null)
+                    {
+                        <li><strong>Volvió al refugio el:</strong> @Formato.FechaDe(t.FechaFinReal.Value)</li>
+                    }
+                    <li>
+                        @(t.EnCurso ? $"Hace {Formato.Dias(t.DuracionEnDias)} que está con vos." : $"Estuvo con vos {Formato.Dias(t.DuracionEnDias)}.")
+                    </li>
+                </ul>
+
+                @if (veredicto != null)
+                {
+                    <div class="border-top pt-3">
+                        <p class="mb-1"><strong>@veredicto</strong></p>
+                        @if (!string.IsNullOrWhiteSpace(t.ObservacionCierre))
+                        {
+                            <p class="small mb-0 texto-con-saltos">Comentario del refugio: @t.ObservacionCierre</p>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@* - Controles de seguimiento - *@
+<div class="card mt-4 mb-5">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Controles de seguimiento</h2>
+
+        @if (proximo != null)
+        {
+            if (proximo.Vencido)
+            {
+                <div class="alert alert-warning">
+                    El control del <strong>@Formato.Dia(proximo.FechaProgramada)</strong> está pendiente.
+                    Coordiná una fecha nueva con el refugio.
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Próximo control: <strong>@Formato.Dia(proximo.FechaProgramada)</strong>. El refugio te va a visitar ese día.
+                </div>
+            }
+        }
+
+        @if (!Model.Controles.Any())
+        {
+            <p class="text-muted small mb-0">El refugio todavía no programó controles.</p>
+        }
+        else
+        {
+            <ul class="list-group list-group-flush">
+                @foreach (var c in Model.Controles)
+                {
+                    <li class="list-group-item px-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>@Formato.Dia(c.FechaProgramada)</span>
+                            <span class="badge @Formato.ColorControl(c)">@Formato.EstadoControl(c)</span>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(c.Observacion))
+                        {
+                            <p class="small text-muted mb-0 mt-1 texto-con-saltos">@c.Observacion</p>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>

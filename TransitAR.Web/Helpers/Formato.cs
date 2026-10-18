@@ -232,5 +232,34 @@ namespace TransitAR.Web.Helpers
         /// Cantidad de dias conversion para la teneinca
         /// </summary>
         public static string Dias(int dias) => dias == 1 ? "1 día" : $"{dias} días";
+
+
+        //TARJETA TENENCIAS
+
+        /// <summary>
+        /// Estado del control de un desguimeinto. Pendiente con fecha pasaada es vencido
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string EstadoControl(SeguimientoResponse s) => s.Estado switch
+        {
+            EstadoSeguimiento.Pendiente => s.Vencido ? "Vencido" : "Programado",
+            EstadoSeguimiento.Realizado => "Realizado",
+            EstadoSeguimiento.Cancelado => "Cancelado",
+            EstadoSeguimiento.Reprogramado => "Reprogramado",
+            _ => string.Empty
+        };
+
+        /// <summary>
+        /// Colores para el estado
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string ColorControl(SeguimientoResponse s) => s.Estado switch
+        {
+            EstadoSeguimiento.Pendiente => s.Vencido ? "bg-warning text-dark" : "bg-info text-dark",
+            EstadoSeguimiento.Realizado => "bg-success",
+            _ => "bg-secondary"
+        };
     }
 }
