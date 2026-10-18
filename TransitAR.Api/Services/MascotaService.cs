@@ -156,6 +156,112 @@ namespace TransitAR.Api.Services
 
         }
 
+
+        //FOTOS ADJUNTAS MASCOTA
+
+        ///<inheritdoc/>
+        public async Task<string?> AgregarFotosAsync(Guid mascotaId, Guid refugioId, List<ArchivoAdjunto> fotos, int maximo)
+        {
+            if (!await _context.Mascotas.AnyAsync(m => m.Id == mascotaId && m.RefugioId == refugioId))
+                return "No encontramos esa mascota en tu refugio.";
+
+            //cantidad de fotos (count)
+            var cantidad = await _context.FotosMascota.CountAsync(f => f.MascotaId == mascotaId);
+
+            //error cantidad fotos
+            if (cantidad + fotos.Count > maximo)
+                return $"Una mascota puede tener hasta {maximo} fotos. Ya tiene {cantidad}.";
+
+            //cola , se agregan las neuvas al final
+            for (var i = 0; i < fotos.Count; i++)
+            {
+                _context.FotosMascota.Add(new FotoMascota
+                {
+                    Id = Guid.NewGuid(),
+                    MascotaId = mascotaId,
+                    Orden = cantidad + i,
+                    ContentType = fotos[i].ContentType,
+                    Contenido = fotos[i].Contenido
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return null;
+        }
+
+        ///<inheritdoc/>
+        public async Task<bool> BorrarFotoAsync(Guid mascotaId, Guid fotoId, Guid refugioId)
+        {
+            var fotos = await FotosDelRefugioAsync(mascotaId, refugioId);
+
+            var foto = fotos.FirstOrDefault(f => f.Id == fotoId);
+            if (foto == null)
+                return false;
+
+            _context.FotosMascota.Remove(foto);
+            fotos.Remove(foto);
+
+            //funcion auxiliar apra acomodar las que quedaron
+            Reordenar(fotos);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        ///<inheritdoc/>
+        public async Task<bool> HacerPrincipalAsync(Guid mascotaId, Guid fotoId, Guid refugioId)
+        {
+            var fotos = await FotosDelRefugioAsync(mascotaId, refugioId);
+
+            var foto = fotos.FirstOrDefault(f => f.Id == fotoId);
+            if (foto == null)
+                return false;
+
+            //paso a primera la que se eligio, y modifico los numeros del orden de las otras
+            fotos.Remove(foto);
+            fotos.Insert(0, foto);
+            Reordenar(fotos);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        ///<inheritdoc/>
+        public async Task<ArchivoAdjunto?> ObtenerFotoAsync(Guid fotoId)
+        {
+            return await _context.FotosMascota
+                .AsNoTracking()
+                .Where(f => f.Id == fotoId)
+                .Select(f => new ArchivoAdjunto
+                {
+                    NombreArchivo = "foto",
+                    ContentType = f.ContentType,
+                    Contenido = f.Contenido
+                })
+                .FirstOrDefaultAsync();
+        }
+
+
+        /// <summary>
+        /// Fotos de una mascota del refugio, en orden
+        /// </summary>
+        private async Task<List<FotoMascota>> FotosDelRefugioAsync(Guid mascotaId, Guid refugioId) =>
+            await _context.FotosMascota
+                .Where(f => f.MascotaId == mascotaId && f.Mascota!.RefugioId == refugioId)
+                .OrderBy(f => f.Orden)
+                .ToListAsync();
+
+        /// <summary>
+        /// Reordena el orden de las fotos 
+        /// </summary>
+        private static void Reordenar(List<FotoMascota> fotos)
+        {
+            for (var i = 0; i < fotos.Count; i++)
+                fotos[i].Orden = i;
+        }
+
+
+
         /// <summary>
         /// Verifico que la especie y condicion esten en nuestro catalogo o el que agrego el admin
         /// </summary>

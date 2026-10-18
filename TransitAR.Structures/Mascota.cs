@@ -92,6 +92,11 @@ namespace TransitAR.Structures
         public string? FotosUrl { get; set; }
 
         /// <summary>
+        /// Lista de fotos del animal (reemplaza fotosURL , ahora todo en base)
+        /// </summary>
+        public List<FotoMascota> Fotos { get; set; } = new();
+
+        /// <summary>
         /// Fecha en que el refugio cargo al animal o dio de alta
         /// </summary>
         public DateTime FechaAlta { get; set; }

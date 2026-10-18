@@ -70,6 +70,11 @@ namespace TransitAR.Structures
         /// </summary>
         public DbSet<AdjuntoMensaje> AdjuntosMensaje { get; set; }
 
+        /// <summary>
+        /// Fotos del animal
+        /// </summary>
+        public DbSet<FotoMascota> FotosMascota { get; set; }
+
         //Configuracion para los modos de delete, 2 tipos de relacion refugio Tenencia . Si borro un refugio, se borrarian las mascotas y demas por defecto
         //Relacion tenencia - mascota 2 caminos error FK
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -179,6 +179,34 @@ namespace TransitAR.Structures.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TransitAR.Structures.FotoMascota", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Contenido")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("MascotaId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MascotaId");
+
+                    b.ToTable("FotosMascota");
+                });
+
             modelBuilder.Entity("TransitAR.Structures.Mascota", b =>
                 {
                     b.Property<Guid>("Id")
@@ -638,6 +666,17 @@ namespace TransitAR.Structures.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TransitAR.Structures.FotoMascota", b =>
+                {
+                    b.HasOne("TransitAR.Structures.Mascota", "Mascota")
+                        .WithMany("Fotos")
+                        .HasForeignKey("MascotaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Mascota");
+                });
+
             modelBuilder.Entity("TransitAR.Structures.Mascota", b =>
                 {
                     b.HasOne("TransitAR.Structures.Condicion", "Condicion")
@@ -755,6 +794,8 @@ namespace TransitAR.Structures.Migrations
 
             modelBuilder.Entity("TransitAR.Structures.Mascota", b =>
                 {
+                    b.Navigation("Fotos");
+
                     b.Navigation("Publicaciones");
 
                     b.Navigation("Tenencias");

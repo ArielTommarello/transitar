@@ -55,5 +55,46 @@ namespace TransitAR.Api.Services
         /// <param name="usuarioId"></param>
         /// <returns></returns>
         Task<MascotaResponse?> ObtenerMascotaDeTenenciaAsync(Guid tenenciaId, Guid usuarioId);
+
+
+
+        //FOTOS ADJUNTAS MASCOTA
+
+        /// <summary>
+        /// Agrega las fotos de la masctoa (se agregan al final de las que estan , cola)
+        /// </summary>
+        /// <param name="mascotaId"></param>
+        /// <param name="refugioId"></param>
+        /// <param name="fotos"></param>
+        /// <param name="maximo"></param>
+        /// <returns></returns>
+        Task<string?> AgregarFotosAsync(Guid mascotaId, Guid refugioId, List<ArchivoAdjunto> fotos, int maximo);
+
+        /// <summary>
+        /// Borra una foto y las mueve al lugar que viene .
+        /// </summary>
+        /// <param name="mascotaId"></param>
+        /// <param name="fotoId"></param>
+        /// <param name="refugioId"></param>
+        /// <returns></returns>
+        Task<bool> BorrarFotoAsync(Guid mascotaId, Guid fotoId, Guid refugioId);
+
+
+        /// <summary>
+        /// Hace principal una foto que se elija
+        /// </summary>
+        /// <param name="mascotaId"></param>
+        /// <param name="fotoId"></param>
+        /// <param name="refugioId"></param>
+        /// <returns></returns>
+        Task<bool> HacerPrincipalAsync(Guid mascotaId, Guid fotoId, Guid refugioId);
+
+
+        /// <summary>
+        /// Devuelve la foto para mostrarla
+        /// </summary>
+        /// <param name="fotoId"></param>
+        /// <returns></returns>
+        Task<ArchivoAdjunto?> ObtenerFotoAsync(Guid fotoId);
     }
 }
