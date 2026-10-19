@@ -19,7 +19,7 @@
 @{
     var m = Model.Mascota;
     var t = Model.Tenencia;
-    var fotos = Formato.Fotos(m.FotosUrl);
+    var fotos = Api.UrlsFotosMascota(m.FotosIds);
     var veredicto = Formato.VeredictoTenencia(t);
     var proximo = Model.ProximoControl;
 }

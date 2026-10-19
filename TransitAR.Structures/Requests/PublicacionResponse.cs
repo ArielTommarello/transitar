@@ -54,11 +54,6 @@ namespace TransitAR.Structures
         public EstadoPublicacion Estado { get; set; }
 
         /// <summary>
-        /// Fotos adicionales del aviso en JSON . Las otiginales estan en mascota
-        /// </summary>
-        public string? FotosUrlExtra { get; set; }
-
-        /// <summary>
         /// Duracion estimada del transito en dias (solo para transito)
         /// </summary>
         public int? PlazoEstimado { get; set; }

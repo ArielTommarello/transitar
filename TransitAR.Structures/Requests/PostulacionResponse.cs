@@ -62,9 +62,9 @@ namespace TransitAR.Structures.Requests
         public string EspecieNombre { get; set; } = string.Empty;
 
         /// <summary>
-        /// Fotos principales de la mascota en JSON, para la tarjeta del listado
+        /// id de las fotos del animal guardados en base
         /// </summary>
-        public string? FotosUrl { get; set; }
+        public List<Guid> FotosIds { get; set; } = new();
 
         /// <summary>
         /// Nombre del refugio que publico

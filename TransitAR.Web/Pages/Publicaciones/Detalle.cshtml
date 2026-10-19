@@ -16,7 +16,7 @@
 
 @{
     var p = Model.Publicacion;
-    var fotos = Formato.Fotos(p.FotosUrl, p.FotosUrlExtra);
+    var fotos = Api.UrlsFotosMascota(p.FotosIds);
 }
 
 <a asp-page="/Publicaciones/Index" class="small">&larr; Volver a publicaciones</a>

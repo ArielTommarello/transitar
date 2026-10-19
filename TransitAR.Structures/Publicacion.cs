@@ -55,11 +55,6 @@ namespace TransitAR.Structures
         public EstadoPublicacion Estado { get; set; }
 
         /// <summary>
-        /// Fotos adicionales cargadas en el aviso, en JSON . Las principales estan en la mascota , es para tener una "actualizacion" 
-        /// </summary>
-        public string? FotosUrlExtra { get; set; }
-
-        /// <summary>
         /// Duracion estimada del transito en dias. Si queda en null se arregla por chat , no aplica a publicaciones de adopcion
         /// </summary>
         public int? PlazoEstimado { get; set; }

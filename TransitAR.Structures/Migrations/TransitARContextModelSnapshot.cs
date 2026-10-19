@@ -228,9 +228,6 @@ namespace TransitAR.Structures.Migrations
                     b.Property<DateTime?>("FechaNacimientoAproximada")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FotosUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -414,9 +411,6 @@ namespace TransitAR.Structures.Migrations
 
                     b.Property<DateTime>("FechaPublicacion")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("FotosUrlExtra")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("MascotaId")
                         .HasColumnType("uniqueidentifier");

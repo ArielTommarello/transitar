@@ -88,8 +88,8 @@ namespace TransitAR.Structures.Requests
         public string EspecieNombre { get; set; }
 
         /// <summary>
-        /// Fotos de la mascota para mostrar en la tarjeta del histroail y tenencia
+        /// id de las fotos del animal guardados en base
         /// </summary>
-        public string? FotosUrl { get; set; }
+        public List<Guid> FotosIds { get; set; } = new();
     }
 }

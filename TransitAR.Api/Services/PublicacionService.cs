@@ -96,8 +96,7 @@ namespace TransitAR.Api.Services
                 Descripcion = request.Descripcion.Trim(),
                 Ubicacion = request.Ubicacion.Trim(),
                 Tipo = request.Tipo,
-                Estado = EstadoPublicacion.Activa,
-                FotosUrlExtra = request.FotosUrlExtra,
+                Estado = EstadoPublicacion.Activa,                
                 PlazoEstimado = request.PlazoEstimado,
                 FechaPublicacion = DateTime.UtcNow
             };
@@ -128,8 +127,7 @@ namespace TransitAR.Api.Services
             publicacion.Titulo = request.Titulo.Trim();
             publicacion.Descripcion = request.Descripcion.Trim();
             publicacion.Ubicacion = request.Ubicacion.Trim();
-            publicacion.Tipo = request.Tipo;
-            publicacion.FotosUrlExtra = request.FotosUrlExtra;
+            publicacion.Tipo = request.Tipo;            
             publicacion.PlazoEstimado = request.PlazoEstimado;
 
             await _context.SaveChangesAsync();
@@ -187,6 +185,7 @@ namespace TransitAR.Api.Services
                 .AsNoTracking()
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Especie)
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Refugio)
+                .Include(p => p.Mascota)!.ThenInclude(m => m!.Fotos)
                 .FirstOrDefaultAsync(p => p.Id == id && p.Estado == EstadoPublicacion.Activa && p.Mascota!.Refugio!.Activo);
 
             return publicacion == null ? null : PublicacionPublicaDTO(publicacion);
@@ -203,6 +202,7 @@ namespace TransitAR.Api.Services
                 .AsNoTracking()
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Especie)
                 .Include(p => p.Mascota)!.ThenInclude(m => m!.Refugio)
+                .Include(p => p.Mascota)!.ThenInclude(m => m!.Fotos)
                 .Where(p => p.Estado == EstadoPublicacion.Activa && p.Mascota!.Refugio!.Activo);
 
             //filtro de tipo
@@ -245,8 +245,7 @@ namespace TransitAR.Api.Services
             Descripcion = p.Descripcion,
             Ubicacion = p.Ubicacion,
             Tipo = p.Tipo,
-            Estado = p.Estado,
-            FotosUrlExtra = p.FotosUrlExtra,
+            Estado = p.Estado,            
             PlazoEstimado = p.PlazoEstimado,
             FechaPublicacion = p.FechaPublicacion,
             FechaCierre = p.FechaCierre,
@@ -262,8 +261,7 @@ namespace TransitAR.Api.Services
             Titulo = p.Titulo,
             Descripcion = p.Descripcion,
             Ubicacion = p.Ubicacion,
-            Tipo = p.Tipo,
-            FotosUrlExtra = p.FotosUrlExtra,
+            Tipo = p.Tipo,           
             PlazoEstimado = p.PlazoEstimado,
             FechaPublicacion = p.FechaPublicacion,
 
@@ -273,7 +271,7 @@ namespace TransitAR.Api.Services
             Tamanio = p.Mascota?.Tamanio,
             EdadAproximadaMeses = p.Mascota?.FechaNacimientoAproximada.EdadEnMeses(),
             Vacunado = p.Mascota?.Vacunado ?? false,
-            FotosUrl = p.Mascota?.FotosUrl,
+            FotosIds = MascotaService.IdsDeFotos(p.Mascota),
 
             RefugioNombre = p.Mascota?.Refugio?.Nombre ?? string.Empty,
             RefugioLocalidad = p.Mascota?.Refugio?.Localidad

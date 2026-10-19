@@ -87,11 +87,6 @@ namespace TransitAR.Structures
         public EstadoMascota Estado { get; set; }
 
         /// <summary>
-        /// Fotos del animal en formato JSON, igual que en AdoptAR. La publicacion puede sumar mas sin modificar estas
-        /// </summary>
-        public string? FotosUrl { get; set; }
-
-        /// <summary>
         /// Lista de fotos del animal (reemplaza fotosURL , ahora todo en base)
         /// </summary>
         public List<FotoMascota> Fotos { get; set; } = new();

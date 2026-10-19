@@ -343,7 +343,7 @@ namespace TransitAR.Api.Services
                 DuracionEnDias = (int)(hasta.Date - t.FechaInicio.Date).TotalDays,
                 PostulacionId = t.PostulacionId,
                 EspecieNombre = t.Mascota?.Especie?.Nombre ?? string.Empty,
-                FotosUrl = t.Mascota?.FotosUrl,
+                FotosIds = MascotaService.IdsDeFotos(t.Mascota)
             };
         }
 
@@ -359,6 +359,8 @@ namespace TransitAR.Api.Services
                 .Include(t => t.Mascota)!
                     .ThenInclude(m => m!.Especie)
                 .Include(t => t.Postulacion)
+                .Include(t => t.Mascota)!
+                    .ThenInclude(m => m!.Fotos)
                 .Where(t => t.Postulacion!.UsuarioId == usuarioId)
                 .OrderByDescending(t => t.FechaInicio)
                 .ToListAsync();

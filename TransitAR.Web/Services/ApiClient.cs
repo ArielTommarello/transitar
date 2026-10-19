@@ -136,6 +136,22 @@ namespace TransitAR.Web.Services
         public string UrlFotoRefugio(Guid refugioId) =>
             new Uri(_http.BaseAddress!, $"api/Refugio/{refugioId}/foto").ToString();
 
+        /// <summary>
+        /// Direcciones compltras de las fotos de la masctoa con orden en que vienen
+        /// </summary>
+        /// <param name="fotosIds"></param>
+        /// <returns></returns>
+        public List<string> UrlsFotosMascota(List<Guid> fotosIds) =>
+            fotosIds.Select(id => new Uri(_http.BaseAddress!, $"api/Mascota/fotos/{id}").ToString()).ToList();
+
+
+        /// <summary>
+        /// Direcion de la foto que es la principal y se mostrara en la tarjeta
+        /// </summary>
+        /// <param name="fotosIds"></param>
+        /// <returns></returns>
+        public string? UrlFotoPrincipal(List<Guid> fotosIds) =>
+           fotosIds.Count == 0 ? null : UrlsFotosMascota(fotosIds)[0];
 
         /// <summary>
         /// errrores que devuelve la Api

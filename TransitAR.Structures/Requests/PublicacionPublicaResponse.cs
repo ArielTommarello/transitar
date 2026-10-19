@@ -38,11 +38,6 @@ namespace TransitAR.Structures
         public TipoPublicacion Tipo { get; set; }
 
         /// <summary>
-        /// Fotos adicionales del aviso en JSON , las otriginales estan en la mascota
-        /// </summary>
-        public string? FotosUrlExtra { get; set; }
-
-        /// <summary>
         /// Duracion estimada del transito en dias (solo para transitos)
         /// </summary>
         public int? PlazoEstimado { get; set; }
@@ -83,9 +78,9 @@ namespace TransitAR.Structures
         public bool Vacunado { get; set; }
 
         /// <summary>
-        /// Fotos principales de la mascota en JSON
+        /// Ids de las fotos de la mascota, con ordenm
         /// </summary>
-        public string? FotosUrl { get; set; }
+        public List<Guid> FotosIds { get; set; } = new();
 
         /// <summary>
         /// Nombre del refugio que publica 

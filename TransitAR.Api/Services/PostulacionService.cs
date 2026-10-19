@@ -301,6 +301,9 @@ namespace TransitAR.Api.Services
                 .Include(p => p.Publicacion)!
                     .ThenInclude(pub => pub!.Mascota)!
                         .ThenInclude(m => m!.Refugio)
+                .Include(p => p.Publicacion)!
+                    .ThenInclude(pub => pub!.Mascota)!
+                        .ThenInclude(m => m!.Fotos)
                 .Include(p => p.Tenencia);
 
         /// <summary>
@@ -339,7 +342,7 @@ namespace TransitAR.Api.Services
 
             MascotaNombre = p.Publicacion?.Mascota?.Nombre ?? string.Empty,
             EspecieNombre = p.Publicacion?.Mascota?.Especie?.Nombre ?? string.Empty,
-            FotosUrl = p.Publicacion?.Mascota?.FotosUrl,
+            FotosIds = MascotaService.IdsDeFotos(p.Publicacion?.Mascota),
 
             RefugioNombre = p.Publicacion?.Mascota?.Refugio?.Nombre ?? string.Empty
         };

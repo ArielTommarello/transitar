@@ -35,6 +35,7 @@ namespace TransitAR.Api.Services
             var mascotas = await _context.Mascotas
                 .Include(m => m.Especie)
                 .Include(m => m.Condicion)
+                .Include(m => m.Fotos)
                 .Where(m => m.RefugioId == refugioId)
                 .OrderBy(m => m.Nombre)
                 .ToListAsync();
@@ -48,6 +49,7 @@ namespace TransitAR.Api.Services
             var mascota = await _context.Mascotas
                 .Include (m => m.Especie)
                 .Include (m => m.Condicion)
+                .Include(m => m.Fotos)
                 .FirstOrDefaultAsync(m => m.Id == id && m.RefugioId == refugioId);
 
             if (mascota == null) return null;
@@ -71,6 +73,7 @@ namespace TransitAR.Api.Services
                 .AsNoTracking()
                 .Include(m => m.Especie)
                 .Include(m => m.Condicion)
+                .Include(m => m.Fotos)
                 .FirstOrDefaultAsync(m => m.Id == mascotaId);
 
             return mascota == null ? null : MascotaDTO(mascota);
@@ -99,8 +102,7 @@ namespace TransitAR.Api.Services
                 FechaNacimientoAproximada = request.FechaNacimientoAproximada,
                 Tamanio = request.Tamanio,
                 Vacunado = request.Vacunado,
-                Estado = EstadoMascota.EnRefugio,
-                FotosUrl = request.FotosUrl,
+                Estado = EstadoMascota.EnRefugio,                
                 FechaAlta = DateTime.UtcNow
 
             };
@@ -134,7 +136,7 @@ namespace TransitAR.Api.Services
             mascota.FechaNacimientoAproximada = request.FechaNacimientoAproximada;
             mascota.Tamanio = request.Tamanio;
             mascota.Vacunado = request.Vacunado;
-            mascota.FotosUrl = request.FotosUrl;
+            
 
             await _context.SaveChangesAsync();
 
@@ -293,10 +295,18 @@ namespace TransitAR.Api.Services
             EdadAproximadaMeses = mascota.FechaNacimientoAproximada.EdadEnMeses(),
             Tamanio = mascota.Tamanio,
             Vacunado = mascota.Vacunado,
-            Estado = mascota.Estado,
-            FotosUrl = mascota.FotosUrl,
+            FotosIds = IdsDeFotos(mascota),
+            Estado = mascota.Estado,            
             FechaAlta = mascota.FechaAlta
         };
 
+
+        /// <summary>
+        /// defino el orden de las fotos de la masctoa , lo uso en varios serivcios
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        internal static List<Guid> IdsDeFotos(Mascota? m) =>
+            m?.Fotos.OrderBy(f => f.Orden).Select(f => f.Id).ToList() ?? new List<Guid>();
     }
 }

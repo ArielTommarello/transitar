@@ -60,12 +60,5 @@ namespace TransitAR.Structures
         /// </summary>
         public bool Vacunado { get; set; }
 
-        /// <summary>
-        /// Fotos del animal en formato JSON
-        /// </summary>
-        public string? FotosUrl { get; set; }
-
-
-
     }
 }

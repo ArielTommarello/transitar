@@ -67,9 +67,9 @@ namespace TransitAR.Structures
         public EstadoMascota Estado { get; set; }
 
         /// <summary>
-        /// Fotos del animal en formato JSON
+        /// id de las fotos del animal guardados en base
         /// </summary>
-        public string? FotosUrl { get; set; }
+        public List<Guid> FotosIds { get; set; } = new();
 
         /// <summary>
         /// Fecha en que el refugio cargo al animal

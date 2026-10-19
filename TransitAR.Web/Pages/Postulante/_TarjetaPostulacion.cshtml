@@ -1,7 +1,7 @@
 ﻿@model TransitAR.Structures.Requests.PostulacionResponse
 
 @{
-    var foto = Formato.PrimeraFoto(Model.FotosUrl);
+    var foto = Api.UrlFotoPrincipal(Model.FotosIds);
     //aceptada y ya entregada (el proceso termino bien)
     var entregada = Model.Estado == EstadoPostulacion.Aceptada && Model.TieneTenencia;
     var aclaracion = entregada ? "Ya está con vos. La encontrás en Mis tenencias." : Formato.AclaracionEstado(Model.Estado);

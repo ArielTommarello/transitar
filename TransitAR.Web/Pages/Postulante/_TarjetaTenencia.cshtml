@@ -1,7 +1,7 @@
 ﻿@model TransitAR.Structures.Requests.HistorialTenenciaResponse
 
 @{
-    var foto = Formato.PrimeraFoto(Model.FotosUrl);
+    var foto = Api.UrlFotoPrincipal(Model.FotosIds);
     var veredicto = Formato.VeredictoTenencia(Model);
 }
 

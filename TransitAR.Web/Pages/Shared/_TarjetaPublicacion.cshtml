@@ -1,7 +1,7 @@
 ﻿@model PublicacionPublicaResponse
 
 @{
-    var foto = Formato.PrimeraFoto(Model.FotosUrl);
+    var foto = Api.UrlFotoPrincipal(Model.FotosIds);
 }
 
 <div class="card h-100">
