@@ -41,12 +41,13 @@ namespace TransitAR.Api.Services
 
 
         /// <summary>
-        /// elimino una mascota verificando el id y que pertenezca el refugio
+        /// Borro una mascota que estaba vargada por error, o no se uso, junot a sus fotos. Devuelvo el error directamente.
+        /// null si se borro. Si tiene historia (publicaciones o rtenencias) no se puede borrar, pausar publicacion.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="refugioId"></param>
         /// <returns></returns>
-        Task<bool> EliminarMascotaAsync(Guid id, Guid refugioId);
+        Task<string?> EliminarMascotaAsync(Guid id, Guid refugioId);
 
         /// <summary>
         /// Masctoa de una tenencia del postulante , para usar en la ficha de la tenencia (null si no tiene)

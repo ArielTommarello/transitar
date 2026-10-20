@@ -145,17 +145,30 @@ namespace TransitAR.Api.Services
         }
 
         ///<inheritdoc/>
-        public async Task<bool> EliminarMascotaAsync(Guid id,  Guid refugioId)
+        public async Task<string?> EliminarMascotaAsync(Guid id,  Guid refugioId)
         {
 
-            var mascota = await _context.Mascotas.FirstOrDefaultAsync(m => m.Id == id && m.RefugioId == refugioId);
+            var mascota = await _context.Mascotas
+                .Include(m => m.Fotos)
+                .FirstOrDefaultAsync(m => m.Id == id && m.RefugioId == refugioId);
 
-            if (mascota == null) return false;
+            if (mascota == null)
+                return "No se encontro esa mascota en tu refugio";
 
+            //reviso si tiene historia antes, para que no salga mas el 500
+            var tieneHistoria = await _context.Publicaciones.AnyAsync(p => p.MascotaId == id) || await _context.Tenencias.AnyAsync(t => t.MascotaId == id);
+
+
+            if (tieneHistoria)
+                return "Esta mascota tiene publicaciones o tenencias, no se puede borrar. Si ya no esta disponible, cerra la publicacion";
+
+
+            //las fotos estan en una tabla nueva
+            _context.FotosMascota.RemoveRange(mascota.Fotos);
             _context.Mascotas.Remove(mascota);
-            await _context.SaveChangesAsync();
-            return true;
 
+            await _context.SaveChangesAsync();
+            return null;
         }
 
 

@@ -119,8 +119,11 @@ namespace TransitAR.Api.Controllers
             if (refugioId == null)
                 return Forbid();
 
-            if (!await _mascotaService.EliminarMascotaAsync(id, refugioId.Value))
-                return NotFound();
+            var error = await _mascotaService.EliminarMascotaAsync(id, refugioId.Value);
+
+            if(error != null)
+                return BadRequest(new { mensaje = error });
+
 
             return NoContent();
         }

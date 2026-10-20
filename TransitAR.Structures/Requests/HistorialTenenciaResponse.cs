@@ -85,7 +85,7 @@ namespace TransitAR.Structures.Requests
         /// <summary>
         /// Especie de la mascota para poder usar  en el seguimiento e historial web
         /// </summary>
-        public string EspecieNombre { get; set; }
+        public string EspecieNombre { get; set; } = string.Empty ;
 
         /// <summary>
         /// id de las fotos del animal guardados en base
