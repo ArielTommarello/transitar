@@ -1,0 +1,106 @@
+﻿@page
+@model TransitAR.Web.Pages.Refugio.MascotasModel
+@{
+    ViewData["Title"] = "Mascotas";
+
+    var filtros = new (EstadoMascota? Estado, string Nombre)[]
+    {
+        (null, "Todas"),
+        (EstadoMascota.EnRefugio, "En refugio"),
+        (EstadoMascota.EnTransito, "En tránsito"),
+        (EstadoMascota.Adoptada, "Adoptadas")
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Mascotas</h1>
+    <a asp-page="/Refugio/Mascota" class="btn btn-primary">Nueva mascota</a>
+</div>
+
+@if (Model.Mensaje != null)
+{
+    <div class="alert alert-success">@Model.Mensaje</div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var f in filtros)
+    {
+        <li class="nav-item">
+            <a asp-page="/Refugio/Mascotas" asp-route-estado="@f.Estado"
+               class="nav-link @(Model.Estado == f.Estado ? "active" : "")">
+                @f.Nombre <span class="badge bg-light text-dark ms-1">@Model.Cantidad(f.Estado)</span>
+            </a>
+        </li>
+    }
+</ul>
+
+@if (!Model.Todas.Any())
+{
+    <div class="text-center py-5">
+        <p class="text-muted">Todavía no cargaste ninguna mascota.</p>
+        <a asp-page="/Refugio/Mascota" class="btn btn-primary">Cargar la primera</a>
+    </div>
+}
+else if (!Model.Mascotas.Any())
+{
+    <p class="text-muted">No hay mascotas en este estado.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Especie</th>
+                    <th>Sexo · Edad</th>
+                    <th>Estado</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model.Mascotas)
+                {
+                    var foto = Api.UrlFotoPrincipal(m.FotosIds);
+
+                    <tr>
+                        <td>
+                            @if (foto != null)
+                            {
+                                <img src="@foto" class="mascota-mini rounded" alt="Foto de @m.Nombre" />
+                            }
+                            else
+                            {
+                                <div class="mascota-mini tarjeta-sin-foto rounded"></div>
+                            }
+                        </td>
+                        <td>
+                            <strong>@m.Nombre</strong>
+                            @if (!string.IsNullOrWhiteSpace(m.Raza))
+                            {
+                                <div class="small text-muted">@m.Raza</div>
+                            }
+                        </td>
+                        <td>@m.EspecieNombre</td>
+                        <td class="small">@Formato.Sexo(m.Sexo) · @Formato.Edad(m.EdadAproximadaMeses)</td>
+                        <td><span class="badge @Formato.ColorEstadoMascota(m.Estado)">@Formato.EstadoMascota(m.Estado)</span></td>
+                        <td class="text-end text-nowrap">
+                            <a asp-page="/Refugio/Mascota" asp-route-id="@m.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+
+                            <form method="post" asp-page-handler="Eliminar" asp-route-id="@m.Id" asp-route-estado="@Model.Estado"
+                                  class="d-inline" onsubmit="return confirm('¿Borrar a @m.Nombre? Solo se puede si no tiene publicaciones ni tenencias.');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Borrar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

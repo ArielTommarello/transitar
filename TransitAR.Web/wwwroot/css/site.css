@@ -91,3 +91,10 @@ body {
     font-size: 1.75rem;
     font-weight: 600;
 }
+
+/* Mascotas Refugio*/
+.mascota-mini {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+}

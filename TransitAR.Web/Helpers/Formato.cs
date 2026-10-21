@@ -229,5 +229,55 @@ namespace TransitAR.Web.Helpers
             EstadoSeguimiento.Realizado => "bg-success",
             _ => "bg-secondary"
         };
+
+
+        //MASCOTAS DEL REFUGIO
+
+        /// <summary>
+        /// Leyenda del estado de una mascota
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <returns></returns>
+        public static string EstadoMascota(EstadoMascota estado) => estado switch
+        {
+            //uso structures.EstadoMascota, porque el metodo es igual al enum, y por alguna razon tomaba el metodo y no el enum
+            Structures.EstadoMascota.EnRefugio => "En refugio",
+            Structures.EstadoMascota.EnTransito => "En tránsito",
+            Structures.EstadoMascota.Adoptada => "Adoptada",
+            _ => string.Empty
+        };
+
+
+        /// <summary>
+        /// Colores para los estado de una mascota
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <returns></returns>
+        public static string ColorEstadoMascota(EstadoMascota estado) => estado switch
+        {
+            //uso structures.EstadoMascota, porque el metodo es igual al enum, y por alguna razon tomaba el metodo y no el enum
+            Structures.EstadoMascota.EnRefugio => "bg-primary",
+            Structures.EstadoMascota.EnTransito => "bg-info text-dark",
+            Structures.EstadoMascota.Adoptada => "bg-success",
+            _ => "bg-secondary"
+        };
+
+        /// <summary>
+        /// Fecha de nacimiento aprox a partid de la edad que puso el refugio. Null si no cargaron nunga de las cosas y la dejo desconocida
+        /// </summary>
+        /// <param name="anios"></param>
+        /// <param name="meses"></param>
+        /// <returns></returns>
+        public static DateTime? FechaDesdeEdad(int? anios, int? meses)
+        {
+            if (anios == null && meses == null)
+                return null;
+
+            //es un dia del calendario 
+            var hoy = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Unspecified);
+
+            return hoy.AddYears(-(anios ?? 0)).AddMonths(-(meses ?? 0));
+        }
+
     }
 }
