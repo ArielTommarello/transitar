@@ -27,9 +27,19 @@ namespace TransitAR.Structures
         public string EspecieNombre { get; set; } = string.Empty;
 
         /// <summary>
+        /// Especie de la mascota para editarla
+        /// </summary>
+        public Guid EspecieId { get; set; }
+
+        /// <summary>
         /// Nombre de la condicion, ya puesto en el catalogo base
         /// </summary>
         public string CondicionNombre { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Condicion de salud, para poder editarla
+        /// </summary>
+        public Guid CondicionId { get; set; }
 
         /// <summary>
         /// Raza del animal 

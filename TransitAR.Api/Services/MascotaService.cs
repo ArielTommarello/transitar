@@ -300,6 +300,8 @@ namespace TransitAR.Api.Services
         {
             Id = mascota.Id,
             Nombre = mascota.Nombre,
+            EspecieId = mascota.EspecieId,
+            CondicionId = mascota.CondicionId,
             EspecieNombre = mascota.Especie?.Nombre ?? string.Empty,
             CondicionNombre = mascota.Condicion?.Nombre ?? string.Empty,
             Raza = mascota.Raza,
