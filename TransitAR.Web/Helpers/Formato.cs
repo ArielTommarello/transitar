@@ -47,7 +47,7 @@ namespace TransitAR.Web.Helpers
         /// <summary>
         /// edad , meses menos de un año y sino años
         /// </summary>
-        public static string Edad(int? meses , int? dias)
+        public static string Edad(int? meses, int? dias)
         {
             if (meses == null)
                 return "Edad desconocida";
@@ -55,10 +55,14 @@ namespace TransitAR.Web.Helpers
             if (dias != null && dias < LimiteDiasCachorro)
                 return Dias(dias.Value);
 
-            if (meses < 12)
-                return meses == 1 ? "1 mes" : $"{meses} meses";
+            //En caso de usar fecha de nacimiento aproximada , pasados los 60 dias s emuestra como meses.
+            var mesesMostrar = dias != null ? Math.Max(meses.Value, 2) : meses.Value;
 
-            var anios = meses.Value / 12;
+            if (mesesMostrar < 12)
+                return mesesMostrar == 1 ? "1 mes" : $"{mesesMostrar} meses";
+
+
+            var anios = mesesMostrar / 12;
             return anios == 1 ? "1 año" : $"{anios} años";
         }
 

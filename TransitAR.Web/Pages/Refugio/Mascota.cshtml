@@ -85,31 +85,52 @@
                         </div>
                     </div>
 
-                    <label class="form-label">¿Qué edad tiene, más o menos? <span class="text-muted">(opcional)</span></label>
-                    <div class="row mb-1">
-                        <div class="col-4">
-                            <div class="input-group">
-                                <input asp-for="Anios" type="number" min="0" max="30" class="form-control" />
-                                <span class="input-group-text">años</span>
-                            </div>
-                            <span asp-validation-for="Anios" class="text-danger small"></span>
+                    <label class="form-label d-block">Edad <span class="text-muted">(opcional)</span></label>
+                    <div class="mb-2">
+                        <div class="form-check form-check-inline">
+                            <input asp-for="CargarConFecha" type="radio" value="False" id="modo-edad" class="form-check-input" />
+                            <label class="form-check-label" for="modo-edad">Sé la edad aproximada</label>
                         </div>
-                        <div class="col-4">
-                            <div class="input-group">
-                                <input asp-for="Meses" type="number" min="0" max="11" class="form-control" />
-                                <span class="input-group-text">meses</span>
-                            </div>
-                            <span asp-validation-for="Meses" class="text-danger small"></span>
-                        </div>
-                        <div class="col-4">
-                            <div class="input-group">
-                                <input asp-for="Dias" type="number" min="0" max="30" class="form-control" />
-                                <span class="input-group-text">días</span>
-                            </div>
-                            <span asp-validation-for="Dias" class="text-danger small"></span>
+                        <div class="form-check form-check-inline">
+                            <input asp-for="CargarConFecha" type="radio" value="True" id="modo-fecha" class="form-check-input" />
+                            <label class="form-check-label" for="modo-fecha">Sé la fecha de nacimiento</label>
                         </div>
                     </div>
-                    <div class="form-text mb-3">Si no la sabés, dejalo vacío y va a figurar como "Edad desconocida".</div>
+
+                    <div id="bloque-edad">
+                        <div class="row mb-1">
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input asp-for="Anios" type="number" min="0" max="30" class="form-control" />
+                                    <span class="input-group-text">años</span>
+                                </div>
+                                <span asp-validation-for="Anios" class="text-danger small"></span>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input asp-for="Meses" type="number" min="0" max="11" class="form-control" />
+                                    <span class="input-group-text">meses</span>
+                                </div>
+                                <span asp-validation-for="Meses" class="text-danger small"></span>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input asp-for="Dias" type="number" min="0" max="60" class="form-control" /> 
+                                    <span class="input-group-text">días</span>
+                                </div>
+                                <span asp-validation-for="Dias" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="form-text mb-3">
+                            Para un cachorro podés poner solo los días (hasta 60). Si no sabés la edad, dejalo vacío.
+                        </div>
+                    </div>
+
+                    <div id="bloque-fecha">
+                        <input asp-for="Datos.FechaNacimientoAproximada" type="date" class="form-control"
+                               max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                        <div class="form-text mb-3">Por ejemplo, si nació en el refugio o tiene libreta del veterinario.</div>
+                    </div>
                 </div>
             </div>
 
@@ -148,4 +169,16 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        //muestra solo la opcion elegida, (edad o fecha aprox)
+        function mostrarModoEdad() {
+            var conFecha = document.getElementById('modo-fecha').checked;
+            document.getElementById('bloque-fecha').hidden = !conFecha;
+            document.getElementById('bloque-edad').hidden = conFecha;
+        }
+
+        document.getElementById('modo-edad').addEventListener('change', mostrarModoEdad);
+        document.getElementById('modo-fecha').addEventListener('change', mostrarModoEdad);
+        mostrarModoEdad();
+    </script>
 }

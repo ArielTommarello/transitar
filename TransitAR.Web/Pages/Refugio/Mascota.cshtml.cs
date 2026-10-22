@@ -48,8 +48,15 @@ namespace TransitAR.Web.Pages.Refugio
         /// Dias aprox por si no se puede mostrar años o se es cachorro
         /// </summary>
         [BindProperty]
-        [Range(0, 30, ErrorMessage = "Los días tienen que estar entre 0 y 30.")]
+        [Range(0, 60, ErrorMessage = "Los días tienen que estar entre 0 y 60.")]
         public int? Dias { get; set; }
+
+
+        /// <summary>
+        /// Como decide cargar la edad el refugio, si pone fecha calculamos nosotros
+        /// </summary>
+        [BindProperty]
+        public bool CargarConFecha { get; set; }
 
         /// <summary>
         /// La mascota en si para edicion
@@ -109,7 +116,21 @@ namespace TransitAR.Web.Pages.Refugio
             }
 
             //cambio la fecha a años o meses apra poder mostrar (fecha que puso el refugio)
-            Datos.FechaNacimientoAproximada = Formato.FechaDesdeEdad(Anios, Meses, Dias);
+            if (CargarConFecha)
+            {
+                //la fecha viene del formulario (fecha aprox)
+                if (Datos.FechaNacimientoAproximada > DateTime.Today)
+                {
+                    Error = "La fecha de nacimiento no puede ser posterior a hoy.";
+                    await RecargarAsync();
+                    return Page();
+                }
+            }
+            else
+            {
+                //la edad que puso el refugio pasa a la fecha que guarda la API (anios , meses, dias)
+                Datos.FechaNacimientoAproximada = Formato.FechaDesdeEdad(Anios, Meses, Dias);
+            }
 
             if (Id == null)
             {
@@ -187,17 +208,30 @@ namespace TransitAR.Web.Pages.Refugio
                 Vacunado = m.Vacunado
             };
 
-            //edad en meses , dias , años
+
+            //fecha aprox despues calculamos dias,
             if (m.FechaNacimientoAproximada != null)
             {
                 var hoy = DateTime.Today;
                 var nacimiento = m.FechaNacimientoAproximada.Value.Date;
 
+                Datos.FechaNacimientoAproximada = nacimiento;
+
+                //se carga como se muestra, todo en dias (cachorro)
+                var diasDeVida = (hoy - nacimiento).Days;
+                if (diasDeVida < 60)
+                {
+                    Anios = 0;
+                    Meses = 0;
+                    Dias = diasDeVida;
+                    return;
+                }
+
                 var anios = hoy.Year - nacimiento.Year;
                 var meses = hoy.Month - nacimiento.Month;
                 var dias = hoy.Day - nacimiento.Day;
 
-                //si los dias dan negativo, agrego u nmes mas
+                //si los dias dan negativo, se pide prestado un mes
                 if (dias < 0)
                 {
                     meses--;
@@ -205,7 +239,7 @@ namespace TransitAR.Web.Pages.Refugio
                     dias += DateTime.DaysInMonth(mesAnterior.Year, mesAnterior.Month);
                 }
 
-                //si me dan neg los meses, pido un año
+                //si los meses dan negativo, se pide prestado un año
                 if (meses < 0)
                 {
                     anios--;
