@@ -23,5 +23,16 @@
             return meses < 0 ? 0 : meses;
         }
 
+        /// <summary>
+        /// Calcula la edad en dias a partir del dia de nacimiento, contra el dia actual. Null si no se sabe
+        /// </summary>
+        public static int? EdadEnDias(this DateTime? nacimiento)
+        {
+            if (nacimiento == null)
+                return null;
+
+            var dias = (int)(DateTime.UtcNow.Date - nacimiento.Value.Date).TotalDays;
+            return dias < 0 ? 0 : dias;
+        }
     }
 }

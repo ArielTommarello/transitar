@@ -270,6 +270,7 @@ namespace TransitAR.Api.Services
             Sexo = p.Mascota?.Sexo,
             Tamanio = p.Mascota?.Tamanio,
             EdadAproximadaMeses = p.Mascota?.FechaNacimientoAproximada.EdadEnMeses(),
+            EdadAproximadaDias = p.Mascota?.FechaNacimientoAproximada.EdadEnDias(),
             Vacunado = p.Mascota?.Vacunado ?? false,
             FotosIds = MascotaService.IdsDeFotos(p.Mascota),
 

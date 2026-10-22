@@ -1,0 +1,151 @@
+﻿@page "{id:guid?}"
+@model TransitAR.Web.Pages.Refugio.MascotaModel
+@{
+    var esNueva = Model.Id == null;
+    ViewData["Title"] = esNueva ? "Nueva mascota" : $"Editar a {Model.Mascota?.Nombre}";
+}
+
+<a asp-page="/Refugio/Mascotas" class="small">&larr; Volver a Mascotas</a>
+
+@if (Model.NoEncontrada)
+{
+    <div class="text-center py-5">
+        <h1 class="h4">No encontramos esta mascota</h1>
+        <p class="text-muted">Puede que el link esté mal o que no sea de tu refugio.</p>
+        <a asp-page="/Refugio/Mascotas" class="btn btn-primary">Ir a Mascotas</a>
+    </div>
+    return;
+}
+
+<div class="row justify-content-center mt-2">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">@ViewData["Title"]</h1>
+            @if (Model.Mascota != null)
+            {
+                <span class="badge @Formato.ColorEstadoMascota(Model.Mascota.Estado)">@Formato.EstadoMascota(Model.Mascota.Estado)</span>
+            }
+        </div>
+
+        @if (Model.Mensaje != null)
+        {
+            <div class="alert alert-success">@Model.Mensaje</div>
+        }
+
+        @if (Model.Error != null)
+        {
+            <div class="alert alert-danger">@Model.Error</div>
+        }
+
+        <form method="post">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Datos</h2>
+
+                    <div class="mb-3">
+                        <label asp-for="Datos.Nombre" class="form-label">Nombre</label>
+                        <input asp-for="Datos.Nombre" class="form-control" />
+                        <span asp-validation-for="Datos.Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.EspecieId" class="form-label">Especie</label>
+                            <select asp-for="Datos.EspecieId" asp-items="@(new SelectList(Model.Especies, "Id", "Nombre"))"
+                                    class="form-select" required>
+                                <option value="">Elegí una especie</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.Raza" class="form-label">Raza <span class="text-muted">(opcional)</span></label>
+                            <input asp-for="Datos.Raza" class="form-control" placeholder="Ej: Mestizo" />
+                            <span asp-validation-for="Datos.Raza" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.Sexo" class="form-label">Sexo</label>
+                            <select asp-for="Datos.Sexo" class="form-select">
+                                <option value="">Sin datos</option>
+                                <option value="Macho">Macho</option>
+                                <option value="Hembra">Hembra</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Datos.Tamanio" class="form-label">Tamaño</label>
+                            <select asp-for="Datos.Tamanio" class="form-select">
+                                <option value="">Sin datos</option>
+                                <option value="Chico">Chico</option>
+                                <option value="Mediano">Mediano</option>
+                                <option value="Grande">Grande</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="form-label">¿Qué edad tiene, más o menos? <span class="text-muted">(opcional)</span></label>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input asp-for="Anios" type="number" min="0" max="30" class="form-control" />
+                                <span class="input-group-text">años</span>
+                            </div>
+                            <span asp-validation-for="Anios" class="text-danger small"></span>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input asp-for="Meses" type="number" min="0" max="11" class="form-control" />
+                                <span class="input-group-text">meses</span>
+                            </div>
+                            <span asp-validation-for="Meses" class="text-danger small"></span>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input asp-for="Dias" type="number" min="0" max="30" class="form-control" />
+                                <span class="input-group-text">días</span>
+                            </div>
+                            <span asp-validation-for="Dias" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="form-text mb-3">Si no la sabés, dejalo vacío y va a figurar como "Edad desconocida".</div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Salud</h2>
+
+                    <div class="mb-3">
+                        <label asp-for="Datos.CondicionId" class="form-label">Condición</label>
+                        <select asp-for="Datos.CondicionId" asp-items="@(new SelectList(Model.Condiciones, "Id", "Nombre"))"
+                                class="form-select" required>
+                            <option value="">Elegí una condición</option>
+                        </select>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="Datos.Vacunado" class="form-check-input" />
+                        <label asp-for="Datos.Vacunado" class="form-check-label">Tiene las vacunas al día</label>
+                    </div>
+                </div>
+            </div>
+
+            @if (!esNueva)
+            {
+                <p class="small text-muted">El estado (en refugio, en tránsito, adoptada) no se edita: lo cambian las entregas, devoluciones y conversiones.</p>
+            }
+
+            <button type="submit" class="btn btn-primary w-100 mb-5">
+                @(esNueva ? "Crear mascota" : "Guardar cambios")
+            </button>
+        </form>
+
+        @* Parte 4: las fotos van aca, debajo del formulario, solo al editar *@
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

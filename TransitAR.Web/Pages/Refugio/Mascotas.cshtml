@@ -88,7 +88,7 @@ else
                             }
                         </td>
                         <td>@m.EspecieNombre</td>
-                        <td class="small">@Formato.Sexo(m.Sexo) · @Formato.Edad(m.EdadAproximadaMeses)</td>
+                        <td class="small">@Formato.Sexo(m.Sexo) · @Formato.Edad(m.EdadAproximadaMeses,m.EdadAproximadaDias)</td>
                         <td><span class="badge @Formato.ColorEstadoMascota(m.Estado)">@Formato.EstadoMascota(m.Estado)</span></td>
                         <td class="text-end text-nowrap">
                             <a asp-page="/Refugio/Mascota" asp-route-id="@m.Id" class="btn btn-sm btn-outline-primary">Editar</a>

@@ -47,10 +47,13 @@ namespace TransitAR.Web.Helpers
         /// <summary>
         /// edad , meses menos de un año y sino años
         /// </summary>
-        public static string Edad(int? meses)
+        public static string Edad(int? meses , int? dias)
         {
             if (meses == null)
                 return "Edad desconocida";
+
+            if (dias != null && dias < LimiteDiasCachorro)
+                return Dias(dias.Value);
 
             if (meses < 12)
                 return meses == 1 ? "1 mes" : $"{meses} meses";
@@ -59,6 +62,11 @@ namespace TransitAR.Web.Helpers
             return anios == 1 ? "1 año" : $"{anios} años";
         }
 
+
+        /// <summary>
+        /// Hasta cuantos dias la edad se muestra en dias
+        /// </summary>
+        private const int LimiteDiasCachorro = 60;
 
         //Arreglo de formato de hora UTC
 
@@ -268,15 +276,15 @@ namespace TransitAR.Web.Helpers
         /// <param name="anios"></param>
         /// <param name="meses"></param>
         /// <returns></returns>
-        public static DateTime? FechaDesdeEdad(int? anios, int? meses)
+        public static DateTime? FechaDesdeEdad(int? anios, int? meses, int? dias)
         {
-            if (anios == null && meses == null)
+            if (anios == null && meses == null && dias == null)
                 return null;
 
             //es un dia del calendario 
             var hoy = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Unspecified);
 
-            return hoy.AddYears(-(anios ?? 0)).AddMonths(-(meses ?? 0));
+            return hoy.AddYears(-(anios ?? 0)).AddMonths(-(meses ?? 0)).AddDays(-(dias ?? 0));
         }
 
     }

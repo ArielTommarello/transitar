@@ -73,6 +73,11 @@ namespace TransitAR.Structures
         public int? EdadAproximadaMeses { get; set; }
 
         /// <summary>
+        /// Edad calculada a partir de la fecha de nacimiento , Null si no se conoce o no se puede calcular (dias)
+        /// </summary>
+        public int? EdadAproximadaDias { get; set; }
+
+        /// <summary>
         /// Si tiene el plan de vacunacion al dia
         /// </summary>
         public bool Vacunado { get; set; }
