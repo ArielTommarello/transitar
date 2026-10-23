@@ -19,7 +19,9 @@
 
 <div class="row justify-content-center mt-2">
     <div class="col-lg-8">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+
+
             <h1 class="h3 mb-0">@ViewData["Title"]</h1>
             @if (Model.Mascota != null)
             {
@@ -27,6 +29,17 @@
             }
         </div>
 
+        @if (Model.Mascota != null)
+        {
+            <p class="text-muted small mb-3">
+                Cargada el @Formato.FechaDe(Model.Mascota.FechaAlta)
+                (hace @Formato.Dias((DateTime.UtcNow - Model.Mascota.FechaAlta).Days))
+            </p>
+        }
+        else
+        {
+            <div class="mb-3"></div>
+        }
         @if (Model.Mensaje != null)
         {
             <div class="alert alert-success">@Model.Mensaje</div>
@@ -162,8 +175,65 @@
                 @(esNueva ? "Crear mascota" : "Guardar cambios")
             </button>
         </form>
+        @* Fotos de animales *@
+        @if (Model.Mascota != null)
+        {
+            var ids = Model.Mascota.FotosIds;
+            var urls = Api.UrlsFotosMascota(ids);
 
-        @* Parte 4: las fotos van aca, debajo del formulario, solo al editar *@
+            <div class="card mb-5">
+                <div class="card-body">
+                    <h2 class="h5 mb-1">Fotos</h2>
+                    <p class="text-muted small mb-3">La primera es la principal: es la que se ve en las tarjetas. Podés subir varias a la vez.</p>
+
+                    @if (Model.ErrorFotos != null)
+                    {
+                        <div class="alert alert-danger">@Model.ErrorFotos</div>
+                    }
+
+                    @if (!ids.Any())
+                    {
+                        <p class="text-muted small">Todavía no tiene fotos.</p>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-wrap gap-3 mb-3">
+                            @for (var i = 0; i < ids.Count; i++)
+                            {
+                                <div class="text-center">
+                                    <img src="@urls[i]" class="foto-mascota-mini rounded @(i == 0 ? "foto-principal" : "")" alt="Foto @(i + 1) de @Model.Mascota.Nombre" />
+
+                                    <div class="mt-1">
+                                        @if (i == 0)
+                                        {
+                                            <span class="badge bg-primary">Principal</span>
+                                        }
+                                        else
+                                        {
+                                            <form method="post" asp-page-handler="HacerPrincipal" asp-route-id="@Model.Id" asp-route-fotoId="@ids[i]" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-link p-0">Hacer principal</button>
+                                            </form>
+                                        }
+                                    </div>
+
+                                    <form method="post" asp-page-handler="BorrarFoto" asp-route-id="@Model.Id" asp-route-fotoId="@ids[i]"
+                                          onsubmit="return confirm('¿Borrar esta foto?');">
+                                        <button type="submit" class="btn btn-sm btn-link text-danger p-0">Borrar</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <form method="post" asp-page-handler="SubirFotos" asp-route-id="@Model.Id" enctype="multipart/form-data"
+                          class="d-flex gap-2">
+                        <input asp-for="FotosNuevas" type="file" multiple class="form-control" accept="image/jpeg,image/png,image/webp" />
+                        <button type="submit" class="btn btn-outline-primary flex-shrink-0">Subir</button>
+                    </form>
+                    <div class="form-text">jpg, png o webp, hasta 5 MB cada una.</div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 

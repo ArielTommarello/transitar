@@ -83,6 +83,21 @@ namespace TransitAR.Web.Pages.Refugio
         [TempData]
         public string? Mensaje { get; set; }
 
+
+        /// <summary>
+        /// Fotos para subir (varias)
+        /// </summary>
+        [BindProperty]
+        public List<IFormFile> FotosNuevas { get; set; } = new();
+
+
+        /// <summary>
+        /// Error en las fotos, en caso de tener una borrada o reordenada, temp apra poder redifirigr
+        /// </summary>
+        [TempData]
+        public string? ErrorFotos { get; set; }
+
+
         /// <summary>
         /// error de la api
         /// </summary>
@@ -159,6 +174,64 @@ namespace TransitAR.Web.Pages.Refugio
             }
 
             Mensaje = "Cambios guardados.";
+            return RedirectToPage(new { id = Id });
+        }
+
+
+        /// <summary>
+        /// Sube una o varias fotos, se valida tipo tamaño y maximo ya en al API
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostSubirFotosAsync()
+        {
+            if (Id == null)
+                return RedirectToPage();
+
+            if (FotosNuevas.Count == 0)
+                ErrorFotos = "Elige al menos una foto.";
+            else
+            {
+                var respuesta = await _api.PostArchivosAsync<object>($"api/Mascota/{Id}/fotos", FotosNuevas, "fotos");
+
+                if (respuesta.Exito)
+                    Mensaje = FotosNuevas.Count == 1 ? "Foto subida." : $"{FotosNuevas.Count} fotos subidas.";
+                else
+                    ErrorFotos = respuesta.Error;
+            }
+
+            return RedirectToPage(new { id = Id });
+        }
+
+
+        /// <summary>
+        /// Pone una foto como primera, es la que se usa de portada en las tarjetas
+        /// </summary>
+        /// <param name="fotoId"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostHacerPrincipalAsync(Guid fotoId)
+        {
+            var respuesta = await _api.PatchAsync<object>($"api/Mascota/{Id}/fotos/{fotoId}/principal");
+
+            if (!respuesta.Exito)
+                ErrorFotos = respuesta.Error;
+
+            return RedirectToPage(new { id = Id });
+        }
+
+        /// <summary>
+        /// Borra la foto , dsps se reordenan
+        /// </summary>
+        /// <param name="fotoId"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostBorrarFotoAsync(Guid fotoId)
+        {
+            var respuesta = await _api.DeleteAsync<object>($"api/Mascota/{Id}/fotos/{fotoId}");
+
+            if (respuesta.Exito)
+                Mensaje = "Foto borrada.";
+            else
+                ErrorFotos = respuesta.Error;
+
             return RedirectToPage(new { id = Id });
         }
 

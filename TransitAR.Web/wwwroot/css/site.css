@@ -98,3 +98,15 @@ body {
     height: 48px;
     object-fit: cover;
 }
+
+/* Fotos en la edicion de la mascota */
+.foto-mascota-mini {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.foto-principal {
+    outline: 3px solid var(--bs-primary);
+    outline-offset: 2px;
+}

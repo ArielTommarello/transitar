@@ -68,6 +68,31 @@ namespace TransitAR.Web.Services
 
             return await LeerAsync<T>(await _http.PutAsync(ruta, contenido));
         }
+
+        /// <summary>
+        /// Varios archivos para subir las fotos de una mascota (POST)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ruta"></param>
+        /// <param name="archivos"></param>
+        /// <param name="nombreCampo"></param>
+        /// <returns></returns>
+        public async Task<ApiRespuesta<T>> PostArchivosAsync<T>(string ruta, List<IFormFile> archivos, string nombreCampo)
+        {
+            using var contenido = new MultipartFormDataContent();
+
+            //archivo por archivo para armar la lsita
+            foreach (var archivo in archivos)
+            {
+                var parte = new StreamContent(archivo.OpenReadStream());
+                parte.Headers.ContentType = new MediaTypeHeaderValue(archivo.ContentType);
+                contenido.Add(parte, nombreCampo, archivo.FileName);
+            }
+
+            return await LeerAsync<T>(await _http.PostAsync(ruta, contenido));
+        }
+
+
         /// <summary>
         /// Convierte la respuesta HTTP en una ApiRespuesta   
         /// </summary>
@@ -106,10 +131,6 @@ namespace TransitAR.Web.Services
                 Error = mensaje ?? MensajePorDefecto(respuesta.StatusCode)
             };
         }
-
-
-
-
 
 
         /// <summary>
