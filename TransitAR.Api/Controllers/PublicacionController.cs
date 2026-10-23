@@ -78,12 +78,15 @@ namespace TransitAR.Api.Controllers
             if (refugioId == null)
                 return Forbid();
 
-            var publicacion = await _publicacionService.CrearPublicacionAsync(request, refugioId.Value);
+            if (!Enum.IsDefined(request.Tipo))
+                return BadRequest(new { mensaje = "Elige si la publicacion es de adopcion o de transito." });
 
-            if (publicacion == null)
-                return BadRequest(new { mensaje = "La mascota no existe, no pertenece al refugio, o ya tiene una publicacion abierta o hay un error en los datos de la publicacion" });
+            var resultado = await _publicacionService.CrearPublicacionAsync(request, refugioId.Value);
 
-            return Ok(publicacion);
+            if (resultado.Publicacion == null)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(resultado.Publicacion);
         }
 
         /// <summary>
@@ -99,12 +102,15 @@ namespace TransitAR.Api.Controllers
             if (refugioId == null)
                 return Forbid();
 
-            var publicacion = await _publicacionService.ActualizarPublicacionAsync(id, request, refugioId.Value);
+            if (!Enum.IsDefined(request.Tipo))
+                return BadRequest(new { mensaje = "Elegi si la publicacion es de adopcion o de transito." });
 
-            if (publicacion == null)
-                return NotFound();
+            var resultado = await _publicacionService.ActualizarPublicacionAsync(id, request, refugioId.Value);
 
-            return Ok(publicacion);
+            if (resultado.Publicacion == null)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(resultado.Publicacion);
         }
 
 
@@ -121,12 +127,15 @@ namespace TransitAR.Api.Controllers
             if (refugioId == null)
                 return Forbid();
 
-            var publicacion = await _publicacionService.CambiarEstadoAsync(id, estado, refugioId.Value);
+            if (!Enum.IsDefined(estado))
+                return BadRequest(new { mensaje = "El estado indicado no es valido." });
 
-            if (publicacion == null)
-                return NotFound();
+            var resultado = await _publicacionService.CambiarEstadoAsync(id, estado, refugioId.Value);
 
-            return Ok(publicacion);
+            if (resultado.Publicacion == null)
+                return BadRequest(new { mensaje = resultado.Error });
+
+            return Ok(resultado.Publicacion);
         }
 
 

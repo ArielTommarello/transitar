@@ -21,32 +21,32 @@ namespace TransitAR.Api.Services
         Task<PublicacionResponse?> ObtenerPublicacionAsync(Guid id, Guid refugioId);
 
         /// <summary>
-        /// Crea la publicacion desde el refugio , oslo una por mascota
+        /// Crea la publicacion desde el refugio , oslo una por mascota ,ahora devuelve el motivo de error
         /// </summary>
         /// <param name="request"></param>
         /// <param name="refugioId"></param>
         /// <returns></returns>
-        Task<PublicacionResponse?> CrearPublicacionAsync(PublicacionRequest request, Guid refugioId);
+        Task<PublicacionResult> CrearPublicacionAsync(PublicacionRequest request, Guid refugioId);
 
 
         /// <summary>
-        /// Actualiza la publicacion, si hay nuevos datos o algo
+        /// Actualiza la publicacion, si hay nuevos datos o algo, ahora devuelve el motivo de error
         /// </summary>
         /// <param name="id"></param>
         /// <param name="request"></param>
         /// <param name="refugioId"></param>
         /// <returns></returns>
-        Task<PublicacionResponse?> ActualizarPublicacionAsync(Guid id, PublicacionRequest request, Guid refugioId);
+        Task<PublicacionResult> ActualizarPublicacionAsync(Guid id, PublicacionRequest request, Guid refugioId);
 
 
         /// <summary>
-        /// Cambia el estado de la publicacion
+        /// Cambia el estado de la publicacion , ahora devuelve el motivo de error
         /// </summary>
         /// <param name="id"></param>
         /// <param name="estado"></param>
         /// <param name="refugioId"></param>
         /// <returns></returns>
-        Task<PublicacionResponse?> CambiarEstadoAsync(Guid id, EstadoPublicacion estado, Guid refugioId);
+        Task<PublicacionResult> CambiarEstadoAsync(Guid id, EstadoPublicacion estado, Guid refugioId);
 
         //VISTA PUBLICA
         
