@@ -159,8 +159,26 @@ namespace TransitAR.Web.Pages.Refugio
                     return Page();
                 }
 
-                //Para subir fotos tengo que tener creada la mascota, sino da error 
-                Mensaje = "Mascota creada. Ahora podés subirle fotos.";
+                //Para subir fotos tengo que tener creada la mascota, sino da error , si eligio fotos ya hay id aca
+                if (FotosNuevas.Count > 0)
+                {
+                    var fotos = await _api.PostArchivosAsync<object>($"api/Mascota/{creada.Datos.Id}/fotos", FotosNuevas, "fotos");
+
+                    //la mascota ya quedo creada aviso de error en las fotos
+                    if (!fotos.Exito)
+                    {
+                        Mensaje = "Mascota creada.";
+                        ErrorFotos = $"Las fotos no se subieron: {fotos.Error}";
+                        return RedirectToPage(new { id = creada.Datos.Id });
+                    }
+
+                    Mensaje = "Mascota creada con sus fotos.";
+                }
+                else
+                {
+                    Mensaje = "Mascota creada. Ahora podés subirle fotos.";
+                }
+
                 return RedirectToPage(new { id = creada.Datos.Id });
             }
 
