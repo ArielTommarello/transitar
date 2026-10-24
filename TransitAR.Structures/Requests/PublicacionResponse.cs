@@ -29,6 +29,11 @@ namespace TransitAR.Structures
         public string MascotaNombre { get; set; } = string.Empty;
 
         /// <summary>
+        /// Ids de las fotos de la masctoa (en orden)
+        /// </summary>
+        public List<Guid> FotosIds { get; set; } = new();
+
+        /// <summary>
         /// Titulo de la publicaicon
         /// </summary>
         public string Titulo { get; set; } = string.Empty;

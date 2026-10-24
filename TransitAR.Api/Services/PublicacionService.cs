@@ -30,6 +30,7 @@ namespace TransitAR.Api.Services
         {
             var datos = await _context.Publicaciones
                 .Include(p => p.Mascota)
+                    .ThenInclude(m => m!.Fotos)
                 .Where(p => p.Mascota!.RefugioId == refugioId)
                 .OrderByDescending(p => p.FechaPublicacion)
                 .Select(p => new { Publicacion = p, Cantidad = p.Postulaciones.Count })
@@ -43,6 +44,7 @@ namespace TransitAR.Api.Services
         {
             var dato = await _context.Publicaciones
                 .Include(p => p.Mascota)
+                     .ThenInclude (m => m!.Fotos)
                 .Where(p => p.Id == id && p.Mascota!.RefugioId == refugioId)
                 .Select(p => new { Publicacion = p, Cantidad = p.Postulaciones.Count })
                 .FirstOrDefaultAsync();
@@ -232,6 +234,7 @@ namespace TransitAR.Api.Services
             Id = p.Id,
             MascotaId = p.MascotaId,
             MascotaNombre = p.Mascota?.Nombre ?? string.Empty,
+            FotosIds = MascotaService.IdsDeFotos(p.Mascota),
             Titulo = p.Titulo,
             Descripcion = p.Descripcion,
             Ubicacion = p.Ubicacion,
