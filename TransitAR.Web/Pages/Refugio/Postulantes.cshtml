@@ -1,0 +1,68 @@
+﻿@page "{id:guid}"
+@model TransitAR.Web.Pages.Refugio.PostulantesModel
+@{
+    ViewData["Title"] = "Postulaciones";
+}
+
+<a asp-page="/Refugio/Publicaciones" class="small">&larr; Volver a Publicaciones</a>
+
+@if (Model.NoEncontrada || Model.Publicacion == null)
+{
+    <div class="text-center py-5">
+        <h1 class="h4">No encontramos esta publicación</h1>
+        <p class="text-muted">Puede que el link esté mal o que no sea de tu refugio.</p>
+        <a asp-page="/Refugio/Publicaciones" class="btn btn-primary">Ir a Publicaciones</a>
+    </div>
+    return;
+}
+
+@{
+    var p = Model.Publicacion;
+
+    //tipo de publicacion y id de pub
+    var datosTarjeta = new ViewDataDictionary(ViewData)
+            {
+                ["TipoPublicacion"] = p.Tipo,
+                ["PublicacionId"] = p.Id
+            };
+}
+
+<div class="row justify-content-center mt-2">
+    <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <h1 class="h3 mb-0">Postulaciones</h1>
+            <span class="badge @Formato.ColorEstadoPublicacion(p.Estado)">@Formato.EstadoPublicacion(p.Estado)</span>
+        </div>
+        <p class="text-muted mb-4">@p.Titulo · @p.MascotaNombre · @Formato.Tipo(p.Tipo)</p>
+
+        @if (Model.Aceptada == null && !Model.EnEvaluacion.Any() && !Model.Finalizadas.Any())
+        {
+            <p class="text-muted">Todavía nadie se postuló a esta publicación.</p>
+        }
+
+        @if (Model.Aceptada != null)
+        {
+            <h2 class="h5 mb-3">Aceptada</h2>
+            <p class="small text-muted">La publicación está pausada hasta que confirmes la entrega o la rechaces.</p>
+            <partial name="_TarjetaPostulante" model="Model.Aceptada" view-data="datosTarjeta" />
+        }
+
+        @if (Model.EnEvaluacion.Any())
+        {
+            <h2 class="h5 mt-4 mb-3">En evaluación (@Model.EnEvaluacion.Count)</h2>
+            @foreach (var postulacion in Model.EnEvaluacion)
+            {
+                <partial name="_TarjetaPostulante" model="postulacion" view-data="datosTarjeta" />
+            }
+        }
+
+        @if (Model.Finalizadas.Any())
+        {
+            <h2 class="h5 mt-5 mb-3">Finalizadas (@Model.Finalizadas.Count)</h2>
+            @foreach (var postulacion in Model.Finalizadas)
+            {
+                <partial name="_TarjetaPostulante" model="postulacion" view-data="datosTarjeta" />
+            }
+        }
+    </div>
+</div>
