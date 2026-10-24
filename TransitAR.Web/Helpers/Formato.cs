@@ -291,5 +291,35 @@ namespace TransitAR.Web.Helpers
             return hoy.AddYears(-(anios ?? 0)).AddMonths(-(meses ?? 0)).AddDays(-(dias ?? 0));
         }
 
+
+        //PUBLICACIONES DEL REFUGIO
+
+
+        /// <summary>
+        /// Leyendas del estado de la publicaicn
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <returns></returns>
+        public static string EstadoPublicacion(EstadoPublicacion estado) => estado switch
+        {
+            Structures.EstadoPublicacion.Activa => "Activa",
+            Structures.EstadoPublicacion.Pausada => "Pausada",
+            Structures.EstadoPublicacion.Cerrada => "Cerrada",
+            _ => string.Empty
+        };
+
+        /// <summary>
+        /// Color de las leyendas del estado publicaicon
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <returns></returns>
+        public static string ColorEstadoPublicacion(EstadoPublicacion estado) => estado switch
+        {
+            Structures.EstadoPublicacion.Activa => "bg-success",
+            Structures.EstadoPublicacion.Pausada => "bg-warning text-dark",
+            _ => "bg-secondary"
+        };
+
+
     }
 }

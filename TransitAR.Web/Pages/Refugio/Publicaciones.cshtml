@@ -1,0 +1,141 @@
+﻿@page
+@model TransitAR.Web.Pages.Refugio.PublicacionesModel
+@{
+    ViewData["Title"] = "Publicaciones";
+
+    var filtros = new (EstadoPublicacion? Estado, string Nombre)[]
+    {
+        (EstadoPublicacion.Activa, "Activas"),
+        (EstadoPublicacion.Pausada, "Pausadas"),
+        (EstadoPublicacion.Cerrada, "Cerradas"),
+        (null, "Todas")
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Publicaciones</h1>
+    <a asp-page="/Refugio/Publicacion" class="btn btn-primary">Nueva publicación</a>
+</div>
+
+@if (Model.Mensaje != null)
+{
+    <div class="alert alert-success">@Model.Mensaje</div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var f in filtros)
+    {
+        <li class="nav-item">
+            <a asp-page="/Refugio/Publicaciones" asp-route-estado="@f.Estado"
+               class="nav-link @(Model.Estado == f.Estado ? "active" : "")">
+                @f.Nombre <span class="badge bg-light text-dark ms-1">@Model.Cantidad(f.Estado)</span>
+            </a>
+        </li>
+    }
+</ul>
+
+@if (!Model.Todas.Any())
+{
+    <div class="text-center py-5">
+        <p class="text-muted">Todavía no publicaste ninguna mascota.</p>
+        <a asp-page="/Refugio/Publicacion" class="btn btn-primary">Crear la primera</a>
+    </div>
+}
+else if (!Model.Publicaciones.Any())
+{
+    <p class="text-muted">No hay publicaciones en este estado.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Publicación</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Publicaciones)
+                {
+                    var foto = Api.UrlFotoPrincipal(p.FotosIds);
+                    var abierta = p.Estado != EstadoPublicacion.Cerrada;
+
+                    <tr>
+                        <td>
+                            @if (foto != null)
+                            {
+                                <img src="@foto" class="mascota-mini rounded" alt="Foto de @p.MascotaNombre" />
+                            }
+                            else
+                            {
+                                <div class="mascota-mini tarjeta-sin-foto rounded"></div>
+                            }
+                        </td>
+                        <td>
+                            <strong>@p.Titulo</strong>
+                            <div class="small text-muted">@p.MascotaNombre</div>
+                            <a asp-page="/Refugio/Postulantes" asp-route-id="@p.Id" class="small">
+                                Postulaciones (@p.CantidadPostulaciones)
+                            </a>
+                        </td>
+                        <td>@Formato.Tipo(p.Tipo)</td>
+                        <td><span class="badge @Formato.ColorEstadoPublicacion(p.Estado)">@Formato.EstadoPublicacion(p.Estado)</span></td>
+                        <td class="small">
+                            Publicada el @Formato.FechaDe(p.FechaPublicacion)
+                            @if (p.FechaCierre != null)
+                            {
+                                <div class="text-muted">Cerrada el @Formato.FechaDe(p.FechaCierre.Value)</div>
+                            }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            @if (p.Estado == EstadoPublicacion.Activa)
+                            {
+                                <a asp-page="/Publicaciones/Detalle" asp-route-id="@p.Id" class="btn btn-sm btn-outline-secondary">Ver</a>
+                            }
+
+                            @if (abierta)
+                            {
+                                <a asp-page="/Refugio/Publicacion" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            }
+
+                            @if (p.Estado == EstadoPublicacion.Activa)
+                            {
+                                <form method="post" asp-page-handler="CambiarEstado" asp-route-id="@p.Id"
+                                      asp-route-nuevoEstado="@EstadoPublicacion.Pausada" asp-route-estado="@Model.Estado" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning">Pausar</button>
+                                </form>
+                            }
+
+                            @if (p.Estado == EstadoPublicacion.Pausada)
+                            {
+                                <form method="post" asp-page-handler="CambiarEstado" asp-route-id="@p.Id"
+                                      asp-route-nuevoEstado="@EstadoPublicacion.Activa" asp-route-estado="@Model.Estado" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Reanudar</button>
+                                </form>
+                            }
+
+                            @if (abierta)
+                            {
+                                <form method="post" asp-page-handler="CambiarEstado" asp-route-id="@p.Id"
+                                      asp-route-nuevoEstado="@EstadoPublicacion.Cerrada" asp-route-estado="@Model.Estado" class="d-inline"
+                                      onsubmit="return confirm('¿Cerrar esta publicación? Es definitivo: no se puede reabrir, y las postulaciones que siguen abiertas se rechazan.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cerrar</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
