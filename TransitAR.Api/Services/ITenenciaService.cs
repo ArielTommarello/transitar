@@ -57,6 +57,15 @@ namespace TransitAR.Api.Services
         /// <returns></returns>
         Task<List<HistorialTenenciaResponse>?> ObtenerHistorialPostulanteAsync(Guid usuarioId, Guid refugioId);
 
+
+        /// <summary>
+        /// Controles seguimiento de todo lo que tuvo el postulante de otros refugios tambien, null si no tuvo nada
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="refugioId"></param>
+        /// <returns></returns>
+        Task<List<SeguimientoResponse>?> ObtenerControlesPostulanteAsync(Guid usuarioId, Guid refugioId);
+
         //USO PARA HISTORIAL DE TENENCIAS (USO DE USUARIO)
         /// <summary>
         /// Devuelve el historial de tenencias de un postulante propias, para ver que animales recibio como termino cada tenencia y las observaciones que le hicieron

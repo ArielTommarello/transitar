@@ -239,17 +239,54 @@ namespace TransitAR.Api.Services
                 return null;
 
             //solo se ve el historial de alguien que se postulo alguna vez a una publicacion de este refugio
-            var sePostulo = await _context.Postulaciones
-                .AnyAsync(p => p.UsuarioId == usuarioId
-                            && p.Publicacion!.Mascota!.RefugioId == refugioId);
+            //var sePostulo = await _context.Postulaciones
+            //    .AnyAsync(p => p.UsuarioId == usuarioId
+            //                && p.Publicacion!.Mascota!.RefugioId == refugioId);
 
-            if (!sePostulo)
+            //if (!sePostulo)
+            //    return null;
+
+            //solo se ve el historial de alguqien que si se postulo
+            if (!await PuedeVerHistorialAsync(usuarioId, refugioId))
                 return null;
 
             //unificacion para usar tenencias con mascota
 
             return await TenenciasAsync(usuarioId);
         }
+
+        ///<inheritdoc/>
+        public async Task<List<SeguimientoResponse>?> ObtenerControlesPostulanteAsync(Guid usuarioId, Guid refugioId)
+        {
+            //pregunto si puede ver el hostiral (tiene que estar postulado)
+            if (!await PuedeVerHistorialAsync(usuarioId, refugioId))
+                return null;
+
+            //los controles de todas sus tenencias (de todos lados)
+            var controles = await _context.Seguimientos
+                .AsNoTracking()
+                .Include(s => s.Tenencia)!
+                    .ThenInclude(t => t!.Mascota)!
+                        .ThenInclude(m => m!.Refugio)
+                .Include(s => s.Tenencia)!
+                    .ThenInclude(t => t!.Postulacion)!
+                        .ThenInclude(p => p!.Usuario)
+                .Where(s => s.Tenencia!.Postulacion!.UsuarioId == usuarioId)
+                .OrderBy(s => s.FechaProgramada)
+                .ToListAsync();
+
+            return controles.Select(SeguimientoService.SeguimientoDTO).ToList();
+        }
+
+        /// <summary>
+        /// Metodo que permite a un refugio ver el historial de una persona que se postulo, para tener mayor control e historiales
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="refugioId"></param>
+        /// <returns></returns>
+        private async Task<bool> PuedeVerHistorialAsync(Guid usuarioId, Guid refugioId) =>
+            await _context.Postulaciones
+                .AnyAsync(p => p.UsuarioId == usuarioId && p.Publicacion!.Mascota!.RefugioId == refugioId);
 
 
         //HISTORIAL DE TENENCIAS (USO USUARIOS)     
@@ -262,6 +299,12 @@ namespace TransitAR.Api.Services
 
             return await TenenciasAsync(usuarioId);
         }
+
+
+
+
+
+
 
     
         /// <summary>

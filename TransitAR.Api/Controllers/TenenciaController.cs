@@ -159,5 +159,27 @@ namespace TransitAR.Api.Controllers
 
             return Ok(historial);
         }
+
+
+        /// <summary>
+        /// Controles seguimiento de un postulante de todos los refugios
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        [HttpGet("postulante/{usuarioId:guid}/seguimientos")]
+        public async Task<IActionResult> ObtenerControlesPostulante(Guid usuarioId)
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            var controles = await _tenenciaService.ObtenerControlesPostulanteAsync(usuarioId, refugioId.Value);
+
+            if (controles == null)
+                return NotFound(new { mensaje = "No encontramos postulaciones de esa persona en tus publicaciones." });
+
+            return Ok(controles);
+        }
+
     }
 }

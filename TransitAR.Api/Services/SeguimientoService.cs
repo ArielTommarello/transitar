@@ -162,7 +162,7 @@ namespace TransitAR.Api.Services
         /// <summary>
         /// Pasa la entidad al DTO. Los nombres salen de las navegaciones,no en el seguimiento
         /// </summary>
-        private static SeguimientoResponse SeguimientoDTO(Seguimiento s) => new()
+        internal static SeguimientoResponse SeguimientoDTO(Seguimiento s) => new()
         {
             Id = s.Id,
             TenenciaId = s.TenenciaId,
