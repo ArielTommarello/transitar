@@ -321,5 +321,71 @@ namespace TransitAR.Web.Helpers
         };
 
 
+
+
+        //VISTA REFUGIO - POSTULANTES E HISTORIAL
+
+        /// <summary>
+        /// Horarios que la persona tiene disponible apra recibir al animal
+        /// </summary>
+        /// <param name="horario"></param>
+        /// <returns></returns>
+        public static string Horario(DisponibilidadHorario? horario) => horario switch
+        {
+            DisponibilidadHorario.Maniana => "Mañana",
+            DisponibilidadHorario.Tarde => "Tarde",
+            DisponibilidadHorario.Noche => "Noche",
+            DisponibilidadHorario.TodoElDia => "Todo el día",
+            _ => "Sin indicar"
+        };
+
+
+        /// <summary>
+        /// Seleccion de la persona segun perfil
+        /// </summary>
+        /// <param name="seleccion"></param>
+        /// <returns></returns>
+        public static string Seleccion(SeleccionUsuario seleccion) => seleccion switch
+        {
+            SeleccionUsuario.Adoptante => "Adoptar",
+            SeleccionUsuario.Transito => "Transitar",
+            SeleccionUsuario.Ambos => "Adoptar o transitar",
+            _ => string.Empty
+        };
+
+
+        /// <summary>
+        /// Aviso para mostrar si no es la seleccion que se busca
+        /// </summary>
+        /// <param name="seleccion"></param>
+        /// <param name="tipo"></param>
+        /// <returns></returns>
+        public static string? AvisoSeleccion(SeleccionUsuario seleccion, TipoPublicacion tipo)
+        {
+            if (seleccion == SeleccionUsuario.Adoptante && tipo == TipoPublicacion.Transito)
+                return "Busca adoptar";
+
+            if (seleccion == SeleccionUsuario.Transito && tipo == TipoPublicacion.Adopcion)
+                return "Busca transitar";
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// Estado para la postualcion ,como lo ve el refugio
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <returns></returns>
+        public static string EstadoParaRefugio(EstadoPostulacion estado) => estado switch
+        {
+            EstadoPostulacion.Pendiente => "Pendiente",
+            EstadoPostulacion.EnEspera => "En espera",
+            EstadoPostulacion.Aceptada => "Aceptada",
+            EstadoPostulacion.Rechazada => "Rechazada",
+            EstadoPostulacion.Retirada => "Se retiró",
+            _ => string.Empty
+        };
+
     }
 }
