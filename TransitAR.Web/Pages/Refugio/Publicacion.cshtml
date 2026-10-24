@@ -1,0 +1,168 @@
+﻿@page "{id:guid?}"
+@model TransitAR.Web.Pages.Refugio.PublicacionModel
+@{
+    var esNueva = Model.Id == null;
+    ViewData["Title"] = esNueva ? "Nueva publicación" : (Model.SoloLectura ? "Publicación cerrada" : "Editar publicación");
+}
+
+<a asp-page="/Refugio/Publicaciones" class="small">&larr; Volver a Publicaciones</a>
+
+@if (Model.NoEncontrada)
+{
+    <div class="text-center py-5">
+        <h1 class="h4">No encontramos esta publicación</h1>
+        <p class="text-muted">Puede que el link esté mal o que no sea de tu refugio.</p>
+        <a asp-page="/Refugio/Publicaciones" class="btn btn-primary">Ir a Publicaciones</a>
+    </div>
+    return;
+}
+
+<div class="row justify-content-center mt-2">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <h1 class="h3 mb-0">@ViewData["Title"]</h1>
+            @if (Model.Publicacion != null)
+            {
+                <span class="badge @Formato.ColorEstadoPublicacion(Model.Publicacion.Estado)">@Formato.EstadoPublicacion(Model.Publicacion.Estado)</span>
+            }
+        </div>
+
+        @if (Model.Publicacion != null)
+        {
+            <p class="text-muted small mb-3">
+                @Model.Publicacion.MascotaNombre · Publicada el @Formato.FechaDe(Model.Publicacion.FechaPublicacion)
+                @if (Model.Publicacion.FechaCierre != null)
+                {
+                    <text>· Cerrada el @Formato.FechaDe(Model.Publicacion.FechaCierre.Value)</text>
+                }
+                · @Model.Publicacion.CantidadPostulaciones postulaciones
+            </p>
+        }
+        else
+        {
+            <div class="mb-3"></div>
+        }
+
+        @if (Model.Mensaje != null)
+        {
+            <div class="alert alert-success">@Model.Mensaje</div>
+        }
+
+        @if (Model.Error != null)
+        {
+            <div class="alert alert-danger">@Model.Error</div>
+        }
+
+        @if (Model.AvisoReusar != null)
+        {
+            <div class="alert alert-warning">@Model.AvisoReusar</div>
+        }
+
+        @if (Model.SoloLectura)
+        {
+            <div class="alert alert-secondary d-flex justify-content-between align-items-center gap-3">
+                <span>Esta publicación está cerrada: se puede ver, pero no editar.</span>
+                <a asp-page="/Refugio/Publicacion" asp-route-reusar="@Model.Id" class="btn btn-sm btn-primary flex-shrink-0">Reusar</a>
+            </div>
+        }
+
+        <form method="post">
+            <fieldset disabled="@Model.SoloLectura">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Datos.MascotaId" class="form-label">Mascota</label>
+                            @if (esNueva)
+                            {
+                                <select asp-for="Datos.MascotaId" class="form-select" required>
+                                    <option value="">Elegí una mascota</option>
+                                    @foreach (var m in Model.Mascotas)
+                                    {
+                                        var ocupada = Model.Ocupadas.Contains(m.Id);
+                                        <option value="@m.Id" disabled="@ocupada">@m.Nombre@(ocupada ? " (ya publicada)" : "")</option>
+                                    }
+                                </select>
+                                <div class="form-text">Solo aparecen las que están en el refugio.</div>
+                            }
+                            else
+                            {
+                                
+                                <input class="form-control" value="@Model.Publicacion?.MascotaNombre" disabled />
+                                <input type="hidden" asp-for="Datos.MascotaId" />
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Datos.Titulo" class="form-label">Título</label>
+                            <input asp-for="Datos.Titulo" class="form-control" placeholder="Ej: Michi busca un hogar tranquilo" />
+                            <span asp-validation-for="Datos.Titulo" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Datos.Descripcion" class="form-label">Descripción</label>
+                            <textarea asp-for="Datos.Descripcion" class="form-control" rows="5"
+                                      placeholder="Cómo es, cómo se lleva con otros animales y con chicos, qué cuidados necesita"></textarea>
+                            <span asp-validation-for="Datos.Descripcion" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Datos.Ubicacion" class="form-label">Ubicación</label>
+                            <input asp-for="Datos.Ubicacion" class="form-control" />
+                            <span asp-validation-for="Datos.Ubicacion" class="text-danger small"></span>
+                        </div>
+
+                        <label class="form-label d-block">Tipo</label>
+                        @if (Model.TipoBloqueado && !Model.SoloLectura)
+                        {
+                            @* tipo oculto *@
+                            <input type="hidden" asp-for="Datos.Tipo" />
+                        }
+                        <div class="mb-1">
+                            <div class="form-check form-check-inline">
+                                <input asp-for="Datos.Tipo" type="radio" value="Adopcion" id="tipo-adopcion" class="form-check-input" disabled="@Model.TipoBloqueado" />
+                                <label class="form-check-label" for="tipo-adopcion">Adopción</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input asp-for="Datos.Tipo" type="radio" value="Transito" id="tipo-transito" class="form-check-input" disabled="@Model.TipoBloqueado" />
+                                <label class="form-check-label" for="tipo-transito">Tránsito</label>
+                            </div>
+                        </div>
+                        @if (Model.TipoBloqueado)
+                        {
+                            <div class="form-text mb-3">No se puede cambiar porque ya tiene postulaciones.</div>
+                        }
+
+                        <div id="bloque-plazo" class="mt-3">
+                            <label asp-for="Datos.PlazoEstimado" class="form-label">¿Por cuántos días, más o menos? <span class="text-muted">(opcional)</span></label>
+                            <div class="input-group">
+                                <input asp-for="Datos.PlazoEstimado" type="number" min="1" class="form-control" />
+                                <span class="input-group-text">días</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!Model.SoloLectura)
+                {
+                    <button type="submit" class="btn btn-primary w-100 mb-5">
+                        @(esNueva ? "Publicar" : "Guardar cambios")
+                    </button>
+                }
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        //plazo solo para transito
+        function mostrarPlazo() {
+            document.getElementById('bloque-plazo').hidden = !document.getElementById('tipo-transito').checked;
+        }
+
+        document.getElementById('tipo-adopcion').addEventListener('change', mostrarPlazo);
+        document.getElementById('tipo-transito').addEventListener('change', mostrarPlazo);
+        mostrarPlazo();
+    </script>
+}

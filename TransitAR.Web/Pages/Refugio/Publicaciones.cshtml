@@ -100,12 +100,17 @@ else
                         <td class="text-end text-nowrap">
                             @if (p.Estado == EstadoPublicacion.Activa)
                             {
-                                <a asp-page="/Publicaciones/Detalle" asp-route-id="@p.Id" class="btn btn-sm btn-outline-secondary">Ver</a>
+                                <a asp-page="/Publicaciones/Detalle" asp-route-id="@p.Id" class="btn btn-sm btn-outline-secondary">Ver aviso</a>
                             }
 
                             @if (abierta)
                             {
                                 <a asp-page="/Refugio/Publicacion" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            }
+                            else
+                            {
+                                <a asp-page="/Refugio/Publicacion" asp-route-id="@p.Id" class="btn btn-sm btn-outline-secondary">Ver</a>
+                                <a asp-page="/Refugio/Publicacion" asp-route-reusar="@p.Id" class="btn btn-sm btn-outline-primary">Reusar</a>
                             }
 
                             @if (p.Estado == EstadoPublicacion.Activa)
