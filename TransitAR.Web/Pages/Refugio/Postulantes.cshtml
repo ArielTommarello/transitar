@@ -19,11 +19,12 @@
 @{
     var p = Model.Publicacion;
 
-    //tipo de publicacion y id de pub
+    //tipo de publicacion y id de pub y piublicacion cerrada
     var datosTarjeta = new ViewDataDictionary(ViewData)
             {
                 ["TipoPublicacion"] = p.Tipo,
-                ["PublicacionId"] = p.Id
+                ["PublicacionId"] = p.Id,
+                ["PublicacionCerrada"] = p.Estado == EstadoPublicacion.Cerrada
             };
 }
 
@@ -42,8 +43,15 @@
 
         @if (Model.Aceptada != null)
         {
-            <h2 class="h5 mb-3">Aceptada</h2>
-            <p class="small text-muted">La publicación está pausada hasta que confirmes la entrega o la rechaces.</p>
+            @if (p.Estado == EstadoPublicacion.Cerrada)
+            {
+                <h2 class="h5 mb-3">Se le entregó</h2>
+            }
+            else
+            {
+                <h2 class="h5 mb-3">Aceptada</h2>
+                <p class="small text-muted">La publicación está pausada hasta que confirmes la entrega o la rechaces.</p>
+            }
             <partial name="_TarjetaPostulante" model="Model.Aceptada" view-data="datosTarjeta" />
         }
 

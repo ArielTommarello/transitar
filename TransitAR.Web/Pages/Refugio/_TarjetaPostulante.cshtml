@@ -4,6 +4,11 @@
     var tipoPublicacion = (TipoPublicacion)ViewData["TipoPublicacion"]!;
     var publicacionId = (Guid)ViewData["PublicacionId"]!;
     var aviso = Formato.AvisoSeleccion(Model.Seleccion, tipoPublicacion);
+    var publicacionCerrada = (bool)ViewData["PublicacionCerrada"]!;
+    //cierro si esta aceptada y entregada
+    var textoEstado = Model.Estado == EstadoPostulacion.Aceptada && publicacionCerrada
+       ? "Entregada"
+       : Formato.EstadoParaRefugio(Model.Estado);
 }
 
 <div class="card mb-3">
@@ -23,7 +28,7 @@
                     <strong>@Model.Nombre @Model.Apellido</strong>
                     <div class="small text-muted">Se postuló el @Formato.FechaDe(Model.FechaPostulacion)</div>
                 </div>
-                <span class="badge @Formato.ColorEstado(Model.Estado)">@Formato.EstadoParaRefugio(Model.Estado)</span>
+                <span class="badge @Formato.ColorEstado(Model.Estado)">@textoEstado</span>
             </div>
 
             <div class="small mt-2">
