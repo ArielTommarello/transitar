@@ -44,6 +44,11 @@ namespace TransitAR.Web.Pages.Publicaciones
         /// </summary>
         public bool FaltaPerfil { get; set; }
 
+        /// <summary>
+        /// Distingo entre lo que busca la persona y el tipo de puvblicacion, null si coincide
+        /// </summary>
+        public string? AvisoNoCoincide { get; set; }
+
         public async Task OnGetAsync(Guid id)
         {
             await CargarAsync(id);
@@ -65,9 +70,7 @@ namespace TransitAR.Web.Pages.Publicaciones
             if (!respuesta.Exito)
             {
                 //errores (sin perfil, cupo lleno, ya postulado o otros)
-                Error = respuesta.Error;
-                var perfil = await _api.GetAsync<PerfilResponse>("api/Perfil");
-                FaltaPerfil = perfil.Estado == StatusCodes.Status404NotFound;
+                Error = respuesta.Error;                
                 await CargarAsync(id);
                 return Page();
             }
@@ -93,6 +96,19 @@ namespace TransitAR.Web.Pages.Publicaciones
                 MiPostulacion = mias.Exito
                     ? mias.Datos!.FirstOrDefault(m => m.PublicacionId == id)
                     : null;
+
+                //El pergil, si no tiene o si busca otra cosa antes de que toque el boton salta aviso
+                var perfil = await _api.GetAsync<PerfilResponse>("api/Perfil");
+                FaltaPerfil = perfil.Estado == StatusCodes.Status404NotFound;
+
+                if (perfil.Datos != null)
+                {
+                    if (perfil.Datos.Seleccion == SeleccionUsuario.Adoptante && Publicacion.Tipo == TipoPublicacion.Transito)
+                        AvisoNoCoincide = "Esta publicación es de tránsito y tu perfil dice que buscás adoptar.";
+
+                    if (perfil.Datos.Seleccion == SeleccionUsuario.Transito && Publicacion.Tipo == TipoPublicacion.Adopcion)
+                        AvisoNoCoincide = "Esta publicación es de adopción y tu perfil dice que buscás transitar.";
+                }
             }
         }
     }

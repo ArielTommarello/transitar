@@ -69,7 +69,7 @@
             <li><strong>Especie:</strong> @p.EspecieNombre</li>
             <li><strong>Sexo:</strong> @Formato.Sexo(p.Sexo)</li>
             <li><strong>Tamaño:</strong> @Formato.Tamanio(p.Tamanio)</li>
-            <li><strong>Edad:</strong> @Formato.Edad(p.EdadAproximadaMeses,p.EdadAproximadaDias)</li>
+            <li><strong>Edad:</strong> @Formato.Edad(p.EdadAproximadaMeses, p.EdadAproximadaDias)</li>
             <li><strong>Vacunado:</strong> @(p.Vacunado ? "Sí" : "No")</li>
             @if (p.Tipo == TipoPublicacion.Transito && p.PlazoEstimado != null)
             {
@@ -116,6 +116,16 @@
                         <p class="small text-muted mt-2 mb-0">
                             Te postulaste el @Formato.FechaDe(Model.MiPostulacion.FechaPostulacion).
                         </p>
+                    }
+                    else if (Model.FaltaPerfil)
+                    {
+                        <p class="small mb-2">Para postularte, primero completá tu perfil.</p>
+                        <a asp-page="/Postulante/Perfil" asp-route-returnUrl="@Request.Path" class="btn btn-primary w-100">Completá tu perfil</a>
+                    }
+                    else if (Model.AvisoNoCoincide != null)
+                    {
+                        <p class="small mb-2">@Model.AvisoNoCoincide</p>
+                        <a asp-page="/Postulante/Perfil" asp-route-returnUrl="@Request.Path" class="btn btn-outline-primary w-100">Cambiarlo en Mi perfil</a>
                     }
                     else
                     {

@@ -55,8 +55,13 @@ namespace TransitAR.Api.Services
             if (request == null || usuarioId == Guid.Empty)
                 return Error("No se recibieron los datos de la postulacion, intentelo de nuevo mas tarde.");
 
-            //usuario sin perfil completo
-            if (!await _context.PerfilPostulantes.AnyAsync(p => p.UsuarioId == usuarioId))
+            //usuario sin perfil completo. Se trae solo lo que se busca o tiene peusto de seleccion
+            var seleccion = await _context.PerfilPostulantes
+               .Where(p => p.UsuarioId == usuarioId)
+               .Select(p => (SeleccionUsuario?)p.Seleccion)
+               .FirstOrDefaultAsync();
+
+            if (seleccion == null)
                 return Error("Tenes que completar tu perfil antes de poder postularte.");
 
             //postulacion creada y activa
@@ -74,6 +79,14 @@ namespace TransitAR.Api.Services
             //un refugio bloqueado no recibe postulaciones en caso de link guardado o directo
             if (!await _context.Mascotas.AnyAsync(m => m.Id == publicacion.MascotaId && m.Refugio!.Activo))
                 return Error("La publicacion ya no esta recibiendo postulaciones o se encuentra pausada.");
+
+            //nuevo cheque, se puede psotular solo a lo que eligio, si son "ambos" ambos
+            if (seleccion == SeleccionUsuario.Adoptante && publicacion.Tipo == TipoPublicacion.Transito)
+                return Error("Tu perfil dice que buscas adoptar. Si tambien queres transitar, cambialo en Mi perfil.");
+
+            if (seleccion == SeleccionUsuario.Transito && publicacion.Tipo == TipoPublicacion.Adopcion)
+                return Error("Tu perfil dice que buscas transitar. Si tambien queres adoptar, cambialo en Mi perfil.");
+
 
             ////Postulacion unica por persona, sino se vuelve reptitivo, sirve como flag para mostras "estas postualdo"
             //var yaPostulado = await _context.Postulaciones
