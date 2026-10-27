@@ -387,5 +387,17 @@ namespace TransitAR.Web.Helpers
             _ => string.Empty
         };
 
+
+        /// <summary>
+        /// Estados para el refugio, cerradas y la aceptada es la que sera la entregada
+        /// </summary>
+        /// <param name="estado"></param>
+        /// <param name="publicacionCerrada"></param>
+        /// <returns></returns>
+        public static string EstadoParaRefugio(EstadoPostulacion estado, bool publicacionCerrada) =>
+            estado == EstadoPostulacion.Aceptada && publicacionCerrada
+                        ? "Entregada"
+                        : EstadoParaRefugio(estado);
+
     }
 }

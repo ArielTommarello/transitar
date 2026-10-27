@@ -1,0 +1,295 @@
+﻿@page "{publicacionId:guid}/{postulacionId:guid}"
+@model TransitAR.Web.Pages.Refugio.PostulanteModel
+@{
+    ViewData["Title"] = Model.Postulacion == null ? "Postulante" : $"{Model.Postulacion.Nombre} {Model.Postulacion.Apellido}";
+}
+
+<a asp-page="/Refugio/Postulantes" asp-route-id="@Model.PublicacionId" class="small">&larr; Volver a Postulaciones</a>
+
+@if (Model.NoEncontrada || Model.Publicacion == null || Model.Postulacion == null)
+{
+    <div class="text-center py-5">
+        <h1 class="h4">No encontramos esta postulación</h1>
+        <p class="text-muted">Puede que el link esté mal o que no sea de tu refugio.</p>
+        <a asp-page="/Refugio/Publicaciones" class="btn btn-primary">Ir a Publicaciones</a>
+    </div>
+    return;
+}
+
+@{
+    var p = Model.Postulacion;
+    var pub = Model.Publicacion;
+    var aviso = Formato.AvisoSeleccion(p.Seleccion, pub.Tipo);
+    var esTransito = pub.Tipo == TipoPublicacion.Transito;
+}
+
+@if (Model.Mensaje != null)
+{
+    <div class="alert alert-success mt-3">@Model.Mensaje</div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger mt-3">@Model.Error</div>
+}
+
+<div class="row g-4 mt-1">
+    @* -- Perfil -- *@
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex gap-3 align-items-center mb-3">
+                    @if (p.FotoPerfil)
+                    {
+                        <img src="@Api.UrlFotoPostulante(p.UsuarioId)" class="perfil-foto rounded-circle" alt="Foto de @p.Nombre" />
+                    }
+                    else
+                    {
+                        <div class="perfil-foto perfil-sin-foto rounded-circle">@p.Nombre[..1]@p.Apellido[..1]</div>
+                    }
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <h1 class="h3 mb-0">@p.Nombre @p.Apellido</h1>
+                            <span class="badge @Formato.ColorEstado(p.Estado)">@Formato.EstadoParaRefugio(p.Estado, Model.PublicacionCerrada)</span>
+                        </div>
+                        <div class="small text-muted">
+                            Se postuló el @Formato.FechaDe(p.FechaPostulacion) a <strong>@pub.Titulo</strong> (@Formato.Tipo(pub.Tipo))
+                        </div>
+                        @if (p.FechaResolucion != null)
+                        {
+                            <div class="small text-muted">Resuelta el @Formato.FechaDe(p.FechaResolucion.Value)</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    Busca: @Formato.Seleccion(p.Seleccion)
+                    @if (aviso != null)
+                    {
+                        <span class="badge bg-warning text-dark ms-1">@aviso</span>
+                    }
+                </div>
+
+                <h2 class="h6 text-muted text-uppercase">Su casa</h2>
+                <ul class="list-unstyled mb-3">
+                    <li><strong>Vivienda:</strong> @(p.TipoVivienda ?? "Sin indicar")</li>
+                    <li><strong>Patio:</strong> @(p.TienePatio ? (p.PatioCerrado ? "Sí, cerrado" : "Sí, abierto") : "No")</li>
+                    <li>
+                        <strong>Otras mascotas:</strong> @(p.TieneOtrasMascotas ? "Sí" : "No")
+                        @if (p.TieneOtrasMascotas && !string.IsNullOrWhiteSpace(p.DetalleOtrasMascotas))
+                        {
+                            <span>· @p.DetalleOtrasMascotas</span>
+                        }
+                    </li>
+                    <li><strong>Horas solo por día:</strong> @(p.HorasSoloPorDia?.ToString() ?? "Sin indicar")</li>
+                    <li><strong>Disponibilidad:</strong> @Formato.Horario(p.DisponibilidadHorario)</li>
+                    @if (!string.IsNullOrWhiteSpace(p.CercaniaVeterinaria))
+                    {
+                        <li><strong>Veterinaria cerca:</strong> @p.CercaniaVeterinaria</li>
+                    }
+                </ul>
+
+                @if (!string.IsNullOrWhiteSpace(p.ExperienciaPrevia))
+                {
+                    <h2 class="h6 text-muted text-uppercase">Experiencia con animales</h2>
+                    <p class="texto-con-saltos">@p.ExperienciaPrevia</p>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(p.MotivoPostulacion))
+                {
+                    <h2 class="h6 text-muted text-uppercase">Por qué se postula</h2>
+                    <p class="texto-con-saltos">@p.MotivoPostulacion</p>
+                }
+
+                @if (p.Contactos.Any())
+                {
+                    <h2 class="h6 text-muted text-uppercase">Redes</h2>
+                    <ul class="list-inline mb-3">
+                        @foreach (var c in p.Contactos)
+                        {
+                            <li class="list-inline-item">
+                                <a href="@c.Url" target="_blank" rel="noopener noreferrer">@c.Tipo</a>
+                            </li>
+                        }
+                    </ul>
+                }
+
+                <p class="small text-muted mb-0">Completó su perfil el @Formato.FechaDe(p.FechaCompletado)</p>
+            </div>
+        </div>
+    </div>
+
+    @* -- Decision -- *@
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Decisión</h2>
+
+                @if (Model.PublicacionCerrada)
+                {
+                    <p class="text-muted mb-0">
+                        @(p.Estado == EstadoPostulacion.Aceptada
+                            ? $"Se le entregó a {pub.MascotaNombre}. La publicación está cerrada."
+                            : "La publicación está cerrada.")
+                    </p>
+                }
+                else if (p.Estado == EstadoPostulacion.Aceptada)
+                {
+                    <p class="small">
+                        La aceptaste. Cuando le entregues a <strong>@pub.MascotaNombre</strong>, confirmalo acá:
+                        se cierra la publicación y se rechazan las demás postulaciones.
+                    </p>
+
+                    <form method="post" asp-page-handler="ConfirmarEntrega" class="mb-4"
+                          onsubmit="return confirm('¿Confirmás que @p.Nombre ya tiene a @pub.MascotaNombre? Se cierra la publicación y se rechazan las demás postulaciones.');">
+                        @if (esTransito)
+                        {
+                            <div class="mb-2">
+                                <label asp-for="FechaFinEstimada" class="form-label">Fecha de devolución (opcional)</label>
+                                <input asp-for="FechaFinEstimada" type="date" class="form-control"
+                                       min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
+                                <div class="form-text">Arranca con el plazo de la publicación. Si queda vacía, el plazo queda abierto.</div>
+                            </div>
+                        }
+                        <button type="submit" class="btn btn-success w-100">Confirmar entrega</button>
+                    </form>
+
+                    <form method="post" asp-page-handler="Rechazar"
+                          onsubmit="return confirm('¿Rechazar a @p.Nombre? La publicación vuelve a estar activa y las postulaciones en espera vuelven a evaluación.');">
+                        <div class="mb-2">
+                            <label asp-for="Observacion" class="form-label">Observación (opcional)</label>
+                            <textarea asp-for="Observacion" class="form-control" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-outline-danger w-100">Rechazar</button>
+                    </form>
+                }
+                else if (p.Estado == EstadoPostulacion.Pendiente || p.Estado == EstadoPostulacion.EnEspera)
+                {
+                    @if (p.Estado == EstadoPostulacion.Pendiente)
+                    {
+                        <form method="post" asp-page-handler="Aceptar" class="mb-4"
+                              onsubmit="return confirm('¿Aceptar a @p.Nombre? Las demás postulaciones quedan en espera y la publicación se pausa hasta que confirmes la entrega.');">
+                            <button type="submit" class="btn btn-success w-100">Aceptar</button>
+                            <div class="form-text">Las demás quedan en espera, por si esta no se concreta.</div>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="small text-muted">Estás avanzando con otra persona. Si esa no se concreta, esta vuelve a evaluación.</p>
+                    }
+
+                    <form method="post" asp-page-handler="Rechazar"
+                          onsubmit="return confirm('¿Rechazar a @p.Nombre?');">
+                        <div class="mb-2">
+                            <label asp-for="Observacion" class="form-label">Observación (opcional)</label>
+                            <textarea asp-for="Observacion" class="form-control" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-outline-danger w-100">Rechazar</button>
+                    </form>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Esta postulación ya está resuelta: @Formato.EstadoParaRefugio(p.Estado).</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@* -- Historial -- *@
+<div class="card mt-4 mb-5">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Historial en TransitAR</h2>
+
+        <div class="d-flex flex-wrap gap-4 mb-4">
+            <div><div class="h4 mb-0">@Model.Historial.Count</div><div class="small text-muted">Tenencias</div></div>
+            <div><div class="h4 mb-0">@Model.Devueltas</div><div class="small text-muted">Devueltas</div></div>
+            <div><div class="h4 mb-0 @(Model.ConInconvenientes > 0 ? "text-danger" : "")">@Model.ConInconvenientes</div><div class="small text-muted">Con inconvenientes</div></div>
+            <div><div class="h4 mb-0">@Model.ACargo</div><div class="small text-muted">A cargo ahora</div></div>
+            <div><div class="h4 mb-0 @(Model.Vencidas > 0 ? "text-danger" : "")">@Model.Vencidas</div><div class="small text-muted">Devolución vencida</div></div>
+        </div>
+
+        @if (!Model.Historial.Any())
+        {
+            <p class="text-muted small mb-0">Es su primera vez: todavía no tuvo animales a cargo por TransitAR.</p>
+        }
+
+        @foreach (var t in Model.Historial)
+        {
+            var foto = Api.UrlFotoPrincipal(t.FotosIds);
+            var veredicto = Formato.VeredictoTenencia(t);
+            var controles = Model.ControlesDe(t.Id);
+
+            <div class="border rounded p-3 mb-3">
+                <div class="d-flex gap-3 align-items-start">
+                    @if (foto != null)
+                    {
+                        <img src="@foto" class="mascota-mini rounded" alt="Foto de @t.MascotaNombre" />
+                    }
+                    else
+                    {
+                        <div class="mascota-mini tarjeta-sin-foto rounded"></div>
+                    }
+
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div>
+                                <strong>@t.MascotaNombre</strong> <span class="text-muted">· @t.EspecieNombre · @Formato.Tipo(t.Modalidad)</span>
+                                <div class="small text-muted">@t.RefugioNombre</div>
+                            </div>
+                            <span class="badge @Formato.ColorTenencia(t)">@Formato.EtiquetaTenencia(t)</span>
+                        </div>
+
+                        <ul class="list-unstyled small mt-2 mb-0">
+                            <li>Lo recibió el @Formato.FechaDe(t.FechaInicio)</li>
+                            @if (t.FechaFinEstimada != null)
+                            {
+                                <li>Devolución pactada: @Formato.Dia(t.FechaFinEstimada.Value)</li>
+                            }
+                            @if (t.FechaConversion != null)
+                            {
+                                <li>Pasó a adopción el @Formato.FechaDe(t.FechaConversion.Value)</li>
+                            }
+                            @if (t.FechaFinReal != null)
+                            {
+                                <li>Volvió al refugio el @Formato.FechaDe(t.FechaFinReal.Value)</li>
+                            }
+                            <li>@(t.EnCurso ? $"Lo tiene hace {Formato.Dias(t.DuracionEnDias)}." : $"Lo tuvo {Formato.Dias(t.DuracionEnDias)}.")</li>
+                        </ul>
+
+                        @if (veredicto != null)
+                        {
+                            <div class="small mt-2">
+                                <strong>@veredicto</strong>
+                                @if (!string.IsNullOrWhiteSpace(t.ObservacionCierre))
+                                {
+                                    <div class="texto-con-saltos">"@t.ObservacionCierre"</div>
+                                }
+                            </div>
+                        }
+
+                        @if (controles.Any())
+                        {
+                            <div class="small mt-2">
+                                <strong>Controles</strong>
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var c in controles)
+                                    {
+                                        <li class="mt-1">
+                                            @Formato.Dia(c.FechaProgramada)
+                                            <span class="badge @Formato.ColorControl(c)">@Formato.EstadoControl(c)</span>
+                                            @if (!string.IsNullOrWhiteSpace(c.Observacion))
+                                            {
+                                                <span class="text-muted texto-con-saltos">· @c.Observacion</span>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
