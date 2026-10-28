@@ -1,0 +1,135 @@
+﻿@page
+@model TransitAR.Web.Pages.Refugio.TenenciasModel
+@{
+    ViewData["Title"] = "Tenencias";
+
+    var pestanias = new (VistaTenencias Vista, string Nombre)[]
+    {
+        (VistaTenencias.EnCurso, "En curso"),
+        (VistaTenencias.Vencidas, "Devolución vencida"),
+        (VistaTenencias.SinControles, "Sin controles"),
+        (VistaTenencias.Finalizadas, "Finalizadas")
+    };
+}
+
+<h1 class="h3 mb-3">Tenencias</h1>
+
+@if (Model.Mensaje != null)
+{
+    <div class="alert alert-success">@Model.Mensaje</div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+@if (Model.MascotaId != null)
+{
+    <p class="small">
+        Mostrando las tenencias de <strong>@(Model.MascotaNombre ?? "esta mascota")</strong> ·
+        <a asp-page="/Refugio/Tenencias">Ver todas</a>
+    </p>
+}
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var p in pestanias)
+    {
+        var cantidad = Model.Cantidad(p.Vista);
+        var urgente = (p.Vista == VistaTenencias.Vencidas || p.Vista == VistaTenencias.SinControles) && cantidad > 0;
+
+        <li class="nav-item">
+            <a asp-page="/Refugio/Tenencias" asp-route-vista="@p.Vista" asp-route-mascotaId="@Model.MascotaId"
+               class="nav-link @(Model.Vista == p.Vista ? "active" : "")">
+                @p.Nombre <span class="badge @(urgente ? "bg-warning text-dark" : "bg-light text-dark") ms-1">@cantidad</span>
+            </a>
+        </li>
+    }
+</ul>
+
+@if (!Model.Todas.Any())
+{
+    <div class="text-center py-5">
+        <p class="text-muted">
+            @(Model.MascotaId == null
+                ? "Todavía no entregaste ninguna mascota. Las tenencias aparecen cuando confirmás una entrega."
+                : "Esta mascota no tiene tenencias.")
+        </p>
+    </div>
+}
+else if (!Model.Tenencias.Any())
+{
+    <p class="text-muted">No hay tenencias en esta pestaña.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Mascota</th>
+                    <th>Con quién</th>
+                    <th>Fechas</th>
+                    <th>Estado</th>
+                    <th class="text-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.Tenencias)
+                {
+                    var foto = Api.UrlFotoPrincipal(t.FotosIds);
+                    var enCurso = t.FechaFinReal == null;
+
+                    <tr>
+                        <td>
+                            @if (foto != null)
+                            {
+                                <img src="@foto" class="mascota-mini rounded" alt="Foto de @t.MascotaNombre" />
+                            }
+                            else
+                            {
+                                <div class="mascota-mini tarjeta-sin-foto rounded"></div>
+                            }
+                        </td>
+                        <td>
+                            <strong>@t.MascotaNombre</strong>
+                            <div class="small text-muted">@t.EspecieNombre · @Formato.Tipo(t.Modalidad)</div>
+                        </td>
+                        <td>
+                            <a asp-page="/Refugio/Postulante" asp-route-publicacionId="@t.PublicacionId" asp-route-postulacionId="@t.PostulacionId">
+                                @t.Nombre @t.Apellido
+                            </a>
+                        </td>
+                        <td class="small">
+                            Desde el @Formato.FechaDe(t.FechaInicio)
+                            @if (t.FechaFinEstimada != null && enCurso)
+                            {
+                                <div>Devolución pactada: @Formato.Dia(t.FechaFinEstimada.Value)</div>
+                            }
+                            @if (t.FechaConversion != null)
+                            {
+                                <div>Pasó a adopción el @Formato.FechaDe(t.FechaConversion.Value)</div>
+                            }
+                            @if (t.FechaFinReal != null)
+                            {
+                                <div>Volvió el @Formato.FechaDe(t.FechaFinReal.Value)</div>
+                            }
+                            <div class="text-muted">@(enCurso ? $"Lleva {Formato.Dias(t.DuracionEnDias)}" : $"Duró {Formato.Dias(t.DuracionEnDias)}")</div>
+                        </td>
+                        <td>
+                            <span class="badge @Formato.ColorTenencia(t)">@Formato.EtiquetaTenencia(t)</span>
+                            @if (enCurso && !t.TieneControlPendiente)
+                            {
+                                <div><span class="badge bg-warning text-dark mt-1">Sin controles</span></div>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-page="/Refugio/Tenencia" asp-route-id="@t.Id" class="btn btn-sm btn-outline-primary">Ver</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

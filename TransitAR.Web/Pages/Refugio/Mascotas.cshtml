@@ -91,6 +91,10 @@ else
                         <td class="small">@Formato.Sexo(m.Sexo) · @Formato.Edad(m.EdadAproximadaMeses,m.EdadAproximadaDias)</td>
                         <td><span class="badge @Formato.ColorEstadoMascota(m.Estado)">@Formato.EstadoMascota(m.Estado)</span></td>
                         <td class="text-end text-nowrap">
+                            @if (m.Estado == EstadoMascota.EnTransito || m.Estado == EstadoMascota.Adoptada)
+                            {
+                                <a asp-page="/Refugio/Tenencias" asp-route-mascotaId="@m.Id" class="btn btn-sm btn-outline-secondary">Tenencias</a>
+                            }
                             <a asp-page="/Refugio/Mascota" asp-route-id="@m.Id" class="btn btn-sm btn-outline-primary">Editar</a>
 
                             <form method="post" asp-page-handler="Eliminar" asp-route-id="@m.Id" asp-route-estado="@Model.Estado"

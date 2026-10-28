@@ -142,34 +142,53 @@ namespace TransitAR.Web.Helpers
             _ => null
         };
 
+        /// <summary>
+        /// Etiqueta de una tenencia en el historial y en Mis tenencias
+        /// </summary>
+        public static string EtiquetaTenencia(HistorialTenenciaResponse t) =>
+            EtiquetaTenencia(t.Modalidad, t.FechaFinReal != null, t.VencidaEnCurso);
 
         /// <summary>
-        /// Etiqueta de la card de una tenencia como la ve el postulante
+        /// Etiqueta de una tenencia en el listado del refugio
         /// </summary>
-        public static string EtiquetaTenencia(HistorialTenenciaResponse t)
-        {
-            if (t.FechaFinReal != null)
-                return t.Modalidad == TipoPublicacion.Adopcion ? "Adopción devuelta" : "Devuelto";
+        public static string EtiquetaTenencia(TenenciaResponse t) =>
+            EtiquetaTenencia(t.Modalidad, t.FechaFinReal != null, t.EstaVencida);
 
-            if (t.Modalidad == TipoPublicacion.Adopcion)
+        /// <summary>
+        /// Color de la etiqueta en el historial y en Mis tenencias
+        /// </summary>
+        public static string ColorTenencia(HistorialTenenciaResponse t) =>
+            ColorTenencia(t.Modalidad, t.FechaFinReal != null, t.VencidaEnCurso);
+
+        /// <summary>
+        /// Color de la etiqueta en el listado del refugio
+        /// </summary>
+        public static string ColorTenencia(TenenciaResponse t) =>
+            ColorTenencia(t.Modalidad, t.FechaFinReal != null, t.EstaVencida);
+
+        //uso en los dos DTOS
+        private static string EtiquetaTenencia(TipoPublicacion modalidad, bool devuelta, bool vencida)
+        {
+            if (devuelta)
+                return modalidad == TipoPublicacion.Adopcion ? "Adopción devuelta" : "Devuelto";
+
+            if (modalidad == TipoPublicacion.Adopcion)
                 return "Adoptado";
 
-            return t.VencidaEnCurso ? "Devolución pendiente" : "En tránsito";
+            return vencida ? "Devolución pendiente" : "En tránsito";
         }
 
-        /// <summary>
-        /// Diferenciacion de colores de la etiqueta
-        /// </summary>
-        public static string ColorTenencia(HistorialTenenciaResponse t)
+        private static string ColorTenencia(TipoPublicacion modalidad, bool devuelta, bool vencida)
         {
-            if (t.FechaFinReal != null)
-                return t.Modalidad == TipoPublicacion.Adopcion ? "bg-danger" : "bg-secondary";
+            if (devuelta)
+                return modalidad == TipoPublicacion.Adopcion ? "bg-danger" : "bg-secondary";
 
-            if (t.Modalidad == TipoPublicacion.Adopcion)
+            if (modalidad == TipoPublicacion.Adopcion)
                 return "bg-success";
 
-            return t.VencidaEnCurso ? "bg-warning text-dark" : "bg-info text-dark";
+            return vencida ? "bg-warning text-dark" : "bg-info text-dark";
         }
+
 
         /// <summary>
         /// Texto que explica en que quedo la tenencia
@@ -397,7 +416,9 @@ namespace TransitAR.Web.Helpers
         public static string EstadoParaRefugio(EstadoPostulacion estado, bool publicacionCerrada) =>
             estado == EstadoPostulacion.Aceptada && publicacionCerrada
                         ? "Entregada"
-                        : EstadoParaRefugio(estado);
+                        : EstadoParaRefugio(estado);      
+
+
 
     }
 }
