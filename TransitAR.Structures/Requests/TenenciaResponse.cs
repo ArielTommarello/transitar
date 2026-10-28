@@ -85,5 +85,31 @@ namespace TransitAR.Structures
         /// Transito en curso cuya fecha pactada de devolucion ya paso. Siempre es false en caso de adopcion, tenencia cerrada o plazo abierto y no vencido.
         /// </summary>
         public bool EstaVencida { get; set; }
+
+        /// <summary>
+        /// Id de la publicacion de donde salio la tenenina , lo uso para ir al detalle
+        /// </summary>
+        public Guid PublicacionId { get; set; }
+
+        /// <summary>
+        /// Especie de la mascota para mostrar en al tenenecia    
+        /// </summary>
+        public string EspecieNombre { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Id de las fotos para mostrar en orden en el detalle
+        /// </summary>
+        public List<Guid> FotosIds { get; set; } = new();
+
+        /// <summary>
+        /// Duracion de los dias que tiene el transito o la aadocpion (si es en curso , hasta el dia de la fecha)
+        /// </summary>
+        public int DuracionEnDias { get; set; }
+
+
+        /// <summary>
+        /// Tiene algun control programado, para avisar si no se esta sigueindo una tenencia o no se quiere seguir
+        /// </summary>
+        public bool TieneControlPendiente { get; set; }
     }
 }   

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using TransitAR.Structures;
 using TransitAR.Structures.Requests;
 
@@ -313,9 +314,13 @@ namespace TransitAR.Api.Services
         private IQueryable<Tenencia> ConsultaCompleta() =>
             _context.Tenencias
                 .AsNoTracking()
-                .Include(t => t.Mascota)
+                .Include(t => t.Mascota)!
+                    .ThenInclude(m => m!.Especie)
+                .Include(t => t.Mascota)!
+                    .ThenInclude(m => m!.Fotos)
                 .Include(t => t.Postulacion)!
-                    .ThenInclude(p => p!.Usuario);
+                    .ThenInclude(p => p!.Usuario)
+                .Include(t => t.Seguimientos);
 
         /// <summary>
         /// Resultado error, en caso de no completarse bien la tenencia
@@ -335,29 +340,40 @@ namespace TransitAR.Api.Services
         /// <summary>
         /// Pasa la entidad al DTO de salida, calculando si el transito esta vencido
         /// </summary>
-        private static TenenciaResponse TenenciaDTO(Tenencia t) => new()
+        private static TenenciaResponse TenenciaDTO(Tenencia t)
         {
-            Id = t.Id,
-            PostulacionId = t.PostulacionId,
-            Modalidad = t.Modalidad,
+            var ahora = DateTime.UtcNow;
+            var hasta = t.FechaFinReal ?? ahora;
 
-            MascotaId = t.MascotaId,
-            MascotaNombre = t.Mascota?.Nombre ?? string.Empty,
+            return new()
+            {
+                Id = t.Id,
+                PostulacionId = t.PostulacionId,
+                PublicacionId = t.Postulacion?.PublicacionId ?? Guid.Empty,
+                Modalidad = t.Modalidad,
 
-            UsuarioId = t.Postulacion?.UsuarioId ?? Guid.Empty,
-            Nombre = t.Postulacion?.Usuario?.Nombre ?? string.Empty,
-            Apellido = t.Postulacion?.Usuario?.Apellido ?? string.Empty,
+                MascotaId = t.MascotaId,
+                MascotaNombre = t.Mascota?.Nombre ?? string.Empty,
+                EspecieNombre = t.Mascota?.Especie?.Nombre ?? string.Empty,
+                FotosIds = MascotaService.IdsDeFotos(t.Mascota),
 
-            FechaInicio = t.FechaInicio,
-            FechaFinEstimada = t.FechaFinEstimada,
-            FechaFinReal = t.FechaFinReal,
-            FechaConversion = t.FechaConversion,
+                UsuarioId = t.Postulacion?.UsuarioId ?? Guid.Empty,
+                Nombre = t.Postulacion?.Usuario?.Nombre ?? string.Empty,
+                Apellido = t.Postulacion?.Usuario?.Apellido ?? string.Empty,
 
-            ObservacionCierre = t.ObservacionCierre,
-            FinalizoBien = t.FinalizoBien,
+                FechaInicio = t.FechaInicio,
+                FechaFinEstimada = t.FechaFinEstimada,
+                FechaFinReal = t.FechaFinReal,
+                FechaConversion = t.FechaConversion,
+                DuracionEnDias = (int)(hasta.Date - t.FechaInicio.Date).TotalDays,
 
-            EstaVencida = EsVencida(t, DateTime.UtcNow)
-        };
+                ObservacionCierre = t.ObservacionCierre,
+                FinalizoBien = t.FinalizoBien,
+
+                EstaVencida = EsVencida(t, ahora),
+                TieneControlPendiente = t.Seguimientos.Any(s => s.Estado == EstadoSeguimiento.Pendiente)
+            };
+        }
 
 
         //DTO PARA HISTORIAL DE TENENCIAS
