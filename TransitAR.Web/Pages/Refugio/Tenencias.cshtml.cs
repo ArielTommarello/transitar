@@ -12,7 +12,7 @@ namespace TransitAR.Web.Pages.Refugio
     {
         EnCurso,
         Vencidas,
-        SinControles,
+        SinControlesPendientes,
         Finalizadas
     }
 
@@ -97,7 +97,7 @@ namespace TransitAR.Web.Pages.Refugio
         {
             VistaTenencias.EnCurso => t.FechaFinReal == null,
             VistaTenencias.Vencidas => t.EstaVencida,
-            VistaTenencias.SinControles => t.FechaFinReal == null && !t.TieneControlPendiente,
+            VistaTenencias.SinControlesPendientes => t.FechaFinReal == null && !t.TieneControlPendiente,
             _ => t.FechaFinReal != null
         };
 

@@ -228,6 +228,16 @@ namespace TransitAR.Web.Helpers
         };
 
         /// <summary>
+        /// Veredicto como lo lee el refugio que lo escribio
+        /// </summary>
+        public static string? VeredictoTenencia(TenenciaResponse t) => t.FinalizoBien switch
+        {
+            true => "Indicaste que terminó bien.",
+            false => "Indicaste que hubo inconvenientes.",
+            null => null
+        };
+
+        /// <summary>
         /// Cantidad de dias conversion para la teneinca
         /// </summary>
         public static string Dias(int dias) => dias == 1 ? "1 día" : $"{dias} días";

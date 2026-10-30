@@ -7,7 +7,7 @@
     {
         (VistaTenencias.EnCurso, "En curso"),
         (VistaTenencias.Vencidas, "Devolución vencida"),
-        (VistaTenencias.SinControles, "Sin controles"),
+        (VistaTenencias.SinControlesPendientes, "Sin controles pendientes"),
         (VistaTenencias.Finalizadas, "Finalizadas")
     };
 }
@@ -36,7 +36,7 @@
     @foreach (var p in pestanias)
     {
         var cantidad = Model.Cantidad(p.Vista);
-        var urgente = (p.Vista == VistaTenencias.Vencidas || p.Vista == VistaTenencias.SinControles) && cantidad > 0;
+        var urgente = (p.Vista == VistaTenencias.Vencidas || p.Vista == VistaTenencias.SinControlesPendientes) && cantidad > 0;
 
         <li class="nav-item">
             <a asp-page="/Refugio/Tenencias" asp-route-vista="@p.Vista" asp-route-mascotaId="@Model.MascotaId"
@@ -121,7 +121,7 @@ else
                             <span class="badge @Formato.ColorTenencia(t)">@Formato.EtiquetaTenencia(t)</span>
                             @if (enCurso && !t.TieneControlPendiente)
                             {
-                                <div><span class="badge bg-warning text-dark mt-1">Sin controles</span></div>
+                                <div><span class="badge bg-warning text-dark mt-1">Sin controles Pendientes</span></div>
                             }
                         </td>
                         <td class="text-end">
