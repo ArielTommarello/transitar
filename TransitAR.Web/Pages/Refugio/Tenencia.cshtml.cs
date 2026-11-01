@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures.Requests;
 using TransitAR.Structures;
 using TransitAR.Web.Services;
+using TransitAR.Web.Helpers;
 
 namespace TransitAR.Web.Pages.Refugio
 {
@@ -39,6 +40,25 @@ namespace TransitAR.Web.Pages.Refugio
         public string? ObservacionCierre { get; set; }
 
         /// <summary>
+        /// Dia del control nuevo
+        /// </summary>
+        [BindProperty]
+        public DateTime? FechaControl { get; set; }
+
+        /// <summary>
+        /// Comentario al resolver un control 
+        /// </summary>
+        [BindProperty]
+        public string? ComentarioControl { get; set; }
+
+        /// <summary>
+        /// Dia nuevo (cuando reprogramo)
+        /// </summary>
+        [BindProperty]
+        public DateTime? FechaReprogramada { get; set; }
+
+
+        /// <summary>
         /// Tenenecia en si
         /// </summary>
         public TenenciaResponse? Tenencia { get; set; }
@@ -66,6 +86,18 @@ namespace TransitAR.Web.Pages.Refugio
         [TempData]
         public string? Error { get; set; }
 
+
+        //propiedades calculadas
+
+        /// <summary>
+        /// Controles por hacer
+        /// </summary>
+        public List<SeguimientoResponse> Pendientes => Controles.Where(c => c.Estado == EstadoSeguimiento.Pendiente).ToList();
+
+        /// <summary>
+        /// Controles ya resueltos (realizados, cancelados o reprogramados)
+        /// </summary>
+        public List<SeguimientoResponse> Resueltos => Controles.Where(c => c.Estado != EstadoSeguimiento.Pendiente).ToList();
 
         public async Task OnGetAsync()
         {
@@ -115,6 +147,80 @@ namespace TransitAR.Web.Pages.Refugio
 
             if (respuesta.Exito)
                 Mensaje = "El tránsito pasó a ser una adopción.";
+            else
+                Error = respuesta.Error;
+
+            return RedirectToPage(new { Id });
+        }
+
+
+        /// <summary>
+        /// Programa un control nuevo para esta tenencia
+        /// </summary>
+        public async Task<IActionResult> OnPostProgramarAsync()
+        {
+            if (FechaControl == null)
+            {
+                Error = "Elige el día del control.";
+                return RedirectToPage(new { Id });
+            }
+
+            var respuesta = await _api.PostAsync<object>("api/Seguimiento", new SeguimientoRequest
+            {
+                TenenciaId = Id,                
+                FechaProgramada = DateTime.SpecifyKind(FechaControl.Value.Date, DateTimeKind.Unspecified)
+            });
+
+            if (respuesta.Exito)
+                Mensaje = $"Control programado para el {Formato.Dia(FechaControl.Value)}.";
+            else
+                Error = respuesta.Error;
+
+            return RedirectToPage(new { Id });
+        }
+
+
+        /// <summary>
+        /// Marca un control como hecho
+        /// </summary>
+        public Task<IActionResult> OnPostRealizadoAsync(Guid controlId) =>
+            ResolverAsync(controlId, EstadoSeguimiento.Realizado, "Control marcado como realizado.");
+
+        /// <summary>
+        /// Cancela un control que no se va a hacer
+        /// </summary>
+        public Task<IActionResult> OnPostCancelarAsync(Guid controlId) =>
+            ResolverAsync(controlId, EstadoSeguimiento.Cancelado, "Control cancelado.");
+
+        /// <summary>
+        /// Reprograma un control, dejo el viejo como historial
+        /// </summary>
+        public Task<IActionResult> OnPostReprogramarAsync(Guid controlId)
+        {
+            if (FechaReprogramada == null)
+            {
+                Error = "Para reprogramar, elegí el día nuevo.";
+                return Task.FromResult<IActionResult>(RedirectToPage(new { Id }));
+            }
+
+            return ResolverAsync(controlId, EstadoSeguimiento.Reprogramado,
+                $"Control reprogramado para el {Formato.Dia(FechaReprogramada.Value)}.");
+        }
+
+        //Resuelvo u seguimiento programado
+        private async Task<IActionResult> ResolverAsync(Guid controlId, EstadoSeguimiento estado, string aviso)
+        {
+            var respuesta = await _api.PatchAsync<object>($"api/Seguimiento/{controlId}", new SeguimientoRequest
+            {
+                Estado = estado,
+                Observacion = string.IsNullOrWhiteSpace(ComentarioControl) ? null : ComentarioControl.Trim(),
+                FechaProgramada = estado == EstadoSeguimiento.Reprogramado && FechaReprogramada != null
+                    ? DateTime.SpecifyKind(FechaReprogramada.Value.Date, DateTimeKind.Unspecified)
+                    : null
+            });
+
+            if (respuesta.Exito)
+                Mensaje = aviso;
             else
                 Error = respuesta.Error;
 
