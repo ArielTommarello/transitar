@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
+using TransitAR.Structures;
 
 namespace TransitAR.Web.Services
 {
@@ -92,6 +93,53 @@ namespace TransitAR.Web.Services
             return await LeerAsync<T>(await _http.PostAsync(ruta, contenido));
         }
 
+
+        /// <summary>
+        /// POST con campos de texto y archivos juntos para adjutnos del chat
+        /// </summary>
+        public async Task<ApiRespuesta<T>> PostFormularioAsync<T>(string ruta, Dictionary<string, string?> campos, List<IFormFile> archivos, string nombreCampo)
+        {
+            using var contenido = new MultipartFormDataContent();
+
+            //los campos de texto
+            foreach (var campo in campos)
+            {
+                if (campo.Value != null)
+                    contenido.Add(new StringContent(campo.Value), campo.Key);
+            }
+
+            //archivos igual que en PostArchivosAsync
+            foreach (var archivo in archivos)
+            {
+                var parte = new StreamContent(archivo.OpenReadStream());
+                parte.Headers.ContentType = new MediaTypeHeaderValue(archivo.ContentType);
+                contenido.Add(parte, nombreCampo, archivo.FileName);
+            }
+
+            return await LeerAsync<T>(await _http.PostAsync(ruta, contenido));
+        }
+
+        /// <summary>
+        /// GET de un archivo 
+        /// </summary>
+        public async Task<ArchivoAdjunto?> GetArchivoAsync(string ruta)
+        {
+            var respuesta = await _http.GetAsync(ruta);
+
+            if (!respuesta.IsSuccessStatusCode)
+                return null;
+
+            var cabeceras = respuesta.Content.Headers;
+
+            return new ArchivoAdjunto
+            {
+                Contenido = await respuesta.Content.ReadAsByteArrayAsync(),
+                ContentType = cabeceras.ContentType?.MediaType ?? "application/octet-stream",
+                NombreArchivo = cabeceras.ContentDisposition?.FileNameStar
+                    ?? cabeceras.ContentDisposition?.FileName?.Trim('"')
+                    ?? "adjunto"
+            };
+        }
 
         /// <summary>
         /// Convierte la respuesta HTTP en una ApiRespuesta   
