@@ -1,0 +1,98 @@
+﻿@page
+@model TransitAR.Web.Pages.Refugio.SeguimientoModel
+@using TransitAR.Structures.Requests
+@{
+    ViewData["Title"] = "Seguimiento";
+
+    //Atraasados y PRoximos
+    var bloques = new (string Titulo, List<SeguimientoResponse> Controles, bool Atrasado)[]
+    {
+        ("Atrasados", Model.Atrasados, true),
+        ("Próximos", Model.Proximos, false)
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Seguimiento</h1>
+    <a asp-page="/Refugio/Tenencias" class="btn btn-outline-secondary">Ir a Tenencias</a>
+</div>
+
+<p class="text-muted">Los controles que tenés por hacer. Para marcarlos, entrá a la ficha de cada tenencia.</p>
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+@if (!Model.Pendientes.Any())
+{
+    <div class="text-center py-5">
+        <p class="text-muted">No tenés controles pendientes.</p>
+        <a asp-page="/Refugio/Tenencias" asp-route-vista="@VistaTenencias.SinControlesPendientes" class="btn btn-primary">
+            Ver tenencias sin controles pendientes
+        </a>
+    </div>
+    return;
+}
+
+@* Hoy o Mañana *@
+@if (Model.ProximosDias.Any())
+{
+    <div class="alert alert-primary">
+        <strong>Tenés @Model.ProximosDias.Count @(Model.ProximosDias.Count == 1 ? "control" : "controles") para hoy o mañana:</strong>
+        @for (var i = 0; i < Model.ProximosDias.Count; i++)
+        {
+            var c = Model.ProximosDias[i];
+            <a asp-page="/Refugio/Tenencia" asp-route-id="@c.TenenciaId" class="alert-link">@c.MascotaNombre</a>
+            <span>(@SeguimientoModel.Cuando(c)?.ToLower())@(i < Model.ProximosDias.Count - 1 ? "," : ".")</span>
+        }
+    </div>
+}
+
+@foreach (var b in bloques)
+{
+    @if (!b.Controles.Any())
+    {
+        continue;
+    }
+
+    <h2 class="h5 mt-4 @(b.Atrasado ? "text-warning-emphasis" : "")">
+        @b.Titulo <span class="badge @(b.Atrasado ? "bg-warning text-dark" : "bg-light text-dark") ms-1">@b.Controles.Count</span>
+    </h2>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Día</th>
+                    <th>Mascota</th>
+                    <th>Con quién</th>
+                    <th>Modalidad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in b.Controles)
+                {
+                    var cuando = SeguimientoModel.Cuando(c);
+
+                    <tr class="@(b.Atrasado ? "table-warning" : "")">
+                        <td class="text-nowrap">
+                            @Formato.Dia(c.FechaProgramada)
+                            @if (cuando != null)
+                            {
+                                <span class="badge bg-primary ms-1">@cuando</span>
+                            }
+                        </td>
+                        <td><strong>@c.MascotaNombre</strong></td>
+                        <td>@c.PersonaNombre</td>
+                        <td>@Formato.Tipo(c.Modalidad)</td>
+                        <td class="text-end">
+                            <a asp-page="/Refugio/Tenencia" asp-route-id="@c.TenenciaId" class="btn btn-sm btn-outline-primary">Ver</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
