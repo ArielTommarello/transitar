@@ -121,3 +121,13 @@ body {
     object-fit: cover;
     flex-shrink: 0;
 }
+
+/* Chats */
+.chat-mensajes {
+    height: 60vh;
+    overflow-y: auto;
+}
+
+.burbuja {
+    max-width: 75%;
+}

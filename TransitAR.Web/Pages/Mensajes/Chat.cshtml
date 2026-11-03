@@ -1,0 +1,80 @@
+﻿@page "{postulacionId:guid}"
+@model TransitAR.Web.Pages.Mensajes.ChatModel
+@{
+    ViewData["Title"] = Model.Chat?.MascotaNombre ?? "Mensajes";
+}
+
+<a asp-page="/Mensajes/Index" class="small">&larr; Volver a Mensajes</a>
+
+@if (Model.Chat == null)
+{
+    <div class="text-center py-5">
+        <h1 class="h4">No encontramos esta conversación</h1>
+        <p class="text-muted">Puede que el link esté mal o que no sea tuya.</p>
+        <a asp-page="/Mensajes/Index" class="btn btn-primary">Ir a Mensajes</a>
+    </div>
+    return;
+}
+
+@{
+    var c = Model.Chat;
+    var estado = User.IsInRole("Refugio") ? Formato.EstadoParaRefugio(c.EstadoPostulacion) : Formato.Estado(c.EstadoPostulacion);
+}
+
+<div class="d-flex justify-content-between align-items-center mt-2 mb-3">
+    <div>
+        <h1 class="h4 mb-0">@c.MascotaNombre <span class="text-muted fw-normal">· @c.Receptor</span></h1>
+        <div class="small text-muted">@c.PublicacionTitulo · @Formato.Tipo(c.Tipo) · @estado</div>
+    </div>
+    <a asp-page="/Mensajes/Chat" asp-route-postulacionId="@c.PostulacionId" class="btn btn-sm btn-outline-secondary">Actualizar</a>
+</div>
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+@* -- Mensajes (actualizacion 15 segundos) -- *@
+<div id="mensajes" class="chat-mensajes border rounded p-3 mb-3"
+     data-url="@Url.Page("/Mensajes/Chat", "Mensajes", new { postulacionId = c.PostulacionId })"
+     data-actualizar="@(c.PuedeEscribir ? "si" : "no")">
+    <partial name="_Mensajes" model="c.Mensajes" />
+</div>
+
+@if (c.PuedeEscribir)
+{
+    <form method="post" asp-page-handler="Enviar" class="mb-5">
+        <div class="d-flex gap-2 align-items-end">
+            <textarea name="Texto" class="form-control" rows="2" maxlength="2000"
+                      placeholder="Escribí un mensaje…"></textarea>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+    </form>
+}
+else
+{
+    <div class="alert alert-secondary mb-5">
+        Esta conversación está cerrada: podés leerla, pero ya no se pueden mandar mensajes.
+    </div>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            const lista = document.getElementById('mensajes');
+            const bajar = () => lista.scrollTop = lista.scrollHeight;
+
+            //muestro lo ultimo primero
+            bajar();
+
+            //cerrada , solo lectura
+            if (lista.dataset.actualizar !== 'si') return;
+
+            actualizarCada(lista, 15, {
+                //si estaba leyendo mas arriba, queda ahi como wpp
+                antes: () => lista.scrollHeight - lista.scrollTop - lista.clientHeight < 40,
+                despues: estabaAbajo => { if (estabaAbajo) bajar(); }
+            });
+        })();
+    </script>
+}

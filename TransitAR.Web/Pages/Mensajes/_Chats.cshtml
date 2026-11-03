@@ -1,0 +1,61 @@
+﻿@model List<ChatResumenResponse>
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5">
+        <p class="text-muted mb-0">Todavía no tenés conversaciones.</p>
+        <p class="small text-muted">Se abre una por cada postulación, y la ves acá.</p>
+    </div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var c in Model)
+        {
+            <a asp-page="/Mensajes/Chat" asp-route-postulacionId="@c.PostulacionId"
+               class="list-group-item list-group-item-action py-3 @(c.PuedeEscribir ? "" : "opacity-75")">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                    <div class="flex-grow-1" style="min-width: 0;">
+                        <div class="d-flex align-items-center gap-2">
+                            <strong>@c.MascotaNombre</strong>
+                            <span class="text-muted">· @c.Receptor</span>
+                            @if (!c.PuedeEscribir)
+                            {
+                                <span class="badge bg-secondary">Cerrado</span>
+                            }
+                        </div>
+                        <div class="small text-muted">@Formato.Tipo(c.Tipo)</div>
+                        <div class="text-truncate @(c.NoLeidos > 0 ? "fw-bold text-body" : "text-muted") small mt-1">
+                            @if (c.FechaUltimoMensaje == null)
+                            {
+                                <span class="fst-italic">Todavía no hay mensajes.</span>
+                            }
+                            else if (string.IsNullOrWhiteSpace(c.UltimoMensaje) && c.UltimoTieneAdjunto)
+                            {
+                                <span>📎 Adjunto</span>
+                            }
+                            else
+                            {
+                                @if (c.UltimoTieneAdjunto)
+                                {
+                                    <span>📎</span>
+                                }
+                                @c.UltimoMensaje
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end text-nowrap">
+                        @if (c.FechaUltimoMensaje != null)
+                        {
+                            <div class="small text-muted">@Formato.Instante(c.FechaUltimoMensaje.Value)</div>
+                        }
+                        @if (c.NoLeidos > 0)
+                        {
+                            <span class="badge rounded-pill bg-success mt-1">@c.NoLeidos</span>
+                        }
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}

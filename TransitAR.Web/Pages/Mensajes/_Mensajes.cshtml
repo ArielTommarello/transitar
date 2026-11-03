@@ -1,0 +1,36 @@
+﻿@model List<MensajeResponse>
+
+@if (!Model.Any())
+{
+    <p class="text-muted text-center my-5">Todavía no hay mensajes. Escribí el primero.</p>
+}
+
+@foreach (var m in Model)
+{
+    <div class="d-flex mb-3 @(m.EsPropio ? "justify-content-end" : "justify-content-start")">
+        <div class="burbuja rounded-3 px-3 py-2 @(m.EsPropio ? "bg-primary text-white" : "bg-light border")">
+            @if (!m.EsPropio)
+            {
+                <div class="small fw-semibold">@m.EmisorNombre</div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(m.Texto))
+            {
+                <div class="texto-con-saltos">@m.Texto</div>
+            }
+            
+            @foreach (var a in m.Adjuntos)
+            {
+                <div class="small">📎 @a.NombreArchivo</div>
+            }
+
+            <div class="small mt-1 text-end @(m.EsPropio ? "text-white-50" : "text-muted")">
+                @Formato.Instante(m.FechaEnvio)
+                @if (m.EsPropio)
+                {
+                    <span>· @(m.FechaLectura != null ? "✓ Leído" : "Enviado")</span>
+                }
+            </div>
+        </div>
+    </div>
+}

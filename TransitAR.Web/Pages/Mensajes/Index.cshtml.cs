@@ -56,24 +56,47 @@ namespace TransitAR.Web.Pages.Mensajes
 
         public async Task OnGetAsync()
         {
-            //que no quede en cache asi no me quedan los viejos cuando vuelvo apra atras y peudo actualziar
+            //qpara que atras no storee en cache
             Response.Headers.CacheControl = "no-store";
 
+            Error = await CargarAsync();
+        }
+
+        /// <summary>
+        /// solo muestro la lista, y la actualzio 15s
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnGetChatsAsync()
+        {
+            Response.Headers.CacheControl = "no-store";
+
+            if (await CargarAsync() != null)
+                return NotFound();
+
+            return Partial("_Chats", Chats);
+        }
+
+        /// <summary>
+        /// cargo para la pagina entera y cada actualziacion
+        /// </summary>
+        /// <returns></returns>
+        private async Task<string?> CargarAsync()
+        {
             var respuesta = await _api.GetAsync<List<ChatResumenResponse>>(
                 $"api/Mensaje/chats?publicacionId={PublicacionId}&mascotaId={MascotaId}");
 
             if (!respuesta.Exito || respuesta.Datos == null)
-            {
-                Error = respuesta.Error;
-                return;
-            }
+                return respuesta.Error ?? "No pudimos traer las conversaciones.";
 
-            //chats cerrados solo lectura, y primeros los no leidos como wpp
+            //cerrado solo lectura, y dsps pongo los no leido primero como wpp
             Chats = respuesta.Datos                
                 .Where(c => c.PuedeEscribir || c.FechaUltimoMensaje != null)                
                 .OrderByDescending(c => c.NoLeidos > 0)
                 .ThenByDescending(c => c.FechaUltimoMensaje ?? DateTime.MinValue)
                 .ToList();
+
+            return null;
         }
+
     }
 }
