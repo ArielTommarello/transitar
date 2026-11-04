@@ -85,7 +85,10 @@
                 <p class="mb-3">@Formato.TextoTenencia(t)</p>
 
                 <ul class="list-unstyled small mb-3">
-                    <li><strong>Refugio:</strong> @t.RefugioNombre</li>
+                    <li>
+                        <strong>Refugio:</strong> @t.RefugioNombre
+                        -<a asp-page="/Mensajes/Chat" asp-route-postulacionId="@t.PostulacionId"> Mensajes</a>
+                    </li>
                     <li><strong>Te lo entregaron el:</strong> @Formato.FechaDe(t.FechaInicio)</li>
                     @if (t.FechaFinEstimada != null)
                     {

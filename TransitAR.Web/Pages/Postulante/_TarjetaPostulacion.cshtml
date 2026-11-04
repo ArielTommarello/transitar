@@ -57,13 +57,17 @@
                         }
                     </span>
 
-                    @if (sePuedeRetirar)
-                    {
-                        <form method="post" asp-page-handler="Retirar" asp-route-id="@Model.Id"
-                              onsubmit="return confirm('¿Seguro que querés retirarte de esta postulación?');">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Retirarme</button>
-                        </form>
-                    }
+                    <div class="d-flex gap-2">
+                        <a asp-page="/Mensajes/Chat" asp-route-postulacionId="@Model.Id" class="btn btn-sm btn-outline-primary"> Mensajes</a>
+
+                        @if (sePuedeRetirar)
+                        {
+                            <form method="post" asp-page-handler="Retirar" asp-route-id="@Model.Id"
+                                  onsubmit="return confirm('¿Seguro que querés retirarte de esta postulación?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Retirarme</button>
+                            </form>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

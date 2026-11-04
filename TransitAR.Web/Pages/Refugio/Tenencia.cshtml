@@ -63,7 +63,8 @@
                         <strong>Con quién:</strong>
                         <a asp-page="/Refugio/Postulante" asp-route-publicacionId="@t.PublicacionId" asp-route-postulacionId="@t.PostulacionId">
                             @t.Nombre @t.Apellido
-                        </a>
+                        </a> -
+                        <a asp-page="/Mensajes/Chat" asp-route-postulacionId="@t.PostulacionId"> Mensajes</a>
                     </li>
                     <li><strong>Se la entregaste el:</strong> @Formato.FechaDe(t.FechaInicio)</li>
                     @if (t.FechaFinEstimada != null && Model.EnCurso)
