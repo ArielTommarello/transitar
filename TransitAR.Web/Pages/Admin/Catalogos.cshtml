@@ -1,0 +1,112 @@
+﻿@page
+@model TransitAR.Web.Pages.Admin.CatalogosModel
+@{
+    ViewData["Title"] = "Especies y condiciones";
+}
+
+<h1 class="h3 mb-1">Especies y condiciones</h1>
+<p class="text-muted">Las listas que usan los refugios al cargar una mascota. Solo se puede borrar una que no use ninguna mascota.</p>
+
+@if (Model.Mensaje != null)
+{
+    <div class="alert alert-success">@Model.Mensaje</div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+@* -- Especies -- *@
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Especies</h2>
+
+        <form method="post" asp-page-handler="AgregarEspecie" class="row g-2 mb-4">
+            <div class="col-md-4">
+                <input name="Nombre" class="form-control" placeholder="Nombre" maxlength="60" required />
+            </div>
+            <div class="col-md-6">
+                <input name="Descripcion" class="form-control" placeholder="Descripción (opcional)" maxlength="150" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Agregar</button>
+            </div>
+        </form>
+
+        @if (!Model.Especies.Any())
+        {
+            <p class="text-muted small mb-0">Todavía no hay especies.</p>
+        }
+
+        @foreach (var e in Model.Especies)
+        {
+            <form method="post" class="row g-2 mb-2 align-items-center">
+                <div class="col-md-4">
+                    <input name="Nombre" value="@e.Nombre" class="form-control form-control-sm" maxlength="60" required />
+                </div>
+                <div class="col-md-5">
+                    <input name="Descripcion" value="@e.Descripcion" class="form-control form-control-sm" placeholder="Sin descripción" maxlength="150" />
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" asp-page-handler="GuardarEspecie" asp-route-id="@e.Id"
+                            class="btn btn-sm btn-outline-primary">
+                        Guardar
+                    </button>
+                    <button type="submit" asp-page-handler="BorrarEspecie" asp-route-id="@e.Id"
+                            class="btn btn-sm btn-outline-danger" formnovalidate
+                            onclick="return confirm('¿Borrar la especie @e.Nombre?');">
+                        Borrar
+                    </button>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@* -- Condiciones -- *@
+<div class="card mb-5">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Condiciones de salud</h2>
+
+        <form method="post" asp-page-handler="AgregarCondicion" class="row g-2 mb-4">
+            <div class="col-md-4">
+                <input name="Nombre" class="form-control" placeholder="Nombre" maxlength="100" required />
+            </div>
+            <div class="col-md-6">
+                <input name="Descripcion" class="form-control" placeholder="Descripción (opcional)" maxlength="150" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Agregar</button>
+            </div>
+        </form>
+
+        @if (!Model.Condiciones.Any())
+        {
+            <p class="text-muted small mb-0">Todavía no hay condiciones.</p>
+        }
+
+        @foreach (var c in Model.Condiciones)
+        {
+            <form method="post" class="row g-2 mb-2 align-items-center">
+                <div class="col-md-4">
+                    <input name="Nombre" value="@c.Nombre" class="form-control form-control-sm" maxlength="100" required />
+                </div>
+                <div class="col-md-5">
+                    <input name="Descripcion" value="@c.Descripcion" class="form-control form-control-sm" placeholder="Sin descripción" maxlength="150" />
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" asp-page-handler="GuardarCondicion" asp-route-id="@c.Id"
+                            class="btn btn-sm btn-outline-primary">
+                        Guardar
+                    </button>
+                    <button type="submit" asp-page-handler="BorrarCondicion" asp-route-id="@c.Id"
+                            class="btn btn-sm btn-outline-danger" formnovalidate
+                            onclick="return confirm('¿Borrar la condición @c.Nombre?');">
+                        Borrar
+                    </button>
+                </div>
+            </form>
+        }
+    </div>
+</div>
