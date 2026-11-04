@@ -7,6 +7,7 @@ using Microsoft.OpenApi;
 using System.Text;
 using TransitAR.Api.Services;
 using TransitAR.Structures;
+using TransitAR.Api;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,9 +37,36 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-//Context database for use in the controllers
-builder.Services.AddDbContext<TransitARContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TransitAR")));
+//Datos del admin inicial
+var adminInicial = builder.Configuration.GetSection("AdminInicial");
+
+//Context database para el controllers, el seeding lo crea el admin si no hay uno.
+builder.Services.AddDbContext<TransitARContext>(options => options
+    .UseSqlServer(builder.Configuration.GetConnectionString("TransitAR"))
+    .UseSeeding((context, _) =>
+    {
+        if (context.Set<Usuario>().Any(u => u.Rol == RolUsuario.Admin))
+            return;
+
+        var admin = AdminInicial.Armar(adminInicial);
+        if (admin == null)
+            return;
+
+        context.Set<Usuario>().Add(admin);
+        context.SaveChanges();
+    })
+    .UseAsyncSeeding(async (context, _, cancelacion) =>
+    {
+        if (await context.Set<Usuario>().AnyAsync(u => u.Rol == RolUsuario.Admin, cancelacion))
+            return;
+
+        var admin = AdminInicial.Armar(adminInicial);
+        if (admin == null)
+            return;
+
+        context.Set<Usuario>().Add(admin);
+        await context.SaveChangesAsync(cancelacion);
+    }));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMascotaService, MascotaService>();

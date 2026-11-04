@@ -616,19 +616,6 @@ namespace TransitAR.Structures.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("99999999-9999-9999-9999-999999999901"),
-                            Activo = true,
-                            Apellido = "TransitAR",
-                            Email = "admin@transitar.org",
-                            FechaAlta = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Nombre = "Administrador",
-                            PasswordHash = "$2a$11$tAW0hYZZe7.WzbuJyz7WAuYyM.TVAcKXeWohP07LjbQGv7Yh6wMi.",
-                            Rol = 1
-                        });
                 });
 
             modelBuilder.Entity("TransitAR.Structures.AdjuntoMensaje", b =>
