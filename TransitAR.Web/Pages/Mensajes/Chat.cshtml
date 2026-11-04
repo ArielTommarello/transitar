@@ -43,11 +43,19 @@
 
 @if (c.PuedeEscribir)
 {
-    <form method="post" asp-page-handler="Enviar" class="mb-5">
+    <form id="formEnviar" method="post" asp-page-handler="Enviar" enctype="multipart/form-data" class="mb-5">
         <div class="d-flex gap-2 align-items-end">
             <textarea name="Texto" class="form-control" rows="2" maxlength="2000"
                       placeholder="Escribí un mensaje…"></textarea>
             <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+        <div class="mt-2">
+            @* cambia si cambia la regla , esta en default *@
+            <input type="file" id="archivos" name="Archivos" class="form-control form-control-sm" multiple
+                   accept="image/jpeg,image/png,image/webp,video/mp4"
+                   data-max-archivos="3" data-max-mb="9" />
+            <div id="errorArchivos" class="text-danger small mt-1 d-none"></div>
+            <div class="form-text">Opcional: hasta 3 fotos (jpg, png, webp) o videos mp4, de 9 MB cada uno.</div>
         </div>
     </form>
 }
@@ -61,17 +69,46 @@ else
 @section Scripts {
     <script>
         (function () {
+            //reviso antes de enviar la cant y tamñao para los adjuntos
+            const form = document.getElementById('formEnviar');
+            if (form) {
+                form.addEventListener('submit', e => {
+                    const input = document.getElementById('archivos');
+                    const caja = document.getElementById('errorArchivos');
+                    const maxArchivos = Number(input.dataset.maxArchivos);
+                    const maxMB = Number(input.dataset.maxMb);
+                    const archivos = Array.from(input.files);
+
+                    ///muestro el error
+                    let error = null;
+                    if (archivos.length > maxArchivos) {
+                        error = `Se pueden adjuntar hasta ${maxArchivos} archivos por mensaje.`;
+                    } else {
+                        const grande = archivos.find(a => a.size > maxMB * 1024 * 1024);
+                        if (grande) error = `El archivo ${grande.name} supera los ${maxMB} MB permitidos.`;
+                    }
+                                        
+                    if (error) {
+                        e.preventDefault(); //no se manda
+                        caja.textContent = error;
+                        caja.classList.remove('d-none');
+                    } else {
+                        caja.classList.add('d-none');
+                    }
+                });
+            }
+
             const lista = document.getElementById('mensajes');
             const bajar = () => lista.scrollTop = lista.scrollHeight;
 
-            //muestro lo ultimo primero
+            //al entrar, mostrar lo ultimo
             bajar();
 
-            //cerrada , solo lectura
+            //sie sta cerrada, solo lectura
             if (lista.dataset.actualizar !== 'si') return;
 
             actualizarCada(lista, 15, {
-                //si estaba leyendo mas arriba, queda ahi como wpp
+                //si esta arriba leyendo, queda ahi como wpp
                 antes: () => lista.scrollHeight - lista.scrollTop - lista.clientHeight < 40,
                 despues: estabaAbajo => { if (estabaAbajo) bajar(); }
             });

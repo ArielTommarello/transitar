@@ -40,6 +40,11 @@ namespace TransitAR.Web.Pages.Mensajes
         [TempData]
         public string? Error { get; set; }
 
+        /// <summary>
+        /// Archivos adjuntos del mensaje nuevo (fotos o videos)
+        /// </summary>
+        [BindProperty]
+        public List<IFormFile> Archivos { get; set; } = new();
 
         public async Task OnGetAsync()
         {
@@ -64,22 +69,23 @@ namespace TransitAR.Web.Pages.Mensajes
             return Partial("_Mensajes", chat.Mensajes);
         }
 
-        /// <summary>
+        /// <summary> con adjuntos y texto
         /// Envia un mensaje
         /// </summary>
         /// <returns></returns>
         public async Task<IActionResult> OnPostEnviarAsync()
         {
-            if (string.IsNullOrWhiteSpace(Texto))
+            if (string.IsNullOrWhiteSpace(Texto) && Archivos.Count == 0)
             {
-                Error = "Escribe un mensaje antes de enviar.";
+                Error = "Escribí un mensaje o adjuntá un archivo antes de enviar.";
                 return RedirectToPage(new { postulacionId = PostulacionId });
             }
 
             var respuesta = await _api.PostFormularioAsync<object>(
                 $"api/Mensaje/{PostulacionId}",
-                new Dictionary<string, string?> { ["Texto"] = Texto.Trim() },
-                new List<IFormFile>(),
+                //sin texto (solo una foto): null, y PostFormularioAsync no lo manda
+                new Dictionary<string, string?> { ["Texto"] = string.IsNullOrWhiteSpace(Texto) ? null : Texto.Trim() },
+                Archivos,
                 "archivos");
 
             if (!respuesta.Exito)

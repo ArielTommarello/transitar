@@ -20,7 +20,7 @@ namespace TransitAR.Api.Services
         private static readonly string[] AdjuntosPermitidos = { "image/jpeg", "image/png", "image/webp", "video/mp4" };
 
         /// <summary>
-        /// cantidad maximo de adjuntos por menseja. Limite 10Mb x 3  por el limite que pone .NET (se puede tocar en configuracion si es necesario)
+        /// cantidad maximo de adjuntos por menseja. Sumadoa  la regla de de 9mb da 27mb por mensaje, el limite de .NET es 28,6 , daba error con 30. Cambiar limite para poder pasarlo
         /// </summary>
         private const int MaxAdjuntos = 3;
 
@@ -238,8 +238,8 @@ namespace TransitAR.Api.Services
             if (adjuntos.Count > MaxAdjuntos)
                 return $"Se pueden adjuntar hasta {MaxAdjuntos} archivos por mensaje.";
 
-            //calculo bytes
-            var maxMB = _configuration.GetValue<int?>("Reglas:AdjuntoMaxMB") ?? 10;
+            //calculo bytes (3 x 9mb para el limite de .NET)
+            var maxMB = _configuration.GetValue<int?>("Reglas:AdjuntoMaxMB") ?? 9;
             var maxBytes = (long)maxMB * 1024 * 1024;
 
             //validacion por cada adjunto (para errores personalizados)
