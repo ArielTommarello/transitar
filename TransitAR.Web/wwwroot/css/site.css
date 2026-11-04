@@ -131,3 +131,10 @@ body {
 .burbuja {
     max-width: 75%;
 }
+
+/* Adjunto chat minitra para que se vea como en wpp*/
+.adjunto-mini {
+    width: 160px;
+    height: 120px;
+    object-fit: cover;
+}

@@ -1,5 +1,11 @@
 ﻿@model List<MensajeResponse>
 
+@{
+    //url chat para armar el link de cada adjunto 
+    var postulacionId = ViewContext.RouteData.Values["postulacionId"];
+}
+
+
 @if (!Model.Any())
 {
     <p class="text-muted text-center my-5">Todavía no hay mensajes. Escribí el primero.</p>
@@ -18,10 +24,31 @@
             {
                 <div class="texto-con-saltos">@m.Texto</div>
             }
-            
-            @foreach (var a in m.Adjuntos)
+
+            @if (m.Adjuntos.Any())
             {
-                <div class="small">📎 @a.NombreArchivo</div>
+                <div class="d-flex flex-wrap gap-2 mt-1">
+                    @foreach (var a in m.Adjuntos)
+                    {
+                        var url = Url.Page("/Mensajes/Chat", "Adjunto", new { postulacionId, adjuntoId = a.Id });
+
+                        @if (a.ContentType.StartsWith("image/"))
+                        {
+                            <a href="@url" target="_blank" title="@a.NombreArchivo">
+                                <img src="@url" class="adjunto-mini rounded" alt="@a.NombreArchivo" />
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="small">
+                                @a.NombreArchivo
+                                <a href="@url" target="_blank" class="@(m.EsPropio ? "link-light" : "")">Ver</a>
+                                ·
+                                <a href="@url" download="@a.NombreArchivo" class="@(m.EsPropio ? "link-light" : "")">Descargar</a>
+                            </div>
+                        }
+                    }
+                </div>
             }
 
             <div class="small mt-1 text-end @(m.EsPropio ? "text-white-50" : "text-muted")">

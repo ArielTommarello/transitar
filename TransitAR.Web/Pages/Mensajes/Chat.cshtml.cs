@@ -103,5 +103,23 @@ namespace TransitAR.Web.Pages.Mensajes
             var respuesta = await _api.GetAsync<ChatResponse>($"api/Mensaje/{PostulacionId}");
             return respuesta.Exito ? respuesta.Datos : null;
         }
+
+        /// <summary>
+        /// Cargp eñ adjunto en el navegador con el token
+        /// </summary>
+        /// <param name="adjuntoId"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> OnGetAdjuntoAsync(Guid adjuntoId)
+        {
+            var archivo = await _api.GetArchivoAsync($"api/Mensaje/adjunto/{adjuntoId}");
+            if (archivo == null)
+                return NotFound();
+
+            //guardo el adjunto 1 hora, pero siempre esta aca, porque sino el polling me lo borra (private)
+            Response.Headers.CacheControl = "private, max-age=3600";
+
+            return File(archivo.Contenido, archivo.ContentType);
+        }
+
     }
 }
