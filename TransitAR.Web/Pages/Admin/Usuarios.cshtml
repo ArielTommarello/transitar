@@ -1,0 +1,114 @@
+﻿@page
+@model TransitAR.Web.Pages.Admin.UsuariosModel
+@{
+    ViewData["Title"] = "Usuarios";
+
+    var roles = new (RolUsuario? Rol, string Nombre)[]
+    {
+        (null, "Todos"),
+        (RolUsuario.Refugio, "Refugios"),
+        (RolUsuario.Usuario, "Postulantes")
+    };
+
+    var estados = new (bool? Activo, string Nombre)[]
+    {
+        (null, "Todos"),
+        (true, "Activos"),
+        (false, "Bloqueados")
+    };
+}
+
+<h1 class="h3 mb-1">Usuarios</h1>
+<p class="text-muted">Un usuario bloqueado no puede iniciar sesión. Al administrador no se lo puede bloquear.</p>
+
+@if (Model.Mensaje != null)
+{
+    <div class="alert alert-success">@Model.Mensaje</div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+
+<ul class="nav nav-pills mb-2">
+    @foreach (var r in roles)
+    {
+        <li class="nav-item">
+            <a asp-page="/Admin/Usuarios" asp-route-rol="@r.Rol" asp-route-activo="@Model.Activo"
+               class="nav-link @(Model.Rol == r.Rol ? "active" : "")">
+                @r.Nombre <span class="badge bg-light text-dark ms-1">@Model.Cantidad(r.Rol, Model.Activo)</span>
+            </a>
+        </li>
+    }
+</ul>
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var e in estados)
+    {
+        <li class="nav-item">
+            <a asp-page="/Admin/Usuarios" asp-route-rol="@Model.Rol" asp-route-activo="@e.Activo"
+               class="nav-link @(Model.Activo == e.Activo ? "active" : "")">
+                @e.Nombre <span class="badge bg-light text-dark ms-1">@Model.Cantidad(Model.Rol, e.Activo)</span>
+            </a>
+        </li>
+    }
+</ul>
+
+@if (!Model.Usuarios.Any())
+{
+    <p class="text-muted">No hay usuarios con estos filtros.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Alta</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model.Usuarios)
+                {
+                    <tr class="@(u.Activo ? "" : "opacity-75")">
+                        <td>@u.Nombre @u.Apellido</td>
+                        <td>@u.Email</td>
+                        <td>@Formato.Rol(u.Rol)</td>
+                        <td>@Formato.FechaDe(u.FechaAlta)</td>
+                        <td>
+                            <span class="badge @(u.Activo ? "bg-success" : "bg-danger")">@(u.Activo ? "Activo" : "Bloqueado")</span>
+                        </td>
+                        <td class="text-end">
+                            @if (u.Rol == RolUsuario.Admin)
+                            {
+                                <span class="text-muted small">—</span>
+                            }
+                            else if (u.Activo)
+                            {
+                                <form method="post" asp-page-handler="Bloquear" asp-route-id="@u.Id"
+                                      asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo"
+                                      onsubmit="return confirm('¿Bloquear a @u.Nombre @u.Apellido? No va a poder iniciar sesión.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Bloquear</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Desbloquear" asp-route-id="@u.Id"
+                                      asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Desbloquear</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

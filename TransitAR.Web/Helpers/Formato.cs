@@ -426,8 +426,22 @@ namespace TransitAR.Web.Helpers
         public static string EstadoParaRefugio(EstadoPostulacion estado, bool publicacionCerrada) =>
             estado == EstadoPostulacion.Aceptada && publicacionCerrada
                         ? "Entregada"
-                        : EstadoParaRefugio(estado);      
+                        : EstadoParaRefugio(estado);
 
+
+
+        /// <summary>
+        /// Nombre del rol para mostrar en el admin
+        /// </summary>
+        /// <param name="rol"></param>
+        /// <returns></returns>
+        public static string Rol(RolUsuario rol) => rol switch
+        {
+            RolUsuario.Admin => "Admin",
+            RolUsuario.Refugio => "Refugio",
+            RolUsuario.Usuario => "Postulante",
+            _ => rol.ToString()
+        };
 
 
     }

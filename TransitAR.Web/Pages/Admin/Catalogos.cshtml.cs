@@ -69,7 +69,7 @@ namespace TransitAR.Web.Pages.Admin
         public async Task<IActionResult> OnPostGuardarEspecieAsync(Guid id)
         {
             if (string.IsNullOrWhiteSpace(Nombre))
-                return Volver(null, "El nombre de la especie no puede quedar vacío.");
+                return Volver(null, "El nombre de la especie no puede quedar vacÃ­o.");
 
             var respuesta = await _api.PutAsync<EspecieResponse>($"api/Admin/especies/{id}",
                 new EspecieRequest { Nombre = Nombre.Trim(), Descripcion = DescripcionLimpia() });
@@ -93,30 +93,30 @@ namespace TransitAR.Web.Pages.Admin
         public async Task<IActionResult> OnPostAgregarCondicionAsync()
         {
             if (string.IsNullOrWhiteSpace(Nombre))
-                return Volver(null, "Escribí el nombre de la condición.");
+                return Volver(null, "EscribÃ­ el nombre de la condiciÃ³n.");
 
             var respuesta = await _api.PostAsync<CondicionResponse>("api/Admin/condiciones",
                 new CondicionRequest { Nombre = Nombre.Trim(), Descripcion = DescripcionLimpia() });
 
-            return Volver(respuesta.Exito ? "Condición agregada." : null, respuesta.Error);
+            return Volver(respuesta.Exito ? "CondiciÃ³n agregada." : null, respuesta.Error);
         }
 
         public async Task<IActionResult> OnPostGuardarCondicionAsync(Guid id)
         {
             if (string.IsNullOrWhiteSpace(Nombre))
-                return Volver(null, "El nombre de la condición no puede quedar vacío.");
+                return Volver(null, "El nombre de la condiciÃ³n no puede quedar vacÃ­o.");
 
             var respuesta = await _api.PutAsync<CondicionResponse>($"api/Admin/condiciones/{id}",
                 new CondicionRequest { Nombre = Nombre.Trim(), Descripcion = DescripcionLimpia() });
 
-            return Volver(respuesta.Exito ? "Condición guardada." : null, respuesta.Error);
+            return Volver(respuesta.Exito ? "CondiciÃ³n guardada." : null, respuesta.Error);
         }
 
         public async Task<IActionResult> OnPostBorrarCondicionAsync(Guid id)
         {
             var respuesta = await _api.DeleteAsync<object>($"api/Admin/condiciones/{id}");
 
-            return Volver(respuesta.Exito ? "Condición borrada." : null, respuesta.Error);
+            return Volver(respuesta.Exito ? "CondiciÃ³n borrada." : null, respuesta.Error);
         }
 
         #endregion
