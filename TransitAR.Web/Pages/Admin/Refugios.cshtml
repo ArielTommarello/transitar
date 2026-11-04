@@ -1,0 +1,88 @@
+﻿@page
+@model TransitAR.Web.Pages.Admin.RefugiosModel
+@{
+    ViewData["Title"] = "Refugios";
+
+    var estados = new (bool? Activo, string Nombre)[]
+    {
+        (null, "Todos"),
+        (true, "Activos"),
+        (false, "Bloqueados")
+    };
+}
+
+<h1 class="h3 mb-1">Refugios</h1>
+<p class="text-muted">Un refugio bloqueado no aparece en el sitio y sus cuentas no pueden iniciar sesión. Al desbloquearlo, todo vuelve como estaba.</p>
+
+@if (Model.Mensaje != null)
+{
+    <div class="alert alert-success">@Model.Mensaje</div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var e in estados)
+    {
+        <li class="nav-item">
+            <a asp-page="/Admin/Refugios" asp-route-activo="@e.Activo"
+               class="nav-link @(Model.Activo == e.Activo ? "active" : "")">
+                @e.Nombre <span class="badge bg-light text-dark ms-1">@Model.Cantidad(e.Activo)</span>
+            </a>
+        </li>
+    }
+</ul>
+
+@if (!Model.Refugios.Any())
+{
+    <p class="text-muted">No hay refugios en este estado.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Refugio</th>
+                    <th>Email</th>
+                    <th>Localidad</th>
+                    <th>Alta</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.Refugios)
+                {
+                    <tr class="@(r.Activo ? "" : "opacity-75")">
+                        <td>@r.Nombre</td>
+                        <td>@r.Email</td>
+                        <td>@(r.Localidad ?? "Sin indicar")</td>
+                        <td>@Formato.FechaDe(r.FechaAlta)</td>
+                        <td>
+                            <span class="badge @(r.Activo ? "bg-success" : "bg-danger")">@(r.Activo ? "Activo" : "Bloqueado")</span>
+                        </td>
+                        <td class="text-end">
+                            @if (r.Activo)
+                            {
+                                <form method="post" asp-page-handler="Bloquear" asp-route-id="@r.Id" asp-route-activo="@Model.Activo"
+                                      onsubmit="return confirm('¿Bloquear @r.Nombre? Sus publicaciones dejan de verse y sus cuentas no van a poder iniciar sesión.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Bloquear</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Desbloquear" asp-route-id="@r.Id" asp-route-activo="@Model.Activo">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Desbloquear</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

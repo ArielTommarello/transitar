@@ -33,7 +33,7 @@ namespace TransitAR.Web.Pages.Admin
         public bool? Activo { get; set; }
 
         /// <summary>
-        /// Todos los usuarios  para contar cada pestaña
+        /// Todos los usuarios  para contar cada pestaÃ±a
         /// </summary>
         public List<UsuarioAdminResponse> Todos { get; set; } = new();
 
@@ -80,7 +80,7 @@ namespace TransitAR.Web.Pages.Admin
         }
 
         /// <summary>
-        /// Cantidad para usar en las pestañas
+        /// Cantidad para usar en las pestaÃ±as
         /// </summary>
         /// <param name="rol"></param>
         /// <param name="activo"></param>
