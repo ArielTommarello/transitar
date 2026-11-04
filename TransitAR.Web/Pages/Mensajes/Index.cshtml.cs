@@ -98,5 +98,20 @@ namespace TransitAR.Web.Pages.Mensajes
             return null;
         }
 
+        /// <summary>
+        /// Obtengo los no leidos para poner en el contador
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnGetNoLeidosAsync()
+        {
+            Response.Headers.CacheControl = "no-store";
+
+            if (await CargarAsync() != null)
+                return NotFound();
+
+            var total = Chats.Sum(c => c.NoLeidos);
+            return Content(total > 0 ? total.ToString() : string.Empty);
+        }
+
     }
 }

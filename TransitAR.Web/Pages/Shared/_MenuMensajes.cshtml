@@ -1,0 +1,7 @@
+﻿@* Item del menu para Mensajes, con el numero de no leidos Lo usan el menu del refugio y el del postulante *@
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-page="/Mensajes/Index">
+        Mensajes
+        <span id="noLeidos" class="badge rounded-pill bg-success" data-url="@Url.Page("/Mensajes/Index", "NoLeidos")"></span>
+    </a>
+</li>

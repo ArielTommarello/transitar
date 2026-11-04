@@ -1,14 +1,9 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-
-
-//Polling , por segundos pido la data, uso en el caht , lista de mensajes y numero del menu.
+﻿
+//Nueva funcion acutalizar cada, aparte del polling donde pido data cada unos segundos, pido un actualiazr una vez antes 
 function actualizarCada(caja, segundos, opciones = {}) {
     if (!caja) return;
 
-    setInterval(async () => {
+    const actualizar = async () => {
         //pestaña escondida
         if (document.hidden) return;
 
@@ -25,5 +20,9 @@ function actualizarCada(caja, segundos, opciones = {}) {
         } catch {
             //sin conexion
         }
-    }, segundos * 1000);
+    };
+
+    if (opciones.ahora) actualizar();
+
+    setInterval(actualizar, segundos * 1000);
 }
