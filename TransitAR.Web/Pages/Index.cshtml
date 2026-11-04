@@ -1,10 +1,120 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@* refugio y admin*@
+@if (User.IsInRole("Refugio"))
+{
+    <div class="alert alert-light border d-flex justify-content-between align-items-center">
+        <span>Estás con la cuenta de tu refugio.</span>
+        <a asp-page="/Refugio/Mascotas" class="btn btn-sm btn-primary">Ir a mi panel</a>
+    </div>
+}
+else if (User.IsInRole("Admin"))
+{
+    <div class="alert alert-light border d-flex justify-content-between align-items-center">
+        <span>Estás con la cuenta de administrador.</span>
+        <a asp-page="/Admin/Usuarios" class="btn btn-sm btn-primary">Ir a mi panel</a>
+    </div>
+}
+
+@* buscador (ya con la zona) *@
+<div class="bg-light rounded-3 p-4 p-md-5 mb-4">
+    <h1 class="h2">Encontrá a tu próximo compañero</h1>
+    <p class="text-muted">Adoptá o dale un tránsito a un animal de un refugio.</p>
+
+    <form method="get" asp-page="/Publicaciones/Index" class="d-flex gap-2">
+        <input name="Ubicacion" class="form-control form-control-lg" placeholder="¿En qué zona estás? Ej: Lomas" />
+        <button type="submit" class="btn btn-primary btn-lg">Buscar</button>
+    </form>
+
+    @if (Model.Especies.Count > 0)
+    {
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            @foreach (var e in Model.Especies)
+            {
+                <a asp-page="/Publicaciones/Index" asp-route-EspecieId="@e.Id" class="btn btn-sm btn-outline-secondary">@e.Nombre</a>
+            }
+        </div>
+    }
 </div>
+
+@* sin sesion *@
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <div class="row text-center g-4 mb-5">
+        <div class="col-md-4">
+            <h2 class="h5">1. Elegí</h2>
+            <p class="text-muted small mb-0">Mirá los animales que publican los refugios, para adoptar o para tránsito.</p>
+        </div>
+        <div class="col-md-4">
+            <h2 class="h5">2. Postulate</h2>
+            <p class="text-muted small mb-0">Creá tu cuenta, completá tu perfil y postulate en un par de clics.</p>
+        </div>
+        <div class="col-md-4">
+            <h2 class="h5">3. Hablá con el refugio</h2>
+            <p class="text-muted small mb-0">El refugio revisa tu postulación y te escribe por el chat.</p>
+        </div>
+        <div class="col-12">
+            <a asp-page="/Cuenta/RegistroPostulante" class="btn btn-primary">Crear cuenta</a>
+        </div>
+    </div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+else if (Model.Todas.Count == 0)
+{
+    <div class="text-center text-muted py-5">Todavía no hay animales publicados.</div>
+}
+else
+{
+    @if (Model.Transitos.Count > 0)
+    {
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-baseline mb-3">
+                <h2 class="h4 mb-0">Necesitan tránsito</h2>
+                <a asp-page="/Publicaciones/Index" asp-route-Tipo="Transito">Ver todos</a>
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+                @foreach (var p in Model.Transitos)
+                {
+                    <div class="col"><partial name="_TarjetaPublicacion" model="p" /></div>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.Adopciones.Count > 0)
+    {
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-baseline mb-3">
+                <h2 class="h4 mb-0">Para adoptar</h2>
+                <a asp-page="/Publicaciones/Index" asp-route-Tipo="Adopcion">Ver todos</a>
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+                @foreach (var p in Model.Adopciones)
+                {
+                    <div class="col"><partial name="_TarjetaPublicacion" model="p" /></div>
+                }
+            </div>
+        </section>
+    }
+
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-baseline mb-3">
+            <h2 class="h4 mb-0">Recién publicados</h2>
+            <a asp-page="/Publicaciones/Index">Ver todos</a>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+            @foreach (var p in Model.Recientes)
+            {
+                <div class="col"><partial name="_TarjetaPublicacion" model="p" /></div>
+            }
+        </div>
+    </section>
+}
