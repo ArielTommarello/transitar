@@ -1,0 +1,15 @@
+﻿@model List<TransitAR.Structures.Requests.SeguimientoResponse>
+
+
+@if (Model.Any())
+{
+    <div class="alert alert-primary">
+        <strong>Tenés @Model.Count @(Model.Count == 1 ? "control" : "controles") para hoy o mañana:</strong>
+        @for (var i = 0; i < Model.Count; i++)
+        {
+            var c = Model[i];
+            <a asp-page="/Refugio/Tenencia" asp-route-id="@c.TenenciaId" class="alert-link">@c.MascotaNombre</a>
+            <span>(@SeguimientoModel.Cuando(c)?.ToLower())@(i < Model.Count - 1 ? "," : ".")</span>
+        }
+    </div>
+}

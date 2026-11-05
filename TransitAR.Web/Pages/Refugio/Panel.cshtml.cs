@@ -51,6 +51,13 @@ namespace TransitAR.Web.Pages.Refugio
         public int? Adoptadas => Mascotas?.Count(m => m.Estado == EstadoMascota.Adoptada);
         public int? Finalizadas => ContarTenencias(VistaTenencias.Finalizadas);
 
+
+        /// <summary>
+        /// Controles qyue puede haber hoy y mañana para poner aviso arriba en el dashboarda )mismo uso en seguimiento)
+        /// </summary>
+        public List<SeguimientoResponse> ProximosDias =>
+            Controles?.Where(c => !c.Vencido && SeguimientoModel.EsHoy(c)).ToList() ?? new();
+
         /// <summary>
         /// Contamos como en tnenecias para un mismo numero
         /// </summary>

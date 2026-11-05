@@ -36,18 +36,7 @@
 }
 
 @* Hoy o Mañana *@
-@if (Model.ProximosDias.Any())
-{
-    <div class="alert alert-primary">
-        <strong>Tenés @Model.ProximosDias.Count @(Model.ProximosDias.Count == 1 ? "control" : "controles") para hoy o mañana:</strong>
-        @for (var i = 0; i < Model.ProximosDias.Count; i++)
-        {
-            var c = Model.ProximosDias[i];
-            <a asp-page="/Refugio/Tenencia" asp-route-id="@c.TenenciaId" class="alert-link">@c.MascotaNombre</a>
-            <span>(@SeguimientoModel.Cuando(c)?.ToLower())@(i < Model.ProximosDias.Count - 1 ? "," : ".")</span>
-        }
-    </div>
-}
+<partial name="_AvisoControles" model="Model.ProximosDias" />
 
 @foreach (var b in bloques)
 {
