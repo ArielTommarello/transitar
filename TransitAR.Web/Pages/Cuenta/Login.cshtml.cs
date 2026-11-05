@@ -92,6 +92,10 @@ namespace TransitAR.Web.Pages.Cuenta
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return LocalRedirect(returnUrl);
 
+            //Redireccion a panel si es refugio
+            if (login.Rol == RolUsuario.Refugio)
+                return RedirectToPage("/Refugio/Panel");
+
             return RedirectToPage("/Index");
         }
     }
