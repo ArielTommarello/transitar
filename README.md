@@ -15,7 +15,7 @@ de la Tecnicatura Universitaria en Programación — UTN.
 - **Base de datos:** SQL Server
 - **Frontend:** ASP.NET Core Razor Pages + Bootstrap
 - **Autenticación:** JWT + BCrypt
-- **Testing:** xUnit / EF CORE InMemory
+- **Testing:** xUnit / Sqlite en Memoria
 
 ## Estructura del proyecto
 
