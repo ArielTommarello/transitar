@@ -53,7 +53,7 @@ namespace TransitAR.Web.Pages.Refugio
 
 
         /// <summary>
-        /// Controles qyue puede haber hoy y mañana para poner aviso arriba en el dashboarda )mismo uso en seguimiento)
+        /// Controles qyue puede haber hoy y maÃ±ana para poner aviso arriba en el dashboarda )mismo uso en seguimiento)
         /// </summary>
         public List<SeguimientoResponse> ProximosDias =>
             Controles?.Where(c => !c.Vencido && SeguimientoModel.EsHoy(c)).ToList() ?? new();
