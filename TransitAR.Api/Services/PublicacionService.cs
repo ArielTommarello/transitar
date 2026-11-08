@@ -141,6 +141,12 @@ namespace TransitAR.Api.Services
             if (publicacion.Estado == EstadoPublicacion.Cerrada)
                 return Error("Una publicacion cerrada no se puede reabrir. Si la mascota sigue disponible, crea una publicacion nueva.");
 
+
+            //arreglo , si hay un candidtao acetado sigue pausada, no se peude acepta salvo se confirme o rechace, si se activa con candidato aceptado habria mas postualntes
+            if (estado == EstadoPublicacion.Activa
+               && publicacion.Postulaciones.Any(p => p.Estado == EstadoPostulacion.Aceptada && p.Tenencia == null))
+                return Error("Hay un candidato aceptado: confirma la entrega o rechazalo para volver a activar la publicacion.");
+
             var ahora = DateTime.UtcNow;
 
             publicacion.Estado = estado;

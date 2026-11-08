@@ -572,6 +572,46 @@ namespace TransitAR.Tests.Services
         }
 
         /// <summary>
+        /// Publicaicon pausada que no tiene candidato aceptado peude volver a activarse. Si hay posutalntes pendientes o rechazados no impide que se active de nuevo (REFUGIO)
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CambiarEstado_ActivarPausadaSinAceptado_LaActiva()
+        {
+            var publicacionId = CargarPublicacion(estado: EstadoPublicacion.Pausada);
+            CargarPostulacion(publicacionId);
+            CargarPostulacion(publicacionId, EstadoPostulacion.Rechazada);
+
+            using var contexto = CrearContexto();
+            var servicio = new PublicacionService(contexto);
+
+            var resultado = await servicio.CambiarEstadoAsync(publicacionId, EstadoPublicacion.Activa, _refugioId);
+
+            Assert.Null(resultado.Error);
+            Assert.Equal(EstadoPublicacion.Activa, LeerPublicacion(publicacionId).Estado);
+        }
+
+        /// <summary>
+        /// Con un candidato aceptado, la publicaicon queda pausada hasta confirmar la entrega o rechazarlo, no se peude activar, da error y queda pausada (REFUGIO)
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CambiarEstado_ActivarConAceptado_DaErrorYNoCambia()
+        {
+            var publicacionId = CargarPublicacion(estado: EstadoPublicacion.Pausada);
+            CargarPostulacion(publicacionId, EstadoPostulacion.Aceptada);
+
+            using var contexto = CrearContexto();
+            var servicio = new PublicacionService(contexto);
+
+            var resultado = await servicio.CambiarEstadoAsync(publicacionId, EstadoPublicacion.Activa, _refugioId);
+
+            Assert.Equal("Hay un candidato aceptado: confirma la entrega o rechazalo para volver a activar la publicacion.", resultado.Error);
+            Assert.Equal(EstadoPublicacion.Pausada, LeerPublicacion(publicacionId).Estado);
+        }
+
+
+        /// <summary>
         /// Obtener las publicaciones activas publicas, trae los datos de la mascota especie y refugio (VISITANTE Y POSTULANTES)
         /// </summary>
         /// <returns></returns>
