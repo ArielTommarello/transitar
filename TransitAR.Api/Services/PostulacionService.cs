@@ -53,7 +53,7 @@ namespace TransitAR.Api.Services
 
             //error en caso de no tener datos o algo salio mal
             if (request == null || usuarioId == Guid.Empty)
-                return Error("No se recibieron los datos de la postulacion, intentelo de nuevo mas tarde.");
+                return Error("No se recibieron los datos de la postulación, intentalo de nuevo más tarde.");
 
             //usuario sin perfil completo. Se trae solo lo que se busca o tiene peusto de seleccion
             var seleccion = await _context.PerfilPostulantes
@@ -62,7 +62,7 @@ namespace TransitAR.Api.Services
                .FirstOrDefaultAsync();
 
             if (seleccion == null)
-                return Error("Tenes que completar tu perfil antes de poder postularte.");
+                return Error("Tenés que completar tu perfil antes de poder postularte.");
 
             //postulacion creada y activa
             var publicacion = await _context.Publicaciones
@@ -70,22 +70,22 @@ namespace TransitAR.Api.Services
 
             //publicaicon null
             if (publicacion == null)
-                return Error("La publicacion no existe.");
+                return Error("La publicación no existe.");
 
             //publicacion no activa
             if (publicacion.Estado != EstadoPublicacion.Activa)
-                return Error("La publicacion ya no esta recibiendo postulaciones o se encuentra pausada.");
+                return Error("La publicación ya no está recibiendo postulaciones o se encuentra pausada.");
 
             //un refugio bloqueado no recibe postulaciones en caso de link guardado o directo
             if (!await _context.Mascotas.AnyAsync(m => m.Id == publicacion.MascotaId && m.Refugio!.Activo))
-                return Error("La publicacion ya no esta recibiendo postulaciones o se encuentra pausada.");
+                return Error("La publicación ya no está recibiendo postulaciones o se encuentra pausada.");
 
             //nuevo cheque, se puede psotular solo a lo que eligio, si son "ambos" ambos
             if (seleccion == SeleccionUsuario.Adoptante && publicacion.Tipo == TipoPublicacion.Transito)
-                return Error("Tu perfil dice que buscas adoptar. Si tambien queres transitar, cambialo en Mi perfil.");
+                return Error("Tu perfil dice que buscás adoptar. Si también querés transitar, cambialo en Mi perfil.");
 
             if (seleccion == SeleccionUsuario.Transito && publicacion.Tipo == TipoPublicacion.Adopcion)
-                return Error("Tu perfil dice que buscas transitar. Si tambien queres adoptar, cambialo en Mi perfil.");
+                return Error("Tu perfil dice que buscás transitar. Si también querés adoptar, cambialo en Mi perfil.");
 
 
             ////Postulacion unica por persona, sino se vuelve reptitivo, sirve como flag para mostras "estas postualdo"
@@ -107,7 +107,7 @@ namespace TransitAR.Api.Services
 
             //Se cumplio la cantidad ed postulaciones que peude hacer el usuario
             if (abiertas >= cupo)
-                return Error($"Ya tenes {cupo} postulaciones abiertas. Retira alguna para poder postularte a otra.");
+                return Error($"Ya tenés {cupo} postulaciones abiertas. Retirá alguna para poder postularte a otra.");
 
             //una sola postulacion por persona y publicacion, salvo que se haya retirado
             var existente = await _context.Postulaciones
@@ -118,7 +118,7 @@ namespace TransitAR.Api.Services
             {
                 //sigue abierta o el refugio la rechazo: no puede volver a postularse
                 if (existente.Estado != EstadoPostulacion.Retirada)
-                    return Error("Ya te postulaste a esta publicacion.");
+                    return Error("Ya te postulaste a esta publicación.");
 
                 //se habia retirado por decision propia: se reabre la misma fila
                 existente.Estado = EstadoPostulacion.Pendiente;
@@ -162,12 +162,12 @@ namespace TransitAR.Api.Services
 
             //error no existe la postulacon
             if (postulacion == null)
-                return Error("No encontramos esa postulacion.");
+                return Error("No encontramos esa postulación.");
 
             //solo se retira lo que todavia noe sta resuelto
             if (postulacion.Estado != EstadoPostulacion.Pendiente
              && postulacion.Estado != EstadoPostulacion.EnEspera)
-                return Error("Solo se pueden retirar las postulaciones que siguen en evaluacion o no fueron retiradas.");
+                return Error("Solo se pueden retirar las postulaciones que siguen en evaluación o no fueron retiradas.");
 
             postulacion.Estado = EstadoPostulacion.Retirada;
             postulacion.FechaResolucion = DateTime.UtcNow;
@@ -214,17 +214,17 @@ namespace TransitAR.Api.Services
 
             //si la publicacion esta vacia
             if (publicacion == null)
-                return Error("No encontramos esa publicacion.");
+                return Error("No encontramos esa publicación.");
 
             var postulacion = publicacion.Postulaciones.FirstOrDefault(p => p.Id == postulacionId);
 
             //si la postulacion no es de la publiacion o no existe
             if (postulacion == null)
-                return Error("Esa postulacion no pertenece a esta publicacion.");
+                return Error("Esa postulación no pertenece a esta publicación.");
 
             //chequeo que sea el primero en se aceptado
             if (publicacion.Postulaciones.Any(p => p.Estado == EstadoPostulacion.Aceptada))
-                return Error("Ya aceptaste a un candidato. Resolve esa postulacion antes de aceptar otra.");
+                return Error("Ya aceptaste a un candidato. Resolvé esa postulación antes de aceptar otra.");
 
             //La postulacion tiene que estar pendiente, no aceptada o rechazada
             if (postulacion.Estado != EstadoPostulacion.Pendiente)
@@ -261,18 +261,18 @@ namespace TransitAR.Api.Services
 
             //si la publicacion esta vacia
             if (publicacion == null)
-                return Error("No encontramos esa publicacion.");
+                return Error("No encontramos esa publicación.");
 
             var postulacion = publicacion.Postulaciones.FirstOrDefault(p => p.Id == postulacionId);
 
             //reviso que la postulacion sea d mi publicacion
             if (postulacion == null)
-                return Error("Esa postulacion no pertenece a esta publicacion.");
+                return Error("Esa postulación no pertenece a esta publicación.");
 
             //doble chequeo para ver que no este rechazada ni retirada
             if (postulacion.Estado == EstadoPostulacion.Rechazada
              || postulacion.Estado == EstadoPostulacion.Retirada)
-                return Error("Esa postulacion ya estaba resuelta.");
+                return Error("Esa postulación ya estaba resuelta.");
 
 
             var fueAceptada = postulacion.Estado == EstadoPostulacion.Aceptada;
@@ -411,7 +411,7 @@ namespace TransitAR.Api.Services
             if (!string.IsNullOrWhiteSpace(mensajeDelRefugio))
                 return mensajeDelRefugio;
 
-            return "El refugio selecciono a otro candidato para esta publicacion.";
+            return "El refugio seleccionó a otro candidato para esta publicación.";
         }
 
     }

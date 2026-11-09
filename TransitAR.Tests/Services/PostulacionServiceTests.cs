@@ -62,7 +62,7 @@ namespace TransitAR.Tests.Services
         {
             Id = id,
             Email = email,
-            PasswordHash = "hash-de-prueba",
+            PasswordHash = "passwordprueba",
             Nombre = nombre,
             Apellido = "Perez",
             Rol = RolUsuario.Usuario,
@@ -168,7 +168,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = _publicacionId }, usuarioId);
 
-            Assert.Equal("Tenes que completar tu perfil antes de poder postularte.", resultado.Error);
+            Assert.Equal("Tenés que completar tu perfil antes de poder postularte.", resultado.Error);
         }
 
 
@@ -184,7 +184,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = Guid.NewGuid() }, _anaId);
 
-            Assert.Equal("La publicacion no existe.", resultado.Error);
+            Assert.Equal("La publicación no existe.", resultado.Error);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = publicacionId }, _anaId);
 
-            Assert.Equal("La publicacion ya no esta recibiendo postulaciones o se encuentra pausada.", resultado.Error);
+            Assert.Equal("La publicación ya no está recibiendo postulaciones o se encuentra pausada.", resultado.Error);
         }
 
 
@@ -223,7 +223,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = _publicacionId }, _anaId);
 
-            Assert.Equal("La publicacion ya no esta recibiendo postulaciones o se encuentra pausada.", resultado.Error);
+            Assert.Equal("La publicación ya no está recibiendo postulaciones o se encuentra pausada.", resultado.Error);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = publicacionId }, _anaId);
 
-            Assert.Equal("Tu perfil dice que buscas adoptar. Si tambien queres transitar, cambialo en Mi perfil.", resultado.Error);
+            Assert.Equal("Tu perfil dice que buscás adoptar. Si también querés transitar, cambialo en Mi perfil.", resultado.Error);
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = _publicacionId }, _anaId);
 
-            Assert.Equal("Tu perfil dice que buscas transitar. Si tambien queres adoptar, cambialo en Mi perfil.", resultado.Error);
+            Assert.Equal("Tu perfil dice que buscás transitar. Si también querés adoptar, cambialo en Mi perfil.", resultado.Error);
         }
 
 
@@ -278,7 +278,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = _publicacionId }, _anaId);
 
-            Assert.Equal("Ya tenes 3 postulaciones abiertas. Retira alguna para poder postularte a otra.", resultado.Error);
+            Assert.Equal("Ya tenés 3 postulaciones abiertas. Retirá alguna para poder postularte a otra.", resultado.Error);
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = _publicacionId }, _anaId);
 
-            Assert.Equal("Ya te postulaste a esta publicacion.", resultado.Error);
+            Assert.Equal("Ya te postulaste a esta publicación.", resultado.Error);
         }
 
 
@@ -339,7 +339,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = _publicacionId }, _anaId);
 
-            Assert.Equal("Ya te postulaste a esta publicacion.", resultado.Error);
+            Assert.Equal("Ya te postulaste a esta publicación.", resultado.Error);
         }
 
         /// <summary>
@@ -397,7 +397,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.RetirarPostulacionAsync(postulacionId, _anaId);
 
-            Assert.Equal("Solo se pueden retirar las postulaciones que siguen en evaluacion o no fueron retiradas.", resultado.Error);
+            Assert.Equal("Solo se pueden retirar las postulaciones que siguen en evaluación o no fueron retiradas.", resultado.Error);
             Assert.Equal(EstadoPostulacion.Aceptada, LeerPostulacion(postulacionId).Estado);
         }
 
@@ -416,7 +416,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.RetirarPostulacionAsync(postulacionId, otroId);
 
-            Assert.Equal("No encontramos esa postulacion.", resultado.Error);
+            Assert.Equal("No encontramos esa postulación.", resultado.Error);
             Assert.Equal(EstadoPostulacion.Pendiente, LeerPostulacion(postulacionId).Estado);
         }
 
@@ -457,7 +457,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.AceptarAsync(_publicacionId, postulacionId, _refugioId);
 
-            Assert.Equal("Ya aceptaste a un candidato. Resolve esa postulacion antes de aceptar otra.", resultado.Error);
+            Assert.Equal("Ya aceptaste a un candidato. Resolvé esa postulación antes de aceptar otra.", resultado.Error);
         }
 
 
@@ -476,7 +476,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.AceptarAsync(_publicacionId, postulacionId, Guid.NewGuid());
 
-            Assert.Equal("No encontramos esa publicacion.", resultado.Error);
+            Assert.Equal("No encontramos esa publicación.", resultado.Error);
             Assert.Equal(EstadoPostulacion.Pendiente, LeerPostulacion(postulacionId).Estado);
         }
 
@@ -545,7 +545,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.RechazarAsync(_publicacionId, postulacionId, null, _refugioId);
 
-            Assert.Equal("Esa postulacion ya estaba resuelta.", resultado.Error);
+            Assert.Equal("Esa postulación ya estaba resuelta.", resultado.Error);
         }
 
         /// <summary>
@@ -622,7 +622,7 @@ namespace TransitAR.Tests.Services
 
             var postulacion = await servicio.ObtenerPostulacionAsync(postulacionId, _anaId);
 
-            Assert.Equal("El refugio selecciono a otro candidato para esta publicacion.", postulacion!.MotivoRechazo);
+            Assert.Equal("El refugio seleccionó a otro candidato para esta publicación.", postulacion!.MotivoRechazo);
         }
 
         /// <summary>
@@ -675,7 +675,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.PostularseAsync(new PostulacionRequest { PublicacionId = _publicacionId }, Guid.Empty);
 
-            Assert.Equal("No se recibieron los datos de la postulacion, intentelo de nuevo mas tarde.", resultado.Error);
+            Assert.Equal("No se recibieron los datos de la postulación, intentalo de nuevo más tarde.", resultado.Error);
         }
 
         /// <summary>
@@ -710,7 +710,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.AceptarAsync(_publicacionId, postulacionId, _refugioId);
 
-            Assert.Equal("Esa postulacion no pertenece a esta publicacion.", resultado.Error);
+            Assert.Equal("Esa postulación no pertenece a esta publicación.", resultado.Error);
             Assert.Equal(EstadoPostulacion.Pendiente, LeerPostulacion(postulacionId).Estado);
         }
 
@@ -747,7 +747,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.RechazarAsync(_publicacionId, postulacionId, null, Guid.NewGuid());
 
-            Assert.Equal("No encontramos esa publicacion.", resultado.Error);
+            Assert.Equal("No encontramos esa publicación.", resultado.Error);
             Assert.Equal(EstadoPostulacion.Pendiente, LeerPostulacion(postulacionId).Estado);
         }
 
@@ -764,7 +764,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.RechazarAsync(_publicacionId, postulacionId, null, _refugioId);
 
-            Assert.Equal("Esa postulacion no pertenece a esta publicacion.", resultado.Error);
+            Assert.Equal("Esa postulación no pertenece a esta publicación.", resultado.Error);
             Assert.Equal(EstadoPostulacion.Pendiente, LeerPostulacion(postulacionId).Estado);
         }
 
