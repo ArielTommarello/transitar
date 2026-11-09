@@ -118,11 +118,11 @@ namespace TransitAR.Api.Services
 
             //error si no existe o no tiene acceso
             if (postulacion == null || !TieneAcceso(postulacion, usuarioId, refugioId))
-                return Error("No encontramos esa conversacion.");
+                return Error("No encontramos esa conversación.");
 
             //reviso que no este en modosololectura
             if (!ChatAbierto(postulacion))
-                return Error("Esta conversacion esta cerrada. Podes leerla pero ya no se pueden enviar mensajes.");
+                return Error("Esta conversación está cerrada. Podés leerla pero ya no se pueden enviar mensajes.");
 
             //reviso que los adjuntos cumplan las condiciones
             var errorAdjuntos = ValidarAdjuntos(enviados);
@@ -246,13 +246,13 @@ namespace TransitAR.Api.Services
             foreach (var archivo in adjuntos)
             {
                 if (archivo.Contenido.LongLength == 0)
-                    return $"El archivo {archivo.NombreArchivo} esta vacio.";
+                    return $"El archivo {archivo.NombreArchivo} está vacío.";
 
                 if (archivo.Contenido.LongLength > maxBytes)
                     return $"El archivo {archivo.NombreArchivo} supera los {maxMB} MB permitidos.";
 
                 if (!AdjuntosPermitidos.Contains(archivo.ContentType.Trim().ToLowerInvariant()))
-                    return "Solo se pueden adjuntar imagenes (jpg, png, webp) o videos mp4.";
+                    return "Solo se pueden adjuntar imágenes (jpg, png, webp) o videos mp4.";
             }
 
             return null;

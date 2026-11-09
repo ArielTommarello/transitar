@@ -52,7 +52,7 @@ namespace TransitAR.Tests.Services
         {
             Id = id,
             Email = $"{id}@test.org",
-            PasswordHash = "hash-de-prueba",
+            PasswordHash = "pruebapassword",
             Nombre = nombre,
             Apellido = "Perez",
             Rol = RolUsuario.Usuario,
@@ -488,7 +488,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.EnviarAsync(_postulacionId, new MensajeRequest { Texto = "Hola" }, new List<ArchivoAdjunto>(), carlosId, null);
 
-            Assert.Equal("No encontramos esa conversacion.", resultado.Error);
+            Assert.Equal("No encontramos esa conversación.", resultado.Error);
             Assert.Empty(LeerMensajes());
         }
 
@@ -504,7 +504,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.EnviarAsync(_postulacionId, new MensajeRequest { Texto = "Hola" }, new List<ArchivoAdjunto>(), _lauraId, Guid.NewGuid());
 
-            Assert.Equal("No encontramos esa conversacion.", resultado.Error);
+            Assert.Equal("No encontramos esa conversación.", resultado.Error);
             Assert.Empty(LeerMensajes());
         }
 
@@ -522,7 +522,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.EnviarAsync(rechazadaId, new MensajeRequest { Texto = "Hola" }, new List<ArchivoAdjunto>(), _anaId, null);
 
-            Assert.Equal("Esta conversacion esta cerrada. Podes leerla pero ya no se pueden enviar mensajes.", resultado.Error);
+            Assert.Equal("Esta conversación está cerrada. Podés leerla pero ya no se pueden enviar mensajes.", resultado.Error);
             Assert.Empty(LeerMensajes());
         }
 
@@ -560,7 +560,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.EnviarAsync(_postulacionId, new MensajeRequest { Texto = "Hola" }, new List<ArchivoAdjunto>(), _anaId, null);
 
-            Assert.Equal("Esta conversacion esta cerrada. Podes leerla pero ya no se pueden enviar mensajes.", resultado.Error);
+            Assert.Equal("Esta conversación está cerrada. Podés leerla pero ya no se pueden enviar mensajes.", resultado.Error);
             Assert.Empty(LeerMensajes());
         }
 
@@ -613,7 +613,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.EnviarAsync(_postulacionId, new MensajeRequest(), new List<ArchivoAdjunto> { NuevoArchivo(0) }, _anaId, null);
 
-            Assert.Equal("El archivo foto.jpg esta vacio.", resultado.Error);
+            Assert.Equal("El archivo foto.jpg está vacío.", resultado.Error);
         }
 
         /// <summary>
@@ -628,7 +628,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.EnviarAsync(_postulacionId, new MensajeRequest(), new List<ArchivoAdjunto> { NuevoArchivo(tipo: "application/pdf", nombre: "dni.pdf") }, _anaId, null);
 
-            Assert.Equal("Solo se pueden adjuntar imagenes (jpg, png, webp) o videos mp4.", resultado.Error);
+            Assert.Equal("Solo se pueden adjuntar imágenes (jpg, png, webp) o videos mp4.", resultado.Error);
         }
 
 

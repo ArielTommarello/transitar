@@ -64,14 +64,14 @@ namespace TransitAR.Api.Services
 
             //una en transito o adoptada ya tiene un apersona 
             if (mascota.Estado != EstadoMascota.EnRefugio)
-                return Error("Solo se pueden publicar mascotas que estan en el refugio.");
+                return Error("Solo se pueden publicar mascotas que están en el refugio.");
 
             //una sola publicacion abierta (activa o pausada) por mascota , cerradas son historial
             var yaTieneAbierta = await _context.Publicaciones
                 .AnyAsync(p => p.MascotaId == request.MascotaId && p.Estado != EstadoPublicacion.Cerrada);
 
             if (yaTieneAbierta)
-                return Error("Esta mascota ya tiene una publicacion activa o pausada. Cerrala antes de crear otra.");
+                return Error("Esta mascota ya tiene una publicación activa o pausada. Cerrala antes de crear otra.");
 
             var publicacion = new Publicacion
             {
@@ -101,16 +101,16 @@ namespace TransitAR.Api.Services
                 .FirstOrDefaultAsync(p => p.Id == id && p.Mascota!.RefugioId == refugioId);
 
             if (publicacion == null)
-                return Error("No encontramos esa publicacion en tu refugio.");
+                return Error("No encontramos esa publicación en tu refugio.");
 
             //cerrada (archivada)
             if (publicacion.Estado == EstadoPublicacion.Cerrada)
-                return Error("Una publicacion cerrada no se edita.");
+                return Error("Una publicación cerrada no se edita.");
 
             //no se peude cambiar si hay gente psotulada
             if (request.Tipo != publicacion.Tipo
              && await _context.Postulaciones.AnyAsync(p => p.PublicacionId == id))
-                return Error("No se puede cambiar entre adopcion y transito porque la publicacion ya tiene postulaciones.");
+                return Error("No se puede cambiar entre adopción y tránsito porque la publicación ya tiene postulaciones.");
 
             
             publicacion.Titulo = request.Titulo.Trim();
@@ -135,17 +135,17 @@ namespace TransitAR.Api.Services
 
 
             if (publicacion == null)
-                return Error("No encontramos esa publicacion en tu refugio.");
+                return Error("No encontramos esa publicación en tu refugio.");
 
             //cerrada (archivada) , crear nueva para la mascota
             if (publicacion.Estado == EstadoPublicacion.Cerrada)
-                return Error("Una publicacion cerrada no se puede reabrir. Si la mascota sigue disponible, crea una publicacion nueva.");
+                return Error("Una publicación cerrada no se puede reabrir. Si la mascota sigue disponible, creá una publicación nueva.");
 
 
             //arreglo , si hay un candidtao acetado sigue pausada, no se peude acepta salvo se confirme o rechace, si se activa con candidato aceptado habria mas postualntes
             if (estado == EstadoPublicacion.Activa
                && publicacion.Postulaciones.Any(p => p.Estado == EstadoPostulacion.Aceptada && p.Tenencia == null))
-                return Error("Hay un candidato aceptado: confirma la entrega o rechazalo para volver a activar la publicacion.");
+                return Error("Hay un candidato aceptado: confirmá la entrega o rechazalo para volver a activar la publicación.");
 
             var ahora = DateTime.UtcNow;
 
@@ -282,7 +282,7 @@ namespace TransitAR.Api.Services
         /// <summary>
         /// Motivo para el postulante si el refugio cierra la publicacion
         /// </summary>
-        private const string MotivoCierre = "El refugio cerro la publicacion.";
+        private const string MotivoCierre = "El refugio cerró la publicación.";
 
 
         /// <summary>

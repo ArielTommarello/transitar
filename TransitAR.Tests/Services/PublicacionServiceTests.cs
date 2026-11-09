@@ -326,7 +326,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.CrearPublicacionAsync(NuevoRequest(mascotaId: enTransitoId), _refugioId);
 
-            Assert.Equal("Solo se pueden publicar mascotas que estan en el refugio.", resultado.Error);
+            Assert.Equal("Solo se pueden publicar mascotas que están en el refugio.", resultado.Error);
             Assert.Equal(0, ContarPublicaciones());
         }
 
@@ -344,7 +344,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.CrearPublicacionAsync(NuevoRequest(), _refugioId);
 
-            Assert.Equal("Esta mascota ya tiene una publicacion activa o pausada. Cerrala antes de crear otra.", resultado.Error);
+            Assert.Equal("Esta mascota ya tiene una publicación activa o pausada. Cerrala antes de crear otra.", resultado.Error);
             Assert.Equal(1, ContarPublicaciones());
         }
 
@@ -423,7 +423,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ActualizarPublicacionAsync(publicacionId, NuevoRequest(TipoPublicacion.Transito), _refugioId);
 
-            Assert.Equal("No se puede cambiar entre adopcion y transito porque la publicacion ya tiene postulaciones.", resultado.Error);
+            Assert.Equal("No se puede cambiar entre adopción y tránsito porque la publicación ya tiene postulaciones.", resultado.Error);
             Assert.Equal(TipoPublicacion.Adopcion, LeerPublicacion(publicacionId).Tipo);
         }
 
@@ -460,7 +460,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ActualizarPublicacionAsync(publicacionId, NuevoRequest(), _refugioId);
 
-            Assert.Equal("Una publicacion cerrada no se edita.", resultado.Error);
+            Assert.Equal("Una publicación cerrada no se edita.", resultado.Error);
             Assert.Equal("Busca hogar", LeerPublicacion(publicacionId).Titulo);
         }
 
@@ -478,7 +478,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ActualizarPublicacionAsync(publicacionId, NuevoRequest(), Guid.NewGuid());
 
-            Assert.Equal("No encontramos esa publicacion en tu refugio.", resultado.Error);
+            Assert.Equal("No encontramos esa publicación en tu refugio.", resultado.Error);
             Assert.Equal("Busca hogar", LeerPublicacion(publicacionId).Titulo);
         }
 
@@ -528,7 +528,7 @@ namespace TransitAR.Tests.Services
             Assert.Equal(EstadoPostulacion.Rechazada, LeerPostulacion(pendienteId).Estado);
             Assert.Equal(EstadoPostulacion.Rechazada, LeerPostulacion(enEsperaId).Estado);
             Assert.Equal(EstadoPostulacion.Rechazada, LeerPostulacion(aceptadaSinEntregaId).Estado);
-            Assert.Equal("El refugio cerro la publicacion.", LeerPostulacion(pendienteId).ObservacionRechazo);
+            Assert.Equal("El refugio cerró la publicación.", LeerPostulacion(pendienteId).ObservacionRechazo);
             Assert.Equal(EstadoPostulacion.Aceptada, LeerPostulacion(entregadaId).Estado);
             Assert.Equal(EstadoPostulacion.Retirada, LeerPostulacion(retiradaId).Estado);
         }
@@ -549,7 +549,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.CambiarEstadoAsync(publicacionId, EstadoPublicacion.Activa, _refugioId);
 
-            Assert.Equal("Una publicacion cerrada no se puede reabrir. Si la mascota sigue disponible, crea una publicacion nueva.", resultado.Error);
+            Assert.Equal("Una publicación cerrada no se puede reabrir. Si la mascota sigue disponible, creá una publicación nueva.", resultado.Error);
             Assert.Equal(EstadoPublicacion.Cerrada, LeerPublicacion(publicacionId).Estado);
         }
 
@@ -567,7 +567,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.CambiarEstadoAsync(publicacionId, EstadoPublicacion.Cerrada, Guid.NewGuid());
 
-            Assert.Equal("No encontramos esa publicacion en tu refugio.", resultado.Error);
+            Assert.Equal("No encontramos esa publicación en tu refugio.", resultado.Error);
             Assert.Equal(EstadoPublicacion.Activa, LeerPublicacion(publicacionId).Estado);
         }
 
@@ -606,7 +606,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.CambiarEstadoAsync(publicacionId, EstadoPublicacion.Activa, _refugioId);
 
-            Assert.Equal("Hay un candidato aceptado: confirma la entrega o rechazalo para volver a activar la publicacion.", resultado.Error);
+            Assert.Equal("Hay un candidato aceptado: confirmá la entrega o rechazalo para volver a activar la publicación.", resultado.Error);
             Assert.Equal(EstadoPublicacion.Pausada, LeerPublicacion(publicacionId).Estado);
         }
 
