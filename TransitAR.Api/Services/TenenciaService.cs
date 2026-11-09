@@ -48,11 +48,11 @@ namespace TransitAR.Api.Services
 
             //no esta la publciacion
             if (postulacion == null)
-                return Error("No encontramos esa postulacion en tus publicaciones.");
+                return Error("No encontramos esa postulación en tus publicaciones.");
 
             //Confirmamos que la postulacion debe estar aceptada
             if (postulacion.Estado != EstadoPostulacion.Aceptada)
-                return Error("Solo se puede confirmar la entrega de una postulacion aceptada.");
+                return Error("Solo se puede confirmar la entrega de una postulación aceptada.");
 
             //Postulacion que debe ser unica
             if (await _context.Tenencias.AnyAsync(t => t.PostulacionId == request.PostulacionId))
@@ -70,7 +70,7 @@ namespace TransitAR.Api.Services
             {
                 
                 if (request.FechaFinEstimada.Value.Date <= FechaExtensions.HoyEnArgentina())
-                    return Error("La fecha estimada de devolucion tiene que ser posterior a hoy.");
+                    return Error("La fecha estimada de devolución tiene que ser posterior a hoy.");
 
                 fechaFinEstimada = request.FechaFinEstimada;
             }
@@ -154,7 +154,7 @@ namespace TransitAR.Api.Services
         {
             //no existe
             if (request == null)
-                return Error("No se recibieron los datos de la devolucion.");
+                return Error("No se recibieron los datos de la devolución.");
 
             var tenencia = await _context.Tenencias
                 .Include(t => t.Mascota)
@@ -183,7 +183,7 @@ namespace TransitAR.Api.Services
             foreach (var pendiente in tenencia.Seguimientos.Where(s => s.Estado == EstadoSeguimiento.Pendiente))
             {
                 pendiente.Estado = EstadoSeguimiento.Cancelado;
-                pendiente.Observacion = "Cancelado automaticamente: la tenencia finalizo.";
+                pendiente.Observacion = "Cancelado automáticamente: la tenencia finalizó.";
             }
 
             await _context.SaveChangesAsync();
@@ -213,7 +213,7 @@ namespace TransitAR.Api.Services
 
             //flag para mostrar que solo sea de transsito a adopcion , no se peude de adopcion a transito o adopcion a adopcion
             if (tenencia.Modalidad != TipoPublicacion.Transito)
-                return Error("Solo se puede convertir un transito: esta tenencia ya es una adopcion.");
+                return Error("Solo se puede convertir un tránsito: esta tenencia ya es una adopción.");
 
             //trabajamos sobre misma tenencia, esta en el mismo lado
 

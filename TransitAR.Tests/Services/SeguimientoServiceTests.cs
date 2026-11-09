@@ -373,7 +373,7 @@ namespace TransitAR.Tests.Services
 
             var error = await servicio.CrearAsync(new SeguimientoRequest { TenenciaId = terminadaId, FechaProgramada = DateTime.UtcNow.Date.AddDays(7) }, _refugioId);
 
-            Assert.Equal("La tenencia ya termino: no se pueden agendar controles nuevos.", error);
+            Assert.Equal("La tenencia ya terminó: no se pueden agendar controles nuevos.", error);
             Assert.Empty(LeerSeguimientos());
         }
 
@@ -567,7 +567,7 @@ namespace TransitAR.Tests.Services
 
             var error = await servicio.CambiarEstadoAsync(controlId, new SeguimientoRequest { Estado = EstadoSeguimiento.Cancelado }, _refugioId);
 
-            Assert.Equal("Este control ya esta cerrado y no se puede modificar.", error);
+            Assert.Equal("Este control ya está cerrado y no se puede modificar.", error);
             Assert.Equal(EstadoSeguimiento.Realizado, LeerSeguimiento(controlId).Estado);
         }
 
@@ -585,7 +585,7 @@ namespace TransitAR.Tests.Services
 
             var error = await servicio.CambiarEstadoAsync(controlId, new SeguimientoRequest { Estado = EstadoSeguimiento.Realizado }, _refugioId);
 
-            Assert.Equal("La tenencia ya termino: su libreta es de solo lectura.", error);
+            Assert.Equal("La tenencia ya terminó: su libreta es de solo lectura.", error);
             Assert.Equal(EstadoSeguimiento.Pendiente, LeerSeguimiento(controlId).Estado);
         }
     }

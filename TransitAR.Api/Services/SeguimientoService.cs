@@ -76,7 +76,7 @@ namespace TransitAR.Api.Services
 
             //en caso de tenencia por transito, no se peude seguir observando
             if (tenencia.FechaFinReal != null)
-                return "La tenencia ya termino: no se pueden agendar controles nuevos.";
+                return "La tenencia ya terminó: no se pueden agendar controles nuevos.";
 
             _context.Seguimientos.Add(new Seguimiento
             {
@@ -115,11 +115,11 @@ namespace TransitAR.Api.Services
 
             //Si termino queda guardado, solo lo puedo llegar a cambiar cuando este pendiente o vencido(que es un pendiente pero con fecha anterior a hoy)
             if (seguimiento.Estado != EstadoSeguimiento.Pendiente)
-                return "Este control ya esta cerrado y no se puede modificar.";
+                return "Este control ya está cerrado y no se puede modificar.";
 
             //Si es un transito, y termino no deberiamos poder seguir haciendo seguimientos
             if (seguimiento.Tenencia.FechaFinReal != null)
-                return "La tenencia ya termino: su libreta es de solo lectura.";
+                return "La tenencia ya terminó: su libreta es de solo lectura.";
 
             var ahora = DateTime.UtcNow;
             seguimiento.Estado = nuevoEstado;

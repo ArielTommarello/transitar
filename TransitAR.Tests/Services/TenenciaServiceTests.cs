@@ -305,7 +305,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ConfirmarEntregaAsync(new TenenciaRequest { PostulacionId = postulacionId }, Guid.NewGuid());
 
-            Assert.Equal("No encontramos esa postulacion en tus publicaciones.", resultado.Error);
+            Assert.Equal("No encontramos esa postulación en tus publicaciones.", resultado.Error);
             Assert.Equal(0, ContarTenencias());
         }
 
@@ -324,7 +324,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ConfirmarEntregaAsync(new TenenciaRequest { PostulacionId = postulacionId }, _refugioId);
 
-            Assert.Equal("Solo se puede confirmar la entrega de una postulacion aceptada.", resultado.Error);
+            Assert.Equal("Solo se puede confirmar la entrega de una postulación aceptada.", resultado.Error);
             Assert.Equal(0, ContarTenencias());
         }
 
@@ -360,7 +360,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ConfirmarEntregaAsync(new TenenciaRequest { PostulacionId = postulacionId, FechaFinEstimada = DateTime.UtcNow.AddDays(-1) }, _refugioId);
 
-            Assert.Equal("La fecha estimada de devolucion tiene que ser posterior a hoy.", resultado.Error);
+            Assert.Equal("La fecha estimada de devolución tiene que ser posterior a hoy.", resultado.Error);
             Assert.Equal(0, ContarTenencias());
         }
 
@@ -603,7 +603,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.DevolverAsync(tenenciaId, null!, _refugioId);
 
-            Assert.Equal("No se recibieron los datos de la devolucion.", resultado.Error);
+            Assert.Equal("No se recibieron los datos de la devolución.", resultado.Error);
         }
 
 
@@ -718,7 +718,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ConvertirAAdopcionAsync(tenenciaId, _refugioId);
 
-            Assert.Equal("Solo se puede convertir un transito: esta tenencia ya es una adopcion.", resultado.Error);
+            Assert.Equal("Solo se puede convertir un tránsito: esta tenencia ya es una adopción.", resultado.Error);
             Assert.Null(LeerTenencia(tenenciaId).FechaConversion);
         }
 
