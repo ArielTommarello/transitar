@@ -6,6 +6,25 @@
     public  static class FechaExtensions
     {
 
+        //ARREGLOS HORA ARGENTINA - HC
+
+
+        /// <summary>
+        /// Argentina es UTC-3
+        /// </summary>
+        private const int HorasArgentina = -3;
+
+        /// <summary>
+        /// Dia en Argentina para un momento en UTC, desde la 21 ya es otro dia en UTC normal
+        /// </summary>
+        public static DateTime DiaEnArgentina(DateTime utc) => utc.AddHours(HorasArgentina).Date;
+
+        /// <summary>
+        /// Hoy en Argentina para ver los vencidos
+        /// </summary>
+        public static DateTime HoyEnArgentina() => DiaEnArgentina(DateTime.UtcNow);
+
+
         /// <summary>
         /// Calcula la edad en meses a partir del dia de nacimiento, contra el dia actual. Null si no se sabe
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using TransitAR.Api.Extensions;
 using TransitAR.Structures;
 using TransitAR.Structures.Requests;
 
@@ -68,7 +69,7 @@ namespace TransitAR.Api.Services
             if (modalidad == TipoPublicacion.Transito && request.FechaFinEstimada != null)
             {
                 
-                if (request.FechaFinEstimada <= ahora)
+                if (request.FechaFinEstimada.Value.Date <= FechaExtensions.HoyEnArgentina())
                     return Error("La fecha estimada de devolucion tiene que ser posterior a hoy.");
 
                 fechaFinEstimada = request.FechaFinEstimada;
@@ -117,7 +118,7 @@ namespace TransitAR.Api.Services
         ///<inheritdoc/>
         public async Task<List<TenenciaResponse>> ListarTenenciasAsync(Guid refugioId, TipoPublicacion? modalidad, bool? enCurso, bool vencidas, bool sinControles)
         {
-            var ahora = DateTime.UtcNow;
+            var hoy = FechaExtensions.HoyEnArgentina();
 
             var consulta = ConsultaCompleta()
                 .Where(t => t.Mascota!.RefugioId == refugioId);
@@ -132,7 +133,7 @@ namespace TransitAR.Api.Services
 
             //repito condicion del DTO para vencidas (EstaVencida).
             if (vencidas)
-                consulta = consulta.Where(t => t.Modalidad == TipoPublicacion.Transito && t.FechaFinReal == null && t.FechaFinEstimada != null && t.FechaFinEstimada.Value.Date < ahora.Date);
+                consulta = consulta.Where(t => t.Modalidad == TipoPublicacion.Transito && t.FechaFinReal == null && t.FechaFinEstimada != null && t.FechaFinEstimada.Value.Date < hoy);
 
             //para generar una alerta a las tenencias que no tienen ningun control agendado, no hace falta usarlo, pero si que se note que no tienen nada agendado
             if(sinControles)
@@ -335,7 +336,7 @@ namespace TransitAR.Api.Services
             t.Modalidad == TipoPublicacion.Transito
             && t.FechaFinReal == null
             && t.FechaFinEstimada != null
-            && t.FechaFinEstimada.Value.Date < ahora.Date;
+            && t.FechaFinEstimada.Value.Date < FechaExtensions.DiaEnArgentina(ahora);
 
         /// <summary>
         /// Pasa la entidad al DTO de salida, calculando si el transito esta vencido

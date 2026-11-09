@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TransitAR.Api.Extensions;
 using TransitAR.Structures;
 using TransitAR.Structures.Requests;
 
@@ -38,7 +39,7 @@ namespace TransitAR.Api.Services
             //vencido, es un pendiente que tiene fecha antes de hoy
             if (vencidos)
             {
-                var hoy = DateTime.UtcNow.Date;
+                var hoy = FechaExtensions.HoyEnArgentina();
                 consulta = consulta.Where(s => s.Estado == EstadoSeguimiento.Pendiente && s.FechaProgramada < hoy);
             }
 
@@ -62,7 +63,7 @@ namespace TransitAR.Api.Services
             if (request?.TenenciaId == null || request.FechaProgramada == null)
                 return "No existe la tenencia o la fecha del control.";
 
-            if (request.FechaProgramada.Value.Date < DateTime.UtcNow.Date)
+            if (request.FechaProgramada.Value.Date < FechaExtensions.HoyEnArgentina())
                 return "La fecha del control tiene que ser de hoy para adelante.";
 
             var tenencia = await _context.Tenencias
@@ -129,7 +130,7 @@ namespace TransitAR.Api.Services
 
             if (nuevoEstado == EstadoSeguimiento.Reprogramado)
             {
-                if (request.FechaProgramada == null || request.FechaProgramada.Value.Date < ahora.Date)
+                if (request.FechaProgramada == null || request.FechaProgramada.Value.Date < FechaExtensions.HoyEnArgentina())
                     return "Para reprogramar hace falta una fecha nueva, de hoy para adelante";
 
                 //el viejo queda registrado con la fecha original; el nuevo esta en la agenda
@@ -176,7 +177,7 @@ namespace TransitAR.Api.Services
             FechaRealizada = s.FechaRealizada,
             Observacion = s.Observacion,
             Estado = s.Estado,
-            Vencido = s.Estado == EstadoSeguimiento.Pendiente && s.FechaProgramada.Date < DateTime.UtcNow.Date
+            Vencido = s.Estado == EstadoSeguimiento.Pendiente && s.FechaProgramada.Date < FechaExtensions.HoyEnArgentina()
         };
     }
 }
