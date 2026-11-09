@@ -18,7 +18,7 @@ namespace TransitAR.Api.Extensions
         public static string? Validar(IFormFile foto, int maxMB)
         {
             if (foto.Length == 0)
-                return "La foto esta vacia.";
+                return "La foto está vacía.";
 
             if (foto.Length > (long)maxMB * 1024 * 1024)
                 return $"La foto supera los {maxMB} MB permitidos.";

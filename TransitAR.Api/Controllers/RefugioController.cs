@@ -65,11 +65,11 @@ namespace TransitAR.Api.Controllers
 
             //el indice unico de ContactoRefugio no se peude tener dos del mismo tipo
             if (contactos.GroupBy(c => c.Tipo).Any(g => g.Count() > 1))
-                return BadRequest(new { mensaje = "No se puede cargar mas de un contacto del mismo tipo." });
+                return BadRequest(new { mensaje = "No se puede cargar más de un contacto del mismo tipo." });
 
             //chequeo del enum contactos tipo
             if (contactos.Any(c => !Enum.IsDefined(c.Tipo)))
-                return BadRequest(new { mensaje = "El tipo de contacto indicado no es valido." });
+                return BadRequest(new { mensaje = "El tipo de contacto indicado no es válido." });
 
             var perfil = await _refugioService.ActualizarPerfilAsync(request, refugioId.Value);
 

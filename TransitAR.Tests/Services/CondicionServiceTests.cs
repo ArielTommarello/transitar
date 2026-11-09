@@ -73,7 +73,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.CrearCondicionAsync(new CondicionRequest { Nombre = "Sana" });
 
-            Assert.Equal("Ya existe una condicion llamada Sana.", resultado.Error);
+            Assert.Equal("Ya existe una condición llamada Sana.", resultado.Error);
             Assert.Equal(cantidad, await contexto.Condiciones.CountAsync());
         }
 
@@ -90,7 +90,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ActualizarCondicionAsync(_sana.Id, new CondicionRequest { Nombre = "En tratamiento" });
 
-            Assert.Equal("Ya existe otra condicion llamada En tratamiento.", resultado.Error);
+            Assert.Equal("Ya existe otra condición llamada En tratamiento.", resultado.Error);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.ActualizarCondicionAsync(Guid.NewGuid(), new CondicionRequest { Nombre = "Otra" });
 
-            Assert.Equal("No encontramos esa condicion.", resultado.Error);
+            Assert.Equal("No encontramos esa condición.", resultado.Error);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace TransitAR.Tests.Services
 
             var error = await servicio.EliminarCondicionAsync(_sana.Id);
 
-            Assert.Equal("No se puede borrar: hay mascotas cargadas con esta condicion.", error);
+            Assert.Equal("No se puede borrar: hay mascotas cargadas con esta condición.", error);
             Assert.True(await contexto.Condiciones.AnyAsync(c => c.Id == _sana.Id));
         }
 

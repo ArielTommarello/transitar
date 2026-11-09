@@ -43,7 +43,7 @@ namespace TransitAR.Api.Controllers
             var perfil = await _perfilService.ObtenerPerfilAsync(usuarioId.Value);
 
             if (perfil == null)
-                return NotFound(new { mensaje = "Todavia no completaste tu perfil." });
+                return NotFound(new { mensaje = "Todavía no completaste tu perfil." });
 
             return Ok(perfil);
         }
@@ -89,7 +89,7 @@ namespace TransitAR.Api.Controllers
             var perfil = await _perfilService.ActualizarPerfilAsync(request, usuarioId.Value);
 
             if (perfil == null)
-                return NotFound(new { mensaje = "Todavia no completaste tu perfil. Por favor crealo y completalo para poder postularte" });
+                return NotFound(new { mensaje = "Todavía no completaste tu perfil. Por favor crealo y completalo para poder postularte" });
 
             return Ok(perfil);
         }
@@ -103,16 +103,16 @@ namespace TransitAR.Api.Controllers
             var contactos = request.Contactos ?? new List<ContactoRequest>();
 
             if (!Enum.IsDefined(request.Seleccion))
-                return "Debes seleccionar una opcion: adoptar, transitar o ambas.";
+                return "Tenés que seleccionar una opción: adoptar, transitar o ambas.";
 
             if (request.DisponibilidadHorario.HasValue && !Enum.IsDefined(request.DisponibilidadHorario.Value))
-                return "La disponibilidad horaria indicada no es valida.";
+                return "La disponibilidad horaria indicada no es válida.";
 
             if (contactos.Any(c => !Enum.IsDefined(c.Tipo)))
-                return "Alguna de las redes cargadas tiene un error o tipo no correcto";
+                return "Alguna de las redes cargadas tiene un error o tipo incorrecto";
 
             if (contactos.Select(c => c.Tipo).Distinct().Count() != contactos.Count)
-                return "No se puede cargar dos veces la misma red social. Por favor eliminala o modifica la enterior";
+                return "No se puede cargar dos veces la misma red social. Por favor eliminala o modificá la anterior";
 
             return null;
         }
@@ -137,7 +137,7 @@ namespace TransitAR.Api.Controllers
 
             var guardada = await _perfilService.CambiarFotoAsync(usuarioId.Value, await FotoPerfilArchivo.LeerAsync(foto));
             if (!guardada)
-                return NotFound(new { mensaje = "Debes completar tu perfil antes de subir una foto." });
+                return NotFound(new { mensaje = "Tenés que completar tu perfil antes de subir una foto." });
 
             return NoContent();
         }

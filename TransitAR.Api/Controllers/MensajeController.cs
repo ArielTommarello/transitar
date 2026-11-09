@@ -66,7 +66,7 @@ namespace TransitAR.Api.Controllers
             var chat = await _mensajeService.ObtenerChatAsync(postulacionId, usuarioId.Value, User.ObtenerRefugioId());
 
             if (chat == null)
-                return NotFound(new { mensaje = "No encontramos esa conversacion o no existe." });
+                return NotFound(new { mensaje = "No encontramos esa conversación o no existe." });
 
             return Ok(chat);
         }

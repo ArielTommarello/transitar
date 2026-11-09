@@ -131,7 +131,7 @@ namespace TransitAR.Api.Controllers
                 return Forbid();
 
             if (estado != null && !Enum.IsDefined(estado.Value))
-                return BadRequest(new { mensaje = "El estado indicado no es valido o correcto." });
+                return BadRequest(new { mensaje = "El estado indicado no es válido." });
 
             //refugioId ntiene que ser null, asi  el servicio lo trata como postulante y filtra por sus tenencias
             return Ok(await _seguimientoService.ListarAsync(usuarioId.Value, null, estado, false, null));

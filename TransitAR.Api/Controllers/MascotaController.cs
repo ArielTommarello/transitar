@@ -83,7 +83,7 @@ namespace TransitAR.Api.Controllers
             var mascota = await _mascotaService.CrearMascotaAsync(request, refugioId.Value);
 
             if (mascota == null)
-                return BadRequest(new { mensaje = "La especie o la condicion indicada no existe." });
+                return BadRequest(new { mensaje = "La especie o la condición indicada no existe." });
 
             return Ok(mascota);
         }
@@ -146,7 +146,7 @@ namespace TransitAR.Api.Controllers
                 return Forbid();
 
             if (fotos == null || fotos.Count == 0)
-                return BadRequest(new { mensaje = "No se recibio ninguna foto." });
+                return BadRequest(new { mensaje = "No se recibió ninguna foto." });
 
             //valida igual que la de perfil (reglas)
             var maxMB = _configuration.GetValue<int?>("Reglas:FotoPerfilMaxMB") ?? 5;

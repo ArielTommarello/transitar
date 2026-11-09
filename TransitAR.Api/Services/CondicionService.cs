@@ -40,12 +40,12 @@ namespace TransitAR.Api.Services
         public async Task<CondicionResult> CrearCondicionAsync(CondicionRequest request)
         {
             if (request == null)
-                return Error("No hay datos de la especie");
+                return Error("No hay datos de la condición");
             var nombre = request.Nombre.Trim();
 
             // para evitar duplicados por nombre. No se podria por id porque tenemos Guid, pero evito que no haya dos perros en todos lados ejemplo.
             if (await _context.Condiciones.AnyAsync(c => c.Nombre == nombre))
-                return Error($"Ya existe una condicion llamada {nombre}.");
+                return Error($"Ya existe una condición llamada {nombre}.");
 
             var condicion = new Condicion
             {
@@ -64,19 +64,19 @@ namespace TransitAR.Api.Services
         public async Task<CondicionResult> ActualizarCondicionAsync(Guid id, CondicionRequest request)
         {
             if (request == null || id == Guid.Empty)
-                return Error("No hay datos de la especie");
+                return Error("No hay datos de la condición");
 
             var condicion = await _context.Condiciones.FirstOrDefaultAsync(c => c.Id == id);
 
             //no existe la condcion
             if (condicion == null)
-                return Error("No encontramos esa condicion.");
+                return Error("No encontramos esa condición.");
 
             var nombre = request.Nombre.Trim();
 
             ////para evitar duplicados por nombre. No se podria por id porque tenemos Guid, pero evito que no haya dos condciiones en todos lados ejemplo.
             if (await _context.Condiciones.AnyAsync(c => c.Nombre == nombre && c.Id != id))
-                return Error($"Ya existe otra condicion llamada {nombre}.");
+                return Error($"Ya existe otra condición llamada {nombre}.");
 
             condicion.Nombre = nombre;
             condicion.Descripcion = request.Descripcion?.Trim();
@@ -92,11 +92,11 @@ namespace TransitAR.Api.Services
             var condicion = await _context.Condiciones.FirstOrDefaultAsync(c => c.Id == id);
 
             if (condicion == null)
-                return "No encontramos esa condicion.";
+                return "No encontramos esa condición.";
 
             //evito el DeleteBehavior que me tira SQL y no rompo postualciones activas con esa condicion
             if (await _context.Mascotas.AnyAsync(m => m.CondicionId == id))
-                return "No se puede borrar: hay mascotas cargadas con esta condicion.";
+                return "No se puede borrar: hay mascotas cargadas con esta condición.";
 
             _context.Condiciones.Remove(condicion);
             await _context.SaveChangesAsync();

@@ -153,14 +153,14 @@ namespace TransitAR.Api.Services
                 .FirstOrDefaultAsync(m => m.Id == id && m.RefugioId == refugioId);
 
             if (mascota == null)
-                return "No se encontro esa mascota en tu refugio";
+                return "No encontramos esa mascota en tu refugio";
 
             //reviso si tiene historia antes, para que no salga mas el 500
             var tieneHistoria = await _context.Publicaciones.AnyAsync(p => p.MascotaId == id) || await _context.Tenencias.AnyAsync(t => t.MascotaId == id);
 
 
             if (tieneHistoria)
-                return "Esta mascota tiene publicaciones o tenencias, no se puede borrar. Si ya no esta disponible, cerra la publicacion";
+                return "Esta mascota tiene publicaciones o tenencias, no se puede borrar. Si ya no está disponible, cerra la publicación";
 
 
             //las fotos estan en una tabla nueva

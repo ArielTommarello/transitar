@@ -91,7 +91,7 @@ namespace TransitAR.Api.Controllers
 
             //diferencio de adopcion que no teiene vencimiento y no tendriamos que ver en la agenda 
             if (modalidad != null && !Enum.IsDefined(modalidad.Value))
-                return BadRequest(new { mensaje = "La modalidad indicada no es valida." });
+                return BadRequest(new { mensaje = "La modalidad indicada no es válida." });
 
             return Ok(await _tenenciaService.ListarTenenciasAsync(refugioId.Value, modalidad, enCurso, vencidas, sinControles));
         } 

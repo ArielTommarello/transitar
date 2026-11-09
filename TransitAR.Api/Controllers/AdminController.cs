@@ -133,7 +133,7 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ListarUsuarios([FromQuery] RolUsuario? rol, [FromQuery] bool? activo)
         {
             if (rol != null && !Enum.IsDefined(rol.Value))
-                return BadRequest(new { mensaje = "El rol indicado no es valido." });
+                return BadRequest(new { mensaje = "El rol indicado no es válido." });
 
             return Ok(await _adminService.ListarUsuariosAsync(rol, activo));
         }

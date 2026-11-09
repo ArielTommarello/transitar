@@ -45,7 +45,7 @@ namespace TransitAR.Api.Controllers
                 return Forbid();
 
             if (estado != null && !Enum.IsDefined(estado.Value))
-                return BadRequest(new { mensaje = "El estado indicado no es valido o correcto." });
+                return BadRequest(new { mensaje = "El estado indicado no es válido." });
 
             return Ok(await _seguimientoService.ListarAsync(usuarioId.Value, refugioId, estado, vencidos, mascotaId));
         }

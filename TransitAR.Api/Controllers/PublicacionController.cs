@@ -79,7 +79,7 @@ namespace TransitAR.Api.Controllers
                 return Forbid();
 
             if (!Enum.IsDefined(request.Tipo))
-                return BadRequest(new { mensaje = "Elige si la publicacion es de adopcion o de transito." });
+                return BadRequest(new { mensaje = "Elegí si la publicación es de adopción o de tránsito." });
 
             var resultado = await _publicacionService.CrearPublicacionAsync(request, refugioId.Value);
 
@@ -103,7 +103,7 @@ namespace TransitAR.Api.Controllers
                 return Forbid();
 
             if (!Enum.IsDefined(request.Tipo))
-                return BadRequest(new { mensaje = "Elegi si la publicacion es de adopcion o de transito." });
+                return BadRequest(new { mensaje = "Elegí si la publicación es de adopción o de tránsito." });
 
             var resultado = await _publicacionService.ActualizarPublicacionAsync(id, request, refugioId.Value);
 
@@ -128,7 +128,7 @@ namespace TransitAR.Api.Controllers
                 return Forbid();
 
             if (!Enum.IsDefined(estado))
-                return BadRequest(new { mensaje = "El estado indicado no es valido." });
+                return BadRequest(new { mensaje = "El estado indicado no es válido." });
 
             var resultado = await _publicacionService.CambiarEstadoAsync(id, estado, refugioId.Value);
 
@@ -214,13 +214,13 @@ namespace TransitAR.Api.Controllers
         public async Task<IActionResult> ListarPublicacionesActivas([FromQuery] TipoPublicacion? tipo,[FromQuery] Guid? especieId,[FromQuery] Tamanio? tamanio,[FromQuery] Sexo? sexo,[FromQuery] string? ubicacion)
         {
             if (tipo != null && !Enum.IsDefined(tipo.Value))
-                return BadRequest(new { mensaje = "El tipo de publicacion indicado no es valido." });
+                return BadRequest(new { mensaje = "El tipo de publicación indicado no es válido." });
 
             if (tamanio != null && !Enum.IsDefined(tamanio.Value))
-                return BadRequest(new { mensaje = "El tamaño indicado no es valido." });
+                return BadRequest(new { mensaje = "El tamaño indicado no es válido." });
 
             if (sexo != null && !Enum.IsDefined(sexo.Value))
-                return BadRequest(new { mensaje = "El sexo indicado no es valido." });
+                return BadRequest(new { mensaje = "El sexo indicado no es válido." });
 
             return Ok(await _publicacionService.ListarActivasAsync(tipo, especieId, tamanio, sexo, ubicacion));
         }
