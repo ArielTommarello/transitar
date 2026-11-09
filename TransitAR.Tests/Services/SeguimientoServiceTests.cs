@@ -150,7 +150,7 @@ namespace TransitAR.Tests.Services
 
 
 
-        //********* PRUBEAS *************
+        //********* PRUEBAS *************
         /// <summary>
         /// La agenda del refugio teien que traer sololso contorles de sus masctoas , con nombre de mascota, persona y refugio (REFUGIO)
         /// </summary>
