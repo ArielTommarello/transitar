@@ -109,7 +109,7 @@
                         @foreach (var c in p.Contactos)
                         {
                             <li class="list-inline-item">
-                                <a href="@c.Url" target="_blank" rel="noopener noreferrer">@c.Tipo</a>
+                                <a href="@c.Url" target="_blank" rel="noopener noreferrer">@Formato.TipoContacto(c.Tipo)</a>
                             </li>
                         }
                     </ul>

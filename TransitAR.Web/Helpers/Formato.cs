@@ -44,6 +44,23 @@ namespace TransitAR.Web.Helpers
             _ => "Sexo sin datos"
         };
 
+
+        /// <summary>
+        /// Formato para el tipo de contacto o red social que se muestra en el psotulante
+        /// </summary>
+        /// <param name="tipo"></param>
+        /// <returns></returns>
+        public static string TipoContacto(TipoContacto tipo) => tipo switch
+        {
+            Structures.TipoContacto.SitioWeb => "Sitio web",
+            Structures.TipoContacto.Instagram => "Instagram",
+            Structures.TipoContacto.Facebook => "Facebook",
+            Structures.TipoContacto.WhatsApp => "WhatsApp",
+            Structures.TipoContacto.Tiktok => "TikTok",
+            _ => "Contacto"
+        };
+
+
         /// <summary>
         /// edad , meses menos de un año y sino años
         /// </summary>
