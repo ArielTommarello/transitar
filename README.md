@@ -61,7 +61,7 @@ Permite a los refugios publicar sus mascotas, recibir postulaciones, elegir a qu
 
 ## Project setup
 
-<p>Acceda al <a href="instalacion.md">manual de instalación</a></p>
+<p>Acceda al <a href="Instalacion.md">manual de instalación</a></p>
 
 
 ## Compilar y levantar el proyecto

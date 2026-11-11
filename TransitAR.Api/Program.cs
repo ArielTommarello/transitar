@@ -40,7 +40,7 @@ builder.Services.AddSwaggerGen(options =>
 //Datos del admin inicial
 var adminInicial = builder.Configuration.GetSection("AdminInicial");
 
-//Datros de demo solo para dev
+//Datos de demo solo para dev
 var cargarDemo = builder.Environment.IsDevelopment();
 
 //Context database para el controllers, el seeding lo crea el admin si no hay uno.
