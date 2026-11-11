@@ -17,6 +17,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
 
+	<ItemGroup>
+		<None Update="Resources\DatosDemo\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
   <ItemGroup>
     <ProjectReference Include="..\TransitAR.Structures\TransitAR.Structures.csproj" />
   </ItemGroup>
