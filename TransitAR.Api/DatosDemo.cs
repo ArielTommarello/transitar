@@ -5,7 +5,7 @@ namespace TransitAR.Api
 {
 
     /// <summary>
-    /// Datos de demo copia de la base de datos de dev.
+    /// Datos de demo para dev, y mostrar el funcionamiento (simulando bd)
     /// 3 refugios, 5 postulantes y 12 mascotas + imagenes. 
     /// Publicaciones, postulaciones , tenencias controles y chats.
     /// Cargo todo con seeding de EF CORE , basado en la idea de datos cargados en el  init de AdoptAR, pero adaptado este entorno.

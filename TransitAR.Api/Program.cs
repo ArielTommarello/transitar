@@ -40,32 +40,52 @@ builder.Services.AddSwaggerGen(options =>
 //Datos del admin inicial
 var adminInicial = builder.Configuration.GetSection("AdminInicial");
 
+//Datros de demo solo para dev
+var cargarDemo = builder.Environment.IsDevelopment();
+
 //Context database para el controllers, el seeding lo crea el admin si no hay uno.
 builder.Services.AddDbContext<TransitARContext>(options => options
     .UseSqlServer(builder.Configuration.GetConnectionString("TransitAR"))
     .UseSeeding((context, _) =>
     {
-        if (context.Set<Usuario>().Any(u => u.Rol == RolUsuario.Admin))
-            return;
+        if (!context.Set<Usuario>().Any(u => u.Rol == RolUsuario.Admin))
+        {
+            var admin = AdminInicial.Armar(adminInicial);
+            if (admin != null)
+            {
+                context.Set<Usuario>().Add(admin);
+                context.SaveChanges();
+            }
+        }
 
-        var admin = AdminInicial.Armar(adminInicial);
-        if (admin == null)
-            return;
-
-        context.Set<Usuario>().Add(admin);
-        context.SaveChanges();
+        //datos de demo solo en dev, y si la base no tiene refugios
+        if (cargarDemo && !context.Set<Refugio>().Any())
+        {
+            var (usuarios, refugios) = DatosDemo.Armar();
+            context.AddRange(usuarios);
+            context.AddRange(refugios);
+            context.SaveChanges();
+        }
     })
     .UseAsyncSeeding(async (context, _, cancelacion) =>
     {
-        if (await context.Set<Usuario>().AnyAsync(u => u.Rol == RolUsuario.Admin, cancelacion))
-            return;
+        if (!await context.Set<Usuario>().AnyAsync(u => u.Rol == RolUsuario.Admin, cancelacion))
+        {
+            var admin = AdminInicial.Armar(adminInicial);
+            if (admin != null)
+            {
+                context.Set<Usuario>().Add(admin);
+                await context.SaveChangesAsync(cancelacion);
+            }
+        }
 
-        var admin = AdminInicial.Armar(adminInicial);
-        if (admin == null)
-            return;
-
-        context.Set<Usuario>().Add(admin);
-        await context.SaveChangesAsync(cancelacion);
+        if (cargarDemo && !await context.Set<Refugio>().AnyAsync(cancelacion))
+        {
+            var (usuarios, refugios) = DatosDemo.Armar();
+            context.AddRange(usuarios);
+            context.AddRange(refugios);
+            await context.SaveChangesAsync(cancelacion);
+        }
     }));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
