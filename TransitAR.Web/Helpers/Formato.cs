@@ -98,6 +98,13 @@ namespace TransitAR.Web.Helpers
             TimeZoneInfo.FindSystemTimeZoneById("America/Argentina/Buenos_Aires");
 
         /// <summary>
+        /// Helper para el dia de hoy en Argentina, para comparar con dias del calendario (igual al HoyEnArgentina de la API)
+        /// </summary>
+        public static DateTime HoyEnArgentina() =>
+            TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ZonaArgentina).Date;
+
+
+        /// <summary>
         /// Un momento guardado en UTC, en hora argentina con fecha y hora. Para mensajes, lecturas, publicaciones
         /// </summary>
         public static string Instante(DateTime utc) =>
@@ -332,7 +339,7 @@ namespace TransitAR.Web.Helpers
                 return null;
 
             //es un dia del calendario 
-            var hoy = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Unspecified);
+            var hoy = HoyEnArgentina();
 
             return hoy.AddYears(-(anios ?? 0)).AddMonths(-(meses ?? 0)).AddDays(-(dias ?? 0));
         }

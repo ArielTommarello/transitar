@@ -141,7 +141,7 @@
 
                     <div id="bloque-fecha">
                         <input asp-for="Datos.FechaNacimientoAproximada" type="date" class="form-control"
-                               max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                               max="@Formato.HoyEnArgentina().ToString("yyyy-MM-dd")" />
                         <div class="form-text mb-3">Por ejemplo, si nació en el refugio o tiene libreta del veterinario.</div>
                     </div>
                 </div>

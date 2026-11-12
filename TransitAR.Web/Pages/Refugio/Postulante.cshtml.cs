@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Structures.Requests;
 using TransitAR.Web.Services;
+using TransitAR.Web.Helpers;
 
 namespace TransitAR.Web.Pages.Refugio
 {
@@ -134,7 +135,7 @@ namespace TransitAR.Web.Pages.Refugio
 
             //en el transito pongo fecha de arranque de dela devolucion desde que sale
             if (Publicacion.Tipo == TipoPublicacion.Transito && Publicacion.PlazoEstimado != null)
-                FechaFinEstimada = DateTime.Today.AddDays(Publicacion.PlazoEstimado.Value);
+                FechaFinEstimada = Formato.HoyEnArgentina().AddDays(Publicacion.PlazoEstimado.Value);
         }
 
 

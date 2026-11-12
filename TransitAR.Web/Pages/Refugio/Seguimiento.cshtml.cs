@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Structures.Requests;
 using TransitAR.Web.Services;
+using TransitAR.Web.Helpers;
 
 namespace TransitAR.Web.Pages.Refugio
 {
@@ -65,14 +66,14 @@ namespace TransitAR.Web.Pages.Refugio
         /// Si el control es hoy o mañana
         /// </summary>
         public static bool EsHoy(SeguimientoResponse c) =>
-            c.FechaProgramada.Date <= DateTime.Today.AddDays(1);
+            c.FechaProgramada.Date <= Formato.HoyEnArgentina().AddDays(1);
 
         /// <summary>
         /// Texto de cuadno es, si hoy o mañana
         /// </summary>
         public static string? Cuando(SeguimientoResponse c) =>
-            c.FechaProgramada.Date == DateTime.Today ? "Hoy"
-            : c.FechaProgramada.Date == DateTime.Today.AddDays(1) ? "Mañana"
+            c.FechaProgramada.Date == Formato.HoyEnArgentina() ? "Hoy"
+            : c.FechaProgramada.Date == Formato.HoyEnArgentina().AddDays(1) ? "Mañana"
             : null;
     }
 }

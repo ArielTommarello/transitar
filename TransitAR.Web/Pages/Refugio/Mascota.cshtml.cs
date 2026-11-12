@@ -134,7 +134,7 @@ namespace TransitAR.Web.Pages.Refugio
             if (CargarConFecha)
             {
                 //la fecha viene del formulario (fecha aprox)
-                if (Datos.FechaNacimientoAproximada > DateTime.Today)
+                if (Datos.FechaNacimientoAproximada > Formato.HoyEnArgentina())
                 {
                     Error = "La fecha de nacimiento no puede ser posterior a hoy.";
                     await RecargarAsync();
@@ -303,7 +303,7 @@ namespace TransitAR.Web.Pages.Refugio
             //fecha aprox despues calculamos dias,
             if (m.FechaNacimientoAproximada != null)
             {
-                var hoy = DateTime.Today;
+                var hoy = Formato.HoyEnArgentina();
                 var nacimiento = m.FechaNacimientoAproximada.Value.Date;
 
                 Datos.FechaNacimientoAproximada = nacimiento;
