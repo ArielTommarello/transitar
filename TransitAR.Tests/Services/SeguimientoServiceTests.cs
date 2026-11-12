@@ -219,7 +219,7 @@ namespace TransitAR.Tests.Services
         [Fact]
         public async Task Listar_Vencidos_TraeSoloLosPendientesAtrasados()
         {
-            //arreglo para usar la fecha de argentina, fallaba despues de las 12, por el tema de UTC 21hs
+            //arreglo para usar la fecha de argentina, fallaba despues de las 21, porque en UTC ya es el dia siguiente en nuestra hora
             var ayer = FechaExtensions.HoyEnArgentina().AddDays(-1);
             var atrasadoId = CargarSeguimiento(fechaProgramada: ayer);
             CargarSeguimiento();
