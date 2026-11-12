@@ -1,0 +1,8 @@
+﻿# Configuracion del editor para todo el repo (para tildes acentos y caracteres especiales)
+# https://learn.microsoft.com/es-es/visualstudio/ide/create-portable-custom-editor-options
+
+
+root = true
+
+[*]
+charset = utf-8-bom

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+Ôªøusing Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Structures.Requests;
@@ -148,7 +148,7 @@ namespace TransitAR.Web.Pages.Refugio
             var respuesta = await _api.PatchAsync<object>($"api/Publicacion/{PublicacionId}/postulaciones/{PostulacionId}/aceptar");
 
             if (respuesta.Exito)
-                Mensaje = "PostulaciÛn aceptada. Las dem·s quedaron en espera y la publicaciÛn se pausÛ hasta la entrega.";
+                Mensaje = "Postulaci√≥n aceptada. Las dem√°s quedaron en espera y la publicaci√≥n se paus√≥ hasta la entrega.";
             else
                 Error = respuesta.Error;
 
@@ -166,7 +166,7 @@ namespace TransitAR.Web.Pages.Refugio
                 new RechazoRequest { Observacion = string.IsNullOrWhiteSpace(Observacion) ? null : Observacion.Trim() });
 
             if (respuesta.Exito)
-                Mensaje = "PostulaciÛn rechazada.";
+                Mensaje = "Postulaci√≥n rechazada.";
             else
                 Error = respuesta.Error;
 
@@ -188,7 +188,7 @@ namespace TransitAR.Web.Pages.Refugio
                 new TenenciaRequest { PostulacionId = PostulacionId, FechaFinEstimada = fecha });
 
             if (respuesta.Exito)
-                Mensaje = "Entrega confirmada. La publicaciÛn se cerrÛ y las dem·s postulaciones se rechazaron.";
+                Mensaje = "Entrega confirmada. La publicaci√≥n se cerr√≥ y las dem√°s postulaciones se rechazaron.";
             else
                 Error = respuesta.Error;
 
