@@ -7,6 +7,7 @@ using TransitAR.Api.Services;
 using TransitAR.Structures;
 using TransitAR.Structures.Requests;
 using TransitAR.Tests.Soporte;
+using TransitAR.Api.Extensions;
 
 namespace TransitAR.Tests.Services
 {
@@ -502,7 +503,7 @@ namespace TransitAR.Tests.Services
         [Fact]
         public async Task Listar_Vencidas_TraeSoloLosTransitosAtrasados()
         {
-            var ayer = DateTime.UtcNow.AddDays(-1);
+            var ayer = FechaExtensions.HoyEnArgentina().AddDays(-1);
             var atrasadaId = CargarTenencia(fechaFinEstimada: ayer);
             CargarTenencia(fechaFinEstimada: DateTime.UtcNow.AddDays(10));
             CargarTenencia(fechaFinEstimada: ayer, fechaFinReal: DateTime.UtcNow);

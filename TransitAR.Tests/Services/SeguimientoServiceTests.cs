@@ -7,6 +7,7 @@ using TransitAR.Api.Services;
 using TransitAR.Structures;
 using TransitAR.Structures.Requests;
 using TransitAR.Tests.Soporte;
+using TransitAR.Api.Extensions;
 
 namespace TransitAR.Tests.Services
 {
@@ -218,7 +219,8 @@ namespace TransitAR.Tests.Services
         [Fact]
         public async Task Listar_Vencidos_TraeSoloLosPendientesAtrasados()
         {
-            var ayer = DateTime.UtcNow.Date.AddDays(-1);
+            //arreglo para usar la fecha de argentina, fallaba despues de las 12, por el tema de UTC 21hs
+            var ayer = FechaExtensions.HoyEnArgentina().AddDays(-1);
             var atrasadoId = CargarSeguimiento(fechaProgramada: ayer);
             CargarSeguimiento();
             CargarSeguimiento(estado: EstadoSeguimiento.Realizado, fechaProgramada: ayer);
@@ -336,7 +338,7 @@ namespace TransitAR.Tests.Services
             using var contexto = CrearContexto();
             var servicio = new SeguimientoService(contexto);
 
-            var error = await servicio.CrearAsync(new SeguimientoRequest { TenenciaId = _tenenciaId, FechaProgramada = DateTime.UtcNow.Date.AddDays(-1) }, _refugioId);
+            var error = await servicio.CrearAsync(new SeguimientoRequest { TenenciaId = _tenenciaId, FechaProgramada = FechaExtensions.HoyEnArgentina().AddDays(-1) }, _refugioId);
 
             Assert.Equal("La fecha del control tiene que ser de hoy para adelante.", error);
             Assert.Empty(LeerSeguimientos());
@@ -477,7 +479,7 @@ namespace TransitAR.Tests.Services
             using var contexto = CrearContexto();
             var servicio = new SeguimientoService(contexto);
 
-            var error = await servicio.CambiarEstadoAsync(controlId, new SeguimientoRequest { Estado = EstadoSeguimiento.Reprogramado, FechaProgramada = DateTime.UtcNow.Date.AddDays(-1) }, _refugioId);
+            var error = await servicio.CambiarEstadoAsync(controlId, new SeguimientoRequest { Estado = EstadoSeguimiento.Reprogramado, FechaProgramada = FechaExtensions.HoyEnArgentina().AddDays(-1) }, _refugioId);
 
             Assert.Equal("Para reprogramar hace falta una fecha nueva, de hoy para adelante", error);
             Assert.Equal(EstadoSeguimiento.Pendiente, Assert.Single(LeerSeguimientos()).Estado);
