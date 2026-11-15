@@ -67,7 +67,7 @@ namespace TransitAR.Web.Pages.Postulante
             var respuesta = await _api.PatchAsync<object>($"api/Postulacion/{id}/retirar");
 
             if (respuesta.Exito)
-                Mensaje = "Te retiraste de la postulación. Si cambiás de idea, podés volver a postularte desde la publicación de esta mascota.";
+                Mensaje = "Te retiraste de la postulación. Podés volver a postularte desde la publicación de esta mascota.";
             else
                 Error = respuesta.Error;
 

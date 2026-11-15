@@ -186,10 +186,10 @@ namespace TransitAR.Web.Services
         /// </summary>
         private static string MensajePorDefecto(HttpStatusCode codigo) => codigo switch
         {
-            HttpStatusCode.Unauthorized => "Tu sesion ha vencido!.Por favor vuelve a iniciar sesion.",
+            HttpStatusCode.Unauthorized => "Tu sesion se venció. Por favor vuelve a iniciar sesion.",
             HttpStatusCode.Forbidden => "No tienes permisos para realizar esta accion.",
-            HttpStatusCode.NotFound => "No hemos encontrado lo que estabas buscando, intentalo nuevamente.",
-            _ => "Ocurrio un error. Por favor intenta de nuevo."
+            HttpStatusCode.NotFound => "No encontramos lo que estabas buscando, intentalo nuevamente.",
+            _ => "Ocurrio un error. Por favor prueba de nuevo."
         };
 
 

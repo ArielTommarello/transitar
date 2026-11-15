@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         <div class="form-text mb-3">
-                            Para un cachorro podés poner solo los días (hasta 60). Si no sabés la edad, dejalo vacío.
+                            Si es cachorro podés usar los días (hasta 60).                            
                         </div>
                     </div>
 
@@ -171,7 +171,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h2 class="h5 mb-1">Fotos <span class="text-muted small">(opcional)</span></h2>
-                        <p class="text-muted small mb-3">Podés elegir varias. La primera va a ser la principal , después la podés cambiar.</p>
+                        <p class="text-muted small mb-3">Podés elegir varias. La primera va a ser la principal , después la podés volver a cambiar.</p>
                         <input asp-for="FotosNuevas" type="file" multiple class="form-control" accept="image/jpeg,image/png,image/webp" />
                         <div class="form-text">jpg, png o webp, hasta 5 MB cada una.</div>
                     </div>
@@ -180,7 +180,7 @@
 
             @if (!esNueva)
             {
-                <p class="small text-muted">El estado (en refugio, en tránsito, adoptada) no se edita: lo cambian las entregas, devoluciones y conversiones.</p>
+                <p class="small text-muted">El estado no se puede editar, cambian con las entregas y devoluciones.</p>
             }
 
             <button type="submit" class="btn btn-primary w-100 mb-5">
@@ -196,7 +196,7 @@
             <div class="card mb-5">
                 <div class="card-body">
                     <h2 class="h5 mb-1">Fotos</h2>
-                    <p class="text-muted small mb-3">La primera es la principal: es la que se ve en las tarjetas. Podés subir varias a la vez.</p>
+                    <p class="text-muted small mb-3">La principal es la que se verá en la tarjeta.</p>
 
                     @if (Model.ErrorFotos != null)
                     {

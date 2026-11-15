@@ -167,7 +167,7 @@ namespace TransitAR.Api.Services
             //solo se retira lo que todavia noe sta resuelto
             if (postulacion.Estado != EstadoPostulacion.Pendiente
              && postulacion.Estado != EstadoPostulacion.EnEspera)
-                return Error("Solo se pueden retirar las postulaciones que siguen en evaluación o no fueron retiradas.");
+                return Error("Esta postulación no se puede retirar.");
 
             postulacion.Estado = EstadoPostulacion.Retirada;
             postulacion.FechaResolucion = DateTime.UtcNow;

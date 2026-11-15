@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures.Requests;
 using TransitAR.Structures;
@@ -131,7 +131,7 @@ namespace TransitAR.Web.Pages.Refugio
             });
 
             if (respuesta.Exito)
-                Mensaje = "Devolución registrada. La mascota volvió a estar en el refugio y los controles pendientes se cancelaron.";
+                Mensaje = "Devolución registrada. La mascota volvió a estar en el refugio.";
             else
                 Error = respuesta.Error;
 
@@ -161,7 +161,7 @@ namespace TransitAR.Web.Pages.Refugio
         {
             if (FechaControl == null)
             {
-                Error = "Elige el día del control.";
+                Error = "Elegí el día del control.";
                 return RedirectToPage(new { Id });
             }
 

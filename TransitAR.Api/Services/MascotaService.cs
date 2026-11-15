@@ -160,7 +160,7 @@ namespace TransitAR.Api.Services
 
 
             if (tieneHistoria)
-                return "Esta mascota tiene publicaciones o tenencias, no se puede borrar. Si ya no está disponible, cerra la publicación";
+                return "Esta mascota tiene publicaciones o tenencias, no se puede borrar. Si ya no está disponible, cerrá la publicación";
 
 
             //las fotos estan en una tabla nueva

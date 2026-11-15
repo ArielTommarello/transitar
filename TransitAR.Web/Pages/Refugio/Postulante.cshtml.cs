@@ -148,7 +148,7 @@ namespace TransitAR.Web.Pages.Refugio
             var respuesta = await _api.PatchAsync<object>($"api/Publicacion/{PublicacionId}/postulaciones/{PostulacionId}/aceptar");
 
             if (respuesta.Exito)
-                Mensaje = "Postulación aceptada. Las demás quedaron en espera y la publicación se pausó hasta la entrega.";
+                Mensaje = "Postulación aceptada. Se pauso la publicación.";
             else
                 Error = respuesta.Error;
 
@@ -188,7 +188,7 @@ namespace TransitAR.Web.Pages.Refugio
                 new TenenciaRequest { PostulacionId = PostulacionId, FechaFinEstimada = fecha });
 
             if (respuesta.Exito)
-                Mensaje = "Entrega confirmada. La publicación se cerró y las demás postulaciones se rechazaron.";
+                Mensaje = "Entrega confirmada. La publicación se cerró.";
             else
                 Error = respuesta.Error;
 

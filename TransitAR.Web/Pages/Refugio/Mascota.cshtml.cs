@@ -206,7 +206,7 @@ namespace TransitAR.Web.Pages.Refugio
                 return RedirectToPage();
 
             if (FotosNuevas.Count == 0)
-                ErrorFotos = "Elige al menos una foto.";
+                ErrorFotos = "Elegí al menos una foto.";
             else
             {
                 var respuesta = await _api.PostArchivosAsync<object>($"api/Mascota/{Id}/fotos", FotosNuevas, "fotos");

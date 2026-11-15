@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Web.Services;
@@ -47,7 +47,7 @@ namespace TransitAR.Web.Pages.Admin
             var condiciones = await _api.GetAsync<List<CondicionResponse>>("api/Condicion");
 
             if (!especies.Exito || !condiciones.Exito)
-                Error = "No pudimos cargar las listas. Prueba de nuevo.";
+                Error = "No pudimos cargar las listas. Probá de nuevo.";
 
             Especies = especies.Datos ?? new();
             Condiciones = condiciones.Datos ?? new();
@@ -58,7 +58,7 @@ namespace TransitAR.Web.Pages.Admin
         public async Task<IActionResult> OnPostAgregarEspecieAsync()
         {
             if (string.IsNullOrWhiteSpace(Nombre))
-                return Volver(null, "Escribe el nombre de la especie.");
+                return Volver(null, "Escribí el nombre de la especie.");
 
             var respuesta = await _api.PostAsync<EspecieResponse>("api/Admin/especies",
                 new EspecieRequest { Nombre = Nombre.Trim(), Descripcion = DescripcionLimpia() });
