@@ -76,7 +76,7 @@ namespace TransitAR.Web.Pages.Publicaciones
             }
 
             //Arreglo para en caso de que redireccione y no se postule dos veces
-            Mensaje = "Ya te postulaste a esta publicacion. Podés seguir el estado en Mis postulaciones.";
+            Mensaje = "Ya te postulaste a esta publicación. Podés seguir el estado en Mis postulaciones.";
             return RedirectToPage(new { id });
         }
 

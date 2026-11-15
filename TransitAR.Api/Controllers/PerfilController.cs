@@ -66,7 +66,7 @@ namespace TransitAR.Api.Controllers
             var perfil = await _perfilService.CrearPerfilAsync(request, usuarioId.Value);
 
             if (perfil == null)
-                return Conflict(new { mensaje = "Ya hay un perfil cargado. Por favor recuperalo y completalo" });
+                return Conflict(new { mensaje = "Ya tenés un perfil cargado." });
 
             return Ok(perfil);
         }
@@ -89,7 +89,7 @@ namespace TransitAR.Api.Controllers
             var perfil = await _perfilService.ActualizarPerfilAsync(request, usuarioId.Value);
 
             if (perfil == null)
-                return NotFound(new { mensaje = "Todavía no completaste tu perfil. Por favor crealo y completalo para poder postularte" });
+                return NotFound(new { mensaje = "Todavía no completaste tu perfil. Completalo para poder postularte" });
 
             return Ok(perfil);
         }
@@ -109,10 +109,10 @@ namespace TransitAR.Api.Controllers
                 return "La disponibilidad horaria indicada no es válida.";
 
             if (contactos.Any(c => !Enum.IsDefined(c.Tipo)))
-                return "Alguna de las redes cargadas tiene un error o tipo incorrecto";
+                return "Alguna de las redes cargadas tiene un error o tipo incorrecto.";
 
             if (contactos.Select(c => c.Tipo).Distinct().Count() != contactos.Count)
-                return "No se puede cargar dos veces la misma red social. Por favor eliminala o modificá la anterior";
+                return "Ya cargaste esta red social. Eliminá o modificá la anterior.";
 
             return null;
         }

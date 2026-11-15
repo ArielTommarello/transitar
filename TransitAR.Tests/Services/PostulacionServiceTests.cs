@@ -397,7 +397,7 @@ namespace TransitAR.Tests.Services
 
             var resultado = await servicio.RetirarPostulacionAsync(postulacionId, _anaId);
 
-            Assert.Equal("Solo se pueden retirar las postulaciones que siguen en evaluación o no fueron retiradas.", resultado.Error);
+            Assert.Equal("Esta postulación no se puede retirar.", resultado.Error);
             Assert.Equal(EstadoPostulacion.Aceptada, LeerPostulacion(postulacionId).Estado);
         }
 

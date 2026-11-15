@@ -148,7 +148,7 @@ namespace TransitAR.Web.Pages.Refugio
             var respuesta = await _api.PatchAsync<object>($"api/Publicacion/{PublicacionId}/postulaciones/{PostulacionId}/aceptar");
 
             if (respuesta.Exito)
-                Mensaje = "Postulación aceptada. Se pauso la publicación.";
+                Mensaje = "Postulación aceptada. Se pausó la publicación.";
             else
                 Error = respuesta.Error;
 
