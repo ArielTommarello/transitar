@@ -61,10 +61,14 @@ namespace TransitAR.Api.Services
 
             if (mascota == null)
                 return Error("No encontramos esa mascota en tu refugio.");
+                       
+            // una adoptada ya tiene su hogar definitivo, no se publica mas
+            if (mascota.Estado == EstadoMascota.Adoptada)
+                return Error("Esta mascota ya fue adoptada.");
 
-            //una en transito o adoptada ya tiene un apersona 
-            if (mascota.Estado != EstadoMascota.EnRefugio)
-                return Error("Solo se pueden publicar mascotas que están en el refugio.");
+            //una en transito se puede publicar, pero solo para buscarle adopcion 
+            if (mascota.Estado == EstadoMascota.EnTransito && request.Tipo != TipoPublicacion.Adopcion)
+                return Error("Una mascota en tránsito solo se puede publicar en adopción.");
 
             //una sola publicacion abierta (activa o pausada) por mascota , cerradas son historial
             var yaTieneAbierta = await _context.Publicaciones
@@ -98,6 +102,7 @@ namespace TransitAR.Api.Services
         {
           
             var publicacion = await _context.Publicaciones
+                .Include(p => p.Mascota)
                 .FirstOrDefaultAsync(p => p.Id == id && p.Mascota!.RefugioId == refugioId);
 
             if (publicacion == null)
@@ -112,7 +117,12 @@ namespace TransitAR.Api.Services
              && await _context.Postulaciones.AnyAsync(p => p.PublicacionId == id))
                 return Error("No se puede cambiar entre adopción y tránsito porque la publicación ya tiene postulaciones.");
 
-            
+
+            // una mascota en transito solo se publica en adopcion también
+            if (publicacion.Mascota!.Estado == EstadoMascota.EnTransito && request.Tipo != TipoPublicacion.Adopcion)
+                return Error("Una mascota en tránsito solo se puede publicar en adopción.");
+
+
             publicacion.Titulo = request.Titulo.Trim();
             publicacion.Descripcion = request.Descripcion.Trim();
             publicacion.Ubicacion = request.Ubicacion.Trim();

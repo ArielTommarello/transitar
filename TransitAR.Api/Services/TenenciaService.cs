@@ -63,6 +63,21 @@ namespace TransitAR.Api.Services
             var modalidad = publicacion.Tipo;
             var ahora = DateTime.UtcNow;
 
+            //si la mascota esta en transito, busco esa tenencia abierta para cerrarla al entregar la adopcion
+            Tenencia? transitoAbierto = null;
+            if (mascota.Estado == EstadoMascota.EnTransito)
+            {
+                transitoAbierto = await _context.Tenencias
+                    .Include(t => t.Postulacion)
+                    .Include(t => t.Seguimientos)
+                    .FirstOrDefaultAsync(t => t.MascotaId == mascota.Id && t.FechaFinReal == null);
+
+                //si el adoptante es el transitante ,no es entrega nueva
+                if (transitoAbierto != null && transitoAbierto.Postulacion!.UsuarioId == postulacion.UsuarioId)
+                    return Error("Esta persona ya tiene a la mascota en tránsito. Usá \"Pasar a adopción\" desde su tenencia.");
+            }
+
+
             //fecha estiamda en caso de transito, a futuro
             DateTime? fechaFinEstimada = null;
 
@@ -102,6 +117,22 @@ namespace TransitAR.Api.Services
 
             //Cambio de estado de la masctoa si es adoptada o transitada
             mascota.Estado = modalidad == TipoPublicacion.Adopcion ? EstadoMascota.Adoptada : EstadoMascota.EnTransito;
+
+
+            //cierre del transito, igual que devolucion, mascota pasa al adoptante 
+            if (transitoAbierto != null)
+            {
+                transitoAbierto.FechaFinReal = ahora;
+                transitoAbierto.FinalizoBien = true;
+                transitoAbierto.FechaFinReal = ahora;
+                transitoAbierto.ObservacionCierre = "Finalizado automáticamente: la mascota fue entregada en adopción.";
+
+                foreach (var pendiente in transitoAbierto.Seguimientos.Where(s => s.Estado == EstadoSeguimiento.Pendiente))
+                {
+                    pendiente.Estado = EstadoSeguimiento.Cancelado;
+                    pendiente.Observacion = "Cancelado automáticamente: la tenencia finalizó.";
+                }
+            }
 
             await _context.SaveChangesAsync();
 
