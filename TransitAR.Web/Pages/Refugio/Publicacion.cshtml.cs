@@ -167,14 +167,14 @@ namespace TransitAR.Web.Pages.Refugio
         }
 
         /// <summary>
-        /// Cargo las mascotas que estan el refugio, filtro si tienen publicacion abierta
+        /// Cargo las mascotas que se pueden publicar (estan el refugio o tránsito), filtro si tienen publicacion abierta
         /// </summary>
         /// <returns></returns>
         private async Task CargarMascotasAsync()
         {
             var mascotas = await _api.GetAsync<List<MascotaResponse>>("api/Mascota");
             Mascotas = (mascotas.Datos ?? new())
-                .Where(m => m.Estado == EstadoMascota.EnRefugio)
+                .Where(m => m.Estado != EstadoMascota.Adoptada)
                 .OrderBy(m => m.Nombre)
                 .ToList();
 

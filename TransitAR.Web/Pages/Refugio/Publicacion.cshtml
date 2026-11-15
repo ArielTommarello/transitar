@@ -79,10 +79,10 @@
                                     @foreach (var m in Model.Mascotas)
                                     {
                                         var ocupada = Model.Ocupadas.Contains(m.Id);
-                                        <option value="@m.Id" disabled="@ocupada">@m.Nombre@(ocupada ? " (ya publicada)" : "")</option>
+                                        <option value="@m.Id" disabled="@ocupada">@m.Nombre@(ocupada ? " (ya publicada)" : m.Estado == EstadoMascota.EnTransito ? " (en tránsito)" : "")</option>
                                     }
                                 </select>
-                                <div class="form-text">Solo aparecen las que están en el refugio.</div>
+                                <div class="form-text">Solo aparecen las que están en el refugio o las que están en tránsito (solo pueden publicarse en adopción).</div>
                             }
                             else
                             {

@@ -246,6 +246,15 @@ namespace TransitAR.Api.Services
             if (tenencia.Modalidad != TipoPublicacion.Transito)
                 return Error("Solo se puede convertir un tránsito: esta tenencia ya es una adopción.");
 
+
+           //si le estan buscando adopcion con otra publicacion, se debe cerrar primero la puiblicacion a mano
+            var tienePublicacionAbierta = await _context.Publicaciones
+                .AnyAsync(p => p.MascotaId == tenencia.MascotaId && p.Estado != EstadoPublicacion.Cerrada);
+
+            if (tienePublicacionAbierta)
+                return Error("Esta mascota tiene una publicación abierta. Cerrala antes de pasar el tránsito a adopción.");
+
+
             //trabajamos sobre misma tenencia, esta en el mismo lado
 
             tenencia.Modalidad = TipoPublicacion.Adopcion;
