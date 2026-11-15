@@ -50,9 +50,9 @@ namespace TransitAR.Tests.Services
 
         private static RefugioRequest NuevoRequest() => new()
         {
-            Nombre = "  Patitas al Rescate ",
+            Nombre = "  Huellitas Rescatadas ",
             Descripcion = " Rescatamos perros y gatos ",
-            Email = "  Contacto@PatitasAlRescate.ORG ",
+            Email = "  HuellitasRescatadas@Example.COM ",
             Telefono = " 1144443333 ",
             Direccion = " Calle 123 ",
             Localidad = " Banfield ",
@@ -131,9 +131,9 @@ namespace TransitAR.Tests.Services
 
             Assert.NotNull(respuesta);
             var guardado = LeerRefugio(_patitasId);
-            Assert.Equal("Patitas al Rescate", guardado.Nombre);
+            Assert.Equal("Huellitas Rescatadas", guardado.Nombre);
             Assert.Equal("Rescatamos perros y gatos", guardado.Descripcion);
-            Assert.Equal("contacto@patitasalrescate.org", guardado.Email);
+            Assert.Equal("huellitasrescatadas@example.com", guardado.Email);
             Assert.Equal("1144443333", guardado.Telefono);
             Assert.Equal("Calle 123", guardado.Direccion);
             Assert.Equal("Banfield", guardado.Localidad);

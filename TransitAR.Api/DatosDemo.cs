@@ -35,29 +35,29 @@ namespace TransitAR.Api
 
             //------- REFUGIOS -------------
 
-            var patitas = NuevoRefugio("Patitas al Rescate", "contacto@patitasalrescate.org", "Banfield", "logo-patitas.png", ahora.AddMonths(-6),
+            var rescatadas = NuevoRefugio("Huellitas Rescatadas", "huellitasrescatadas@example.com", "Banfield", "logo-patitas.png", ahora.AddMonths(-6),
                 "Rescatamos perros y gatos de la calle en Lomas de Zamora. Los castramos, vacunamos y les buscamos familia.",
-                (TipoContacto.Instagram, "https://instagram.com/patitasalrescate.demo"), (TipoContacto.WhatsApp, "https://wa.me/5491100000001"));
+                (TipoContacto.Instagram, "https://instagram.com/huellitasrescatadas.demo"), (TipoContacto.WhatsApp, "https://wa.me/5491100000001"));
 
-            var sur = NuevoRefugio("Refugio del Sur", "info@refugiodelsur.org", "Adrogué", "logo-sur.png", ahora.AddMonths(-5),
+            var sur = NuevoRefugio("Refugio del Sur", "refugiodelsur@example.com", "Adrogué", "logo-sur.png", ahora.AddMonths(-5),
                 "Refugio familiar en Adrogué. Tenemos perros grandes y mayores que esperan una segunda oportunidad.",
                 (TipoContacto.SitioWeb, "https://refugiodelsur.example"), (TipoContacto.Facebook, "https://facebook.com/refugiodelsur.demo"));
 
-            var huellitas = NuevoRefugio("Huellitas Quilmes", "hola@huellitasquilmes.org", "Quilmes", "logo-huellitas.png", ahora.AddMonths(-2),
+            var huellitas = NuevoRefugio("Huellitas Quilmes", "huellitasquilmes@example.com", "Quilmes", "logo-huellitas.png", ahora.AddMonths(-2),
                 "Red de hogares de tránsito en Quilmes. Nos especializamos en cachorros y animales con discapacidad.",
                 (TipoContacto.Instagram, "https://instagram.com/huellitasquilmes.demo"), (TipoContacto.Tiktok, "https://tiktok.com/@huellitasquilmes.demo"));
 
             //------------- USUARIOS -------------
 
-            var laura = NuevoUsuario("contacto@patitasalrescate.org", "patitas2026", "Laura", "Gómez", ahora.AddMonths(-6), patitas);
-            var martin = NuevoUsuario("info@refugiodelsur.org", "refugiosur2026", "Martín", "Sosa", ahora.AddMonths(-5), sur);
-            var valeria = NuevoUsuario("hola@huellitasquilmes.org", "huellitas2026", "Valeria", "Ruiz", ahora.AddMonths(-2), huellitas);
+            var laura = NuevoUsuario("huellitasrescatadas@example.com", "rescatadas2026", "Laura", "Gómez", ahora.AddMonths(-6), rescatadas);
+            var martin = NuevoUsuario("refugiodelsur@example.com", "refugiosur2026", "Martín", "Sosa", ahora.AddMonths(-5), sur);
+            var valeria = NuevoUsuario("huellitasquilmes@example.com", "huellitas2026", "Valeria", "Ruiz", ahora.AddMonths(-2), huellitas);
 
-            var ana = NuevoUsuario("ana.perez@gmail.com", "postulante2026", "Ana", "Pérez", ahora.AddMonths(-4));
-            var sofia = NuevoUsuario("sofia.ramirez@gmail.com", "sofia2026", "Sofía", "Ramírez", ahora.AddMonths(-3));
-            var carlos = NuevoUsuario("carlos.diaz@gmail.com", "carlos2026", "Carlos", "Díaz", ahora.AddMonths(-4));
-            var lucia = NuevoUsuario("lucia.fernandez@gmail.com", "lucia2026", "Lucía", "Fernández", ahora.AddMonths(-2));
-            var diego = NuevoUsuario("diego.morales@gmail.com", "diego2026", "Diego", "Morales", ahora.AddMonths(-3));
+            var ana = NuevoUsuario("ana.perez@example.com", "postulante2026", "Ana", "Pérez", ahora.AddMonths(-4));
+            var sofia = NuevoUsuario("sofia.ramirez@example.com", "sofia2026", "Sofía", "Ramírez", ahora.AddMonths(-3));
+            var carlos = NuevoUsuario("carlos.diaz@example.com", "carlos2026", "Carlos", "Díaz", ahora.AddMonths(-4));
+            var lucia = NuevoUsuario("lucia.fernandez@example.com", "lucia2026", "Lucía", "Fernández", ahora.AddMonths(-2));
+            var diego = NuevoUsuario("diego.morales@example.com", "diego2026", "Diego", "Morales", ahora.AddMonths(-3));
 
             //------------- PERFILES -------------
 
@@ -83,12 +83,12 @@ namespace TransitAR.Api
 
             //------------- MASCOTAS -------------
 
-            //Patitas al Rescate
-            var luna = NuevaMascota(patitas, "Luna", Perro, Sano, "Mestiza", Sexo.Hembra, hoy.AddYears(-3), Tamanio.Mediano, true, ahora.AddMonths(-5), "luna-1.jpg", "luna-2.jpg");
-            var toby = NuevaMascota(patitas, "Toby", Perro, Sano, "Mestizo", Sexo.Macho, hoy.AddDays(-45), Tamanio.Chico, false, ahora.AddDays(-20), "toby-1.jpg", "toby-2.jpg");
-            var milo = NuevaMascota(patitas, "Milo", Gato, Sano, "Común europeo", Sexo.Macho, hoy.AddYears(-2), Tamanio.Chico, true, ahora.AddMonths(-4), "milo-1.jpg");
-            var kira = NuevaMascota(patitas, "Kira", Perro, EnTratamiento, "Basset hound", Sexo.Hembra, hoy.AddYears(-6), Tamanio.Mediano, true, ahora.AddMonths(-2), "kira-1.jpg");
-            var pelusa = NuevaMascota(patitas, "Pelusa", Conejo, Sano, null, Sexo.Hembra, hoy.AddYears(-1), Tamanio.Chico, false, ahora.AddDays(-10), "pelusa-1.jpg");
+            //Huellitas Rescatadas
+            var luna = NuevaMascota(rescatadas, "Luna", Perro, Sano, "Mestiza", Sexo.Hembra, hoy.AddYears(-3), Tamanio.Mediano, true, ahora.AddMonths(-5), "luna-1.jpg", "luna-2.jpg");
+            var toby = NuevaMascota(rescatadas, "Toby", Perro, Sano, "Mestizo", Sexo.Macho, hoy.AddDays(-45), Tamanio.Chico, false, ahora.AddDays(-20), "toby-1.jpg", "toby-2.jpg");
+            var milo = NuevaMascota(rescatadas, "Milo", Gato, Sano, "Común europeo", Sexo.Macho, hoy.AddYears(-2), Tamanio.Chico, true, ahora.AddMonths(-4), "milo-1.jpg");
+            var kira = NuevaMascota(rescatadas, "Kira", Perro, EnTratamiento, "Basset hound", Sexo.Hembra, hoy.AddYears(-6), Tamanio.Mediano, true, ahora.AddMonths(-2), "kira-1.jpg");
+            var pelusa = NuevaMascota(rescatadas, "Pelusa", Conejo, Sano, null, Sexo.Hembra, hoy.AddYears(-1), Tamanio.Chico, false, ahora.AddDays(-10), "pelusa-1.jpg");
 
             //Refugio del Sur
             var rocco = NuevaMascota(sur, "Rocco", Perro, Sano, "Ovejero alemán", Sexo.Macho, hoy.AddYears(-2), Tamanio.Grande, true, ahora.AddMonths(-3), "rocco-1.jpg", "rocco-2.jpg");
@@ -208,7 +208,7 @@ namespace TransitAR.Api
             bruno.Estado = EstadoMascota.EnTransito;
 
             var usuarios = new List<Usuario> { laura, martin, valeria, ana, sofia, carlos, lucia, diego };
-            var refugios = new List<Refugio> { patitas, sur, huellitas };
+            var refugios = new List<Refugio> { rescatadas, sur, huellitas };
             return (usuarios, refugios);
         }
 

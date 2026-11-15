@@ -171,14 +171,14 @@ Usuarios de demo (datos inventados, solo para probar):
 
 | Rol | Email | Contraseña |
 |---|---|---|
-| Refugio — Patitas al Rescate | `contacto@patitasalrescate.org` | `patitas2026` |
-| Refugio — Refugio del Sur | `info@refugiodelsur.org` | `refugiosur2026` |
-| Refugio — Huellitas Quilmes | `hola@huellitasquilmes.org` | `huellitas2026` |
-| Postulante | `ana.perez@gmail.com` | `postulante2026` |
-| Postulante | `sofia.ramirez@gmail.com` | `sofia2026` |
-| Postulante | `carlos.diaz@gmail.com` | `carlos2026` |
-| Postulante | `lucia.fernandez@gmail.com` | `lucia2026` |
-| Postulante | `diego.morales@gmail.com` | `diego2026` |
+| Refugio — Huellitas Rescatadas | `huellitasrescatadas@example.com` | `rescatadas2026` |
+| Refugio — Refugio del Sur | `refugiodelsur@example.com` | `refugiosur2026` |
+| Refugio — Huellitas Quilmes | `huellitasquilmes@example.com` | `huellitas2026` |
+| Postulante | `ana.perez@example.com` | `postulante2026` |
+| Postulante | `sofia.ramirez@example.com` | `sofia2026` |
+| Postulante | `carlos.diaz@example.com` | `carlos2026` |
+| Postulante | `lucia.fernandez@example.com` | `lucia2026` |
+| Postulante | `diego.morales@example.com` | `diego2026` |
 
 Las fotos de animales son de [Pexels](https://www.pexels.com/license/) y [Unsplash](https://unsplash.com/license). Los logos de los refugios, los íconos de los postulantes y la foto del patio se generaron con IA.
 
