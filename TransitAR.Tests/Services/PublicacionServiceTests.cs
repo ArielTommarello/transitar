@@ -311,23 +311,45 @@ namespace TransitAR.Tests.Services
             Assert.Equal("No encontramos esa mascota en tu refugio.", resultado.Error);
             Assert.Equal(0, ContarPublicaciones());
         }
+              
 
         /// <summary>
-        /// No se puede publciar una mascota ya con transito (o adoptada) si ya esta con alguien (REFUGIO)
+        /// Si la mascota esta en tránsito efectivo, no se puede crear otra publicación e nTránsito hasta que finalice esta, solo se puede crear una de Adopción (nuevo cambio)
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task Crear_MascotaEnTransito_DaErrorYNoCrea()
+        public async Task Crear_MascotaEnTransitoParaTransito_DaErrorYNoCrea()
         {
             var enTransitoId = CargarMascota(estado: EstadoMascota.EnTransito);
 
             using var contexto = CrearContexto();
             var servicio = new PublicacionService(contexto);
 
-            var resultado = await servicio.CrearPublicacionAsync(NuevoRequest(mascotaId: enTransitoId), _refugioId);
+            var resultado = await servicio.CrearPublicacionAsync(NuevoRequest(TipoPublicacion.Transito, mascotaId: enTransitoId), _refugioId);
 
-            Assert.Equal("Solo se pueden publicar mascotas que están en el refugio.", resultado.Error);
+            Assert.Equal("Una mascota en tránsito solo se puede publicar en adopción.", resultado.Error);
             Assert.Equal(0, ContarPublicaciones());
+        }
+
+
+
+        /// <summary>
+        /// Mascota en tránsito , puede crearsele una publicación en Adopción , para buscarle hogar mientras esta el tránsito.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task Crear_MascotaEnTransitoParaAdopcion_LaCrea()
+        {
+            var enTransitoId = CargarMascota(estado: EstadoMascota.EnTransito);
+
+            using var contexto = CrearContexto();
+            var servicio = new PublicacionService(contexto);
+
+            var resultado = await servicio.CrearPublicacionAsync(NuevoRequest(TipoPublicacion.Adopcion, mascotaId: enTransitoId), _refugioId);
+
+            Assert.Null(resultado.Error);
+            Assert.Equal(TipoPublicacion.Adopcion, resultado.Publicacion!.Tipo);
+            Assert.Equal(1, ContarPublicaciones());
         }
 
         /// <summary>
@@ -347,6 +369,25 @@ namespace TransitAR.Tests.Services
             Assert.Equal("Esta mascota ya tiene una publicación activa o pausada. Cerrala antes de crear otra.", resultado.Error);
             Assert.Equal(1, ContarPublicaciones());
         }
+
+        /// <summary>
+        ///  No se peude crear tránsito ni adopcion si la mascota ya esta adoptada, ya tiene hogar definitivo
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task Crear_MascotaAdoptada_DaErrorYNoCrea()
+        {
+            var adoptadaId = CargarMascota(estado: EstadoMascota.Adoptada);
+
+            using var contexto = CrearContexto();
+            var servicio = new PublicacionService(contexto);
+
+            var resultado = await servicio.CrearPublicacionAsync(NuevoRequest(mascotaId: adoptadaId), _refugioId);
+
+            Assert.Equal("Esta mascota ya fue adoptada.", resultado.Error);
+            Assert.Equal(0, ContarPublicaciones());
+        }
+
 
 
         /// <summary>
@@ -426,6 +467,27 @@ namespace TransitAR.Tests.Services
             Assert.Equal("No se puede cambiar entre adopción y tránsito porque la publicación ya tiene postulaciones.", resultado.Error);
             Assert.Equal(TipoPublicacion.Adopcion, LeerPublicacion(publicacionId).Tipo);
         }
+
+        /// <summary>
+        /// Una publicación de adopción de una masctoa que esta cursando un tránsito , no se puede actualizar a tránsito al actualizarla/editarla , aunque no haya postulaciones
+        /// porque ya cursa un tránsito
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task Actualizar_MascotaEnTransitoATransito_DaErrorYNoCambia()
+        {
+            var enTransitoId = CargarMascota(estado: EstadoMascota.EnTransito);
+            var publicacionId = CargarPublicacion(enTransitoId);
+
+            using var contexto = CrearContexto();
+            var servicio = new PublicacionService(contexto);
+
+            var resultado = await servicio.ActualizarPublicacionAsync(publicacionId, NuevoRequest(TipoPublicacion.Transito, mascotaId: enTransitoId), _refugioId);
+
+            Assert.Equal("Una mascota en tránsito solo se puede publicar en adopción.", resultado.Error);
+            Assert.Equal(TipoPublicacion.Adopcion, LeerPublicacion(publicacionId).Tipo);
+        }
+
 
         /// <summary>
         /// Se peude editar el texto con postulaciones, no se peude cambiar el tipo nada mas, se guardan los cambios correctamente (REFUGIO)

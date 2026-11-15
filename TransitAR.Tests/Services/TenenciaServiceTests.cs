@@ -134,6 +134,18 @@ namespace TransitAR.Tests.Services
             return id;
         }
 
+        /// <summary>
+        /// Funcion aux para poner la masctoa en el estado que necesito en la prueba
+        /// </summary>
+        /// <param name="estado"></param>
+        private void CambiarEstadoMascota(EstadoMascota estado)
+        {
+            using var contexto = CrearContexto();
+
+            contexto.Mascotas.Single(m => m.Id == _mascotaId).Estado = estado;
+            contexto.SaveChanges();
+        }
+
 
         //Lectura con el contexto nuevo, para ver lo que quedo guardado
 
@@ -866,6 +878,81 @@ namespace TransitAR.Tests.Services
             var tenencia = Assert.Single(tenencias);
             Assert.True(tenencia.EnCurso);
             Assert.True(tenencia.VencidaEnCurso);
+        }
+
+
+        /// <summary>
+        /// Entrego en adopción una masctoa que esta en trasito y tendria que cerrar el tránsito terminando bien, cancela los controles pendientes y queda la adopción nueva (REFUGIO)
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ConfirmarEntrega_AdopcionDeMascotaEnTransito_CierraElTransitoYCreaLaAdopcion()
+        {
+            CambiarEstadoMascota(EstadoMascota.EnTransito);
+            var transitoId = CargarTenencia();
+            var controlId = CargarSeguimiento(transitoId);
+            var juanId = CargarUsuario("juan@test.org", "Juan");
+            var publicacionId = CargarPublicacion(TipoPublicacion.Adopcion);
+            var postulacionId = CargarPostulacion(publicacionId, juanId);
+
+            using var contexto = CrearContexto();
+            var servicio = new TenenciaService(contexto);
+
+            var resultado = await servicio.ConfirmarEntregaAsync(new TenenciaRequest { PostulacionId = postulacionId }, _refugioId);
+
+            var transito = LeerTenencia(transitoId);
+            Assert.Null(resultado.Error);
+            Assert.Equal("Juan", resultado.Tenencia!.Nombre);
+            Assert.Equal(2, ContarTenencias());
+            Assert.NotNull(transito.FechaFinReal);
+            Assert.True(transito.FinalizoBien);
+            Assert.Equal(EstadoSeguimiento.Cancelado, LeerSeguimiento(controlId).Estado);
+            Assert.Equal(EstadoMascota.Adoptada, LeerMascota(_mascotaId).Estado);
+        }
+
+        /// <summary>
+        /// Si el adoptante al que se le entrega la mascota es el transitante, no creo otra tenencia, da error y se pide usar "Pasar a Adopcion" , porque el transito esta abierto
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ConfirmarEntrega_AdopcionAlMismoTransitante_DaErrorYNoCambia()
+        {
+            CambiarEstadoMascota(EstadoMascota.EnTransito);
+            var transitoId = CargarTenencia();
+            var publicacionId = CargarPublicacion(TipoPublicacion.Adopcion);
+            var postulacionId = CargarPostulacion(publicacionId, _anaId);
+
+            using var contexto = CrearContexto();
+            var servicio = new TenenciaService(contexto);
+
+            var resultado = await servicio.ConfirmarEntregaAsync(new TenenciaRequest { PostulacionId = postulacionId }, _refugioId);
+
+            Assert.Equal("Esta persona ya tiene a la mascota en tránsito. Usá \"Pasar a adopción\" desde su tenencia.", resultado.Error);
+            Assert.Equal(1, ContarTenencias());
+            Assert.Null(LeerTenencia(transitoId).FechaFinReal);
+            Assert.Equal(EstadoMascota.EnTransito, LeerMascota(_mascotaId).Estado);
+        }
+
+
+        /// <summary>
+        /// No se puede pasar a adopcion si la publicacion de Transito esta abierta, el refugio la tiene que cerrar a mano, para poder decidir sobre los postulantes (REFUGIO)
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ConvertirAAdopcion_ConPublicacionAbierta_DaErrorYNoCambia()
+        {
+            CambiarEstadoMascota(EstadoMascota.EnTransito);
+            var tenenciaId = CargarTenencia();
+            CargarPublicacion(TipoPublicacion.Adopcion, EstadoPublicacion.Activa);
+
+            using var contexto = CrearContexto();
+            var servicio = new TenenciaService(contexto);
+
+            var resultado = await servicio.ConvertirAAdopcionAsync(tenenciaId, _refugioId);
+
+            Assert.Equal("Esta mascota tiene una publicación abierta. Cerrala antes de pasar el tránsito a adopción.", resultado.Error);
+            Assert.Equal(TipoPublicacion.Transito, LeerTenencia(tenenciaId).Modalidad);
+            Assert.Equal(EstadoMascota.EnTransito, LeerMascota(_mascotaId).Estado);
         }
 
     }
