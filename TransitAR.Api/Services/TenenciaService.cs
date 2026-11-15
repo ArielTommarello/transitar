@@ -122,7 +122,6 @@ namespace TransitAR.Api.Services
             //cierre del transito, igual que devolucion, mascota pasa al adoptante 
             if (transitoAbierto != null)
             {
-                transitoAbierto.FechaFinReal = ahora;
                 transitoAbierto.FinalizoBien = true;
                 transitoAbierto.FechaFinReal = ahora;
                 transitoAbierto.ObservacionCierre = "Finalizado automáticamente: la mascota fue entregada en adopción.";
