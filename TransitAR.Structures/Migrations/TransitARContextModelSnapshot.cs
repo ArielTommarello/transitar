@@ -615,6 +615,8 @@ namespace TransitAR.Structures.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("RefugioId");
+
                     b.ToTable("Usuarios");
                 });
 
@@ -771,6 +773,16 @@ namespace TransitAR.Structures.Migrations
                     b.Navigation("Mascota");
 
                     b.Navigation("Postulacion");
+                });
+
+            modelBuilder.Entity("TransitAR.Structures.Usuario", b =>
+                {
+                    b.HasOne("TransitAR.Structures.Refugio", "Refugio")
+                        .WithMany()
+                        .HasForeignKey("RefugioId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Refugio");
                 });
 
             modelBuilder.Entity("TransitAR.Structures.Mascota", b =>

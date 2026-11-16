@@ -67,6 +67,12 @@ namespace TransitAR.Structures
         /// </summary>
         public Guid? RefugioId { get; set; }
 
+
+        /// <summary>
+        /// Refugio de la cuenta (navegacion EF CORE). Creacion de la FK de refugioId a Refugios
+        /// </summary>
+        public Refugio? Refugio { get; set; }
+
         /// <summary>
         /// Permite al Admin bloquear una cuenta sin borrar su historial. Una cuenta inactiva no puede iniciar sesion ni postularse , debera hablar con soporte o el admin
         /// </summary>
