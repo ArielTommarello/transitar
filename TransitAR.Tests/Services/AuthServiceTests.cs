@@ -256,5 +256,93 @@ namespace TransitAR.Tests.Services
             Assert.NotNull(login);
             Assert.Equal(refugio.Id, login.RefugioId);
         }
+
+
+        /// <summary>
+        /// cambia la contraseña actual por una nueva correctamente
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CambiarPassword_ConActualCorrecta_CambiaLaClave()
+        {
+            var usuario = CargarUsuario();
+
+            using var contexto = CrearContexto();
+            var servicio = new AuthService(contexto, _configuracion);
+
+            var resultado = await servicio.CambiarPasswordAsync(usuario.Id, new CambiarPasswordRequest { PasswordActual = Clave , PasswordNueva = "nuevaClave2026"});
+
+            Assert.Null(resultado);
+
+            //Con la nueva entra
+            var loginNueva = await servicio.LoginAsync(new LoginRequest { Email = "ana@test.org", Password = "nuevaClave2026" });
+            Assert.NotNull(loginNueva);
+
+            //con la vieja ya no entra
+            var loginVieja = await servicio.LoginAsync(new LoginRequest { Email = "ana@test.org", Password = Clave });
+            Assert.Null(loginVieja);
+        }
+
+        /// <summary>
+        /// cambio la contraseña , pero la actual es incorrecta, no cambia y da error
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CambiarPassword_ConActualIncorrecta_DevuelveErrorYNoCambia()
+        {
+            var usuario = CargarUsuario();
+
+            using var contexto = CrearContexto();
+            var servicio = new AuthService(contexto, _configuracion);
+
+            var resultado = await servicio.CambiarPasswordAsync(usuario.Id, new CambiarPasswordRequest { PasswordActual = "otraClave", PasswordNueva = "nuevaClave2026" });
+
+            Assert.Equal("La contraseña actual es incorrecta.", resultado);
+
+            //verifico que no cambio
+            using var verificacion = CrearContexto();
+            var guardado = await verificacion.Usuarios.FindAsync(usuario.Id);
+            Assert.True(BCrypt.Net.BCrypt.Verify(Clave, guardado!.PasswordHash));
+        }
+
+        /// <summary>
+        /// Cambio la contraseña actual por la misma, no se puede y da error
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CambiarPassword_ConNuevaIgualALaActual_DevuelveError()
+        {
+            var usuario = CargarUsuario();
+
+            using var contexto = CrearContexto();
+            var servicio = new AuthService(contexto, _configuracion);
+
+            var resultado = await servicio.CambiarPasswordAsync(usuario.Id, new CambiarPasswordRequest { PasswordActual = Clave, PasswordNueva = Clave });
+
+            Assert.Equal("La nueva contraseña debe ser distinta de la actual.", resultado);
+
+            //verifico que no cambio
+            using var verificacion = CrearContexto();
+            var guardado = await verificacion.Usuarios.FindAsync(usuario.Id);
+            Assert.True(BCrypt.Net.BCrypt.Verify(Clave, guardado!.PasswordHash));
+        }
+
+
+        /// <summary>
+        /// Cambio la contraseña de un usaurio que no existe, da error
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CambiarPassword_DeUsuarioInexistente_DevuelveError()
+        {
+            
+            using var contexto = CrearContexto();
+            var servicio = new AuthService(contexto, _configuracion);
+
+            var resultado = await servicio.CambiarPasswordAsync(Guid.NewGuid(), new CambiarPasswordRequest { PasswordActual = Clave, PasswordNueva = "nuevaClave2026" });
+
+            Assert.Equal("Usuario no encontrado.", resultado);
+                        
+        }
     }
 }

@@ -34,6 +34,13 @@ namespace TransitAR.Api.Services
 
         Task<LoginResponse?> LoginAsync(LoginRequest request);
 
+        /// <summary>
+        /// Interfaz. Cambio de contraseña, devuelve null si se cambió o el motivo del error
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<string?> CambiarPasswordAsync(Guid usuarioId, CambiarPasswordRequest request);
 
     }
 }

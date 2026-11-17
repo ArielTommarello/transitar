@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using TransitAR.Api.Extensions;
 using TransitAR.Structures;
+
 namespace TransitAR.Api.Services
 {
 
@@ -203,7 +204,31 @@ namespace TransitAR.Api.Services
 
         }
 
-       
+        ///<inheritdoc/>
+        public async Task<string?> CambiarPasswordAsync(Guid usuarioId, CambiarPasswordRequest request)
+        {
+            if (request == null)
+                return "Datos inválidos.";
+
+            var usuario = await _context.Usuarios.FindAsync(usuarioId);
+
+            if (usuario == null)
+                return "Usuario no encontrado.";
+
+            if (!BCrypt.Net.BCrypt.Verify(request.PasswordActual, usuario.PasswordHash))
+                return "La contraseña actual es incorrecta.";
+
+            //la nueva no puede ser igual a la actual
+            if (BCrypt.Net.BCrypt.Verify(request.PasswordNueva, usuario.PasswordHash))
+                return "La nueva contraseña debe ser distinta de la actual.";
+
+            //si paso las verificaciones cambio la contraseña
+            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordNueva);
+
+            await _context.SaveChangesAsync();
+
+            return null;
+        }
 
 
 

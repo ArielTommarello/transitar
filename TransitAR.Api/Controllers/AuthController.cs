@@ -96,6 +96,25 @@ namespace TransitAR.Api.Controllers
         }
 
 
+        /// <summary>
+        /// Cambia la contraseña del usuario logueado. Pide la actual y la cambia por la nueva. Usuario sale del token.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPut("password")]
+        public async Task<IActionResult> CambiarPassword([FromBody] CambiarPasswordRequest request)
+        {
+            var id = User.ObtenerUsuarioId();
+
+            if (id == null) return Unauthorized();
+
+            var error = await _authService.CambiarPasswordAsync(id.Value,request);
+
+            if (error != null) return BadRequest(new { mensaje = error });
+
+            return NoContent();
+        }
 
     }
 }
