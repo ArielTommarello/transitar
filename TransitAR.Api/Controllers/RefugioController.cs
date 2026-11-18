@@ -119,5 +119,113 @@ namespace TransitAR.Api.Controllers
 
             return File(foto.Contenido, foto.ContentType);
         }
+
+
+        #region Equipo
+        /// <summary>
+        /// Lista el equipo del refugio (fundador y colaboradores). Lo ve cualquiera del refugio
+        /// </summary>
+        [HttpGet("equipo")]
+        public async Task<IActionResult> ListarEquipo()
+        {
+            var refugioId = User.ObtenerRefugioId();
+            if (refugioId == null)
+                return Forbid();
+
+            return Ok(await _refugioService.ListarEquipoAsync(refugioId.Value));
+        }
+
+        /// <summary>
+        /// Dar de alta un colaborador en el refugio, solo el fundador
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("equipo")]
+        public async Task<IActionResult> AgregarColaborador([FromBody] ColaboradorRequest request)
+        {
+            var refugioId = User.ObtenerRefugioId();
+
+            var usuarioId = User.ObtenerUsuarioId();
+
+            if (refugioId == null || usuarioId == null)
+                return Forbid();
+
+            var result = await _refugioService.AgregarColaboradorAsync(usuarioId.Value, refugioId.Value, request);
+
+            if(result.Error != null) return BadRequest(new { mensaje = result.Error });
+
+            return Ok(result.Colaborador);
+        }
+
+
+        /// <summary>
+        /// Bloquea un colaborador del refugio, solo el fundador
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpPatch("equipo/{id:guid}/bloquear")]
+        public async Task<IActionResult> BloquearColaborador(Guid id)
+        {
+            var refugioId = User.ObtenerRefugioId();
+
+            var usuarioId = User.ObtenerUsuarioId();
+
+            if (refugioId == null || usuarioId == null)
+                return Forbid();
+
+            var error = await _refugioService.CambiarEstadoColaboradorAsync(usuarioId.Value, refugioId.Value, id, false);
+
+            if (error != null) return BadRequest(new { mensaje = error });
+
+            return NoContent();
+
+        }
+
+        /// <summary>
+        /// Desbloquea un colaborador del refugio, solo el fundador
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPatch("equipo/{id:guid}/desbloquear")]
+        public async Task<IActionResult> DesbloquearColaborador(Guid id)
+        {
+            var refugioId = User.ObtenerRefugioId();
+
+            var usuarioId = User.ObtenerUsuarioId();
+
+            if (refugioId == null || usuarioId == null)
+                return Forbid();
+
+            var error = await _refugioService.CambiarEstadoColaboradorAsync(usuarioId.Value, refugioId.Value, id, true);
+
+            if (error != null) return BadRequest(new { mensaje = error });
+
+            return NoContent();
+
+        }
+        
+        /// <summary>
+        /// Blanquea la contraseña de un colaborador del refugio con una temporal, solo el fundador
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPatch("equipo/{id:guid}/password")]
+        public async Task<IActionResult> BlanquearPasswordColaborador(Guid id, [FromBody] BlanquearPasswordRequest request)
+        {
+            var refugioId = User.ObtenerRefugioId();
+
+            var usuarioId = User.ObtenerUsuarioId();
+
+            if (refugioId == null || usuarioId == null)
+                return Forbid();
+
+            var error = await _refugioService.BlanquearPasswordColaboradorAsync(usuarioId.Value, refugioId.Value, id, request.PasswordNueva);
+
+            if (error != null) return BadRequest(new { mensaje = error });
+
+            return NoContent();
+        }
+
+        #endregion
     }
 }

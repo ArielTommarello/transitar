@@ -1,6 +1,8 @@
 ﻿using TransitAR.Structures.Requests;
 using TransitAR.Structures;
 using Microsoft.EntityFrameworkCore;
+using System;
+
 
 namespace TransitAR.Api.Services
 {
@@ -127,6 +129,136 @@ namespace TransitAR.Api.Services
                 .FirstOrDefaultAsync();
         }
 
+
+        #region Equipo
+
+        ///<inheritdoc/>
+        public async Task<List<MiembroEquipoResponse>> ListarEquipoAsync(Guid refugioId)
+        {
+            var equipo = await _context.Usuarios
+               .AsNoTracking()
+               .Where(u => u.RefugioId == refugioId)
+               .OrderBy(u => u.RolRefugio).ThenBy(u => u.Nombre)
+               .ToListAsync();
+
+            return equipo.Select(MiembroDTO).ToList();
+        }
+
+
+        ///<inheritdoc/>
+        public async Task<ColaboradorResult> AgregarColaboradorAsync(Guid fundadorId, Guid refugioId, ColaboradorRequest request)
+        {
+            if(request == null)
+                return new ColaboradorResult { Error = "Datos inválidos." };
+
+            if(!await EsFundadorAsync(fundadorId, refugioId))
+                return new ColaboradorResult { Error = "Solo el fundador puede administrar el equipo." };
+
+            var email = request.Email.Trim().ToLowerInvariant();
+
+            
+            if(await _context.Usuarios.AnyAsync(u => u.Email == email))
+                return new ColaboradorResult { Error = "Ya existe una cuenta registrada con este mail." };
+
+
+            var usuario = new Usuario
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Nombre = request.Nombre.Trim(),
+                Apellido = request.Apellido.Trim(),
+                Telefono = request.Telefono?.Trim(),
+                Rol = RolUsuario.Refugio,
+                RolRefugio = RolRefugio.Colaborador,
+                RefugioId = refugioId,
+                Activo = true,
+                FechaAlta = DateTime.UtcNow
+            };
+
+            _context.Usuarios.Add(usuario);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                //arreglo de error doble click o email registrado al mismo teimpo 
+                if (await _context.Usuarios.AnyAsync(u => u.Email == email))
+                    return new ColaboradorResult { Error = "Ya existe una cuenta registrada con este mail." };
+
+                throw;
+            }
+
+            return new ColaboradorResult { Colaborador = MiembroDTO(usuario) };
+
+        }
+
+
+        ///<inheritdoc/>
+        public async Task<string?> CambiarEstadoColaboradorAsync(Guid fundadorId, Guid refugioId, Guid colaboradorId, bool activo)
+        {
+            if (!await EsFundadorAsync(fundadorId, refugioId))
+                return "Solo el fundador puede administrar el equipo.";
+
+            var colaborador = await ColaboradorDelRefugioAsync(colaboradorId, refugioId);
+
+            if (colaborador == null)
+                return  "No encontramos ese colaborador en tu refugio.";
+
+            colaborador.Activo = activo;
+
+            await _context.SaveChangesAsync();
+            return null;
+
+        }
+
+
+        ///<inheritdoc/>
+        public async Task<string?> BlanquearPasswordColaboradorAsync(Guid fundadorId, Guid refugioId, Guid colaboradorId, string passwordNueva)
+        {
+            if (!await EsFundadorAsync(fundadorId, refugioId))
+                return "Solo el fundador puede administrar el equipo.";
+
+            var colaborador = await ColaboradorDelRefugioAsync(colaboradorId, refugioId);
+
+            if (colaborador == null)
+                return "No encontramos ese colaborador en tu refugio.";
+
+            colaborador.PasswordHash = BCrypt.Net.BCrypt.HashPassword(passwordNueva);
+
+            await _context.SaveChangesAsync();
+            return null;
+        }
+
+
+        /// <summary>
+        /// Si el usuario es fundador activo del refugio. Rol refugio no esta en el tokem, lo busco en la base
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="refugioId"></param>
+        /// <returns></returns>
+        private async Task<bool> EsFundadorAsync(Guid usuarioId, Guid refugioId) =>
+            await _context.Usuarios.AnyAsync(u => u.Id == usuarioId
+                && u.RefugioId == refugioId
+                && u.RolRefugio == RolRefugio.Fundador
+                && u.Activo);
+
+
+        /// <summary>
+        /// Revisa si es colaborador del refugio
+        /// </summary>
+        /// <param name="colaboradorId"></param>
+        /// <param name="refugioId"></param>
+        /// <returns></returns>
+        private async Task<Usuario?> ColaboradorDelRefugioAsync(Guid colaboradorId, Guid refugioId) =>
+         await _context.Usuarios.FirstOrDefaultAsync(c => c.Id == colaboradorId
+             && c.RefugioId == refugioId
+             && c.RolRefugio == RolRefugio.Colaborador);
+
+        #endregion
+
+
         /// <summary>
         /// Pasa la entidad al DTO de salida
         /// </summary>
@@ -146,6 +278,23 @@ namespace TransitAR.Api.Services
                 .Select(c => new ContactoResponse { Tipo = c.Tipo, Url = c.Url })
                 .ToList()
         };
+
+        /// <summary>
+        /// Pasa el usuario al DTO del equipo. No pone PasswordHash
+        /// </summary>
+        private static MiembroEquipoResponse MiembroDTO(Usuario u) => new()
+        {
+            Id = u.Id,
+            Nombre = u.Nombre,
+            Apellido = u.Apellido,
+            Email = u.Email,
+            Telefono = u.Telefono,
+            RolRefugio = u.RolRefugio,
+            Activo = u.Activo,
+            FechaAlta = u.FechaAlta
+        };
+
+
 
     }
 }
