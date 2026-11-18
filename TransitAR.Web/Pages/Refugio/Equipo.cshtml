@@ -1,0 +1,139 @@
+﻿@page
+@model TransitAR.Web.Pages.Refugio.EquipoModel
+@{
+    ViewData["Title"] = "Equipo del refugio";
+}
+
+<h1 class="h3 mb-1">Equipo del refugio</h1>
+<p class="text-muted">
+    Los colaboradores pueden gestionar mascotas, publicaciones y postulaciones del refugio.
+    Solo el fundador puede agregarlos, bloquearlos o blanquearles la contraseña.
+</p>
+
+
+@if (Model.Mensaje != null)
+{
+    <div class="alert alert-success">@Model.Mensaje</div>
+}
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+@if (Model.EsFundador)
+{
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="h5 card-title">Agregar colaborador</h2>
+            <p class="text-muted small">Pasale su email y la contraseña inicial. Después la puede cambiar desde "Cambiar contraseña".</p>
+
+            <form method="post" asp-page-handler="Agregar">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label asp-for="Nuevo.Nombre" class="form-label">Nombre</label>
+                        <input asp-for="Nuevo.Nombre" class="form-control" />
+                        <span asp-validation-for="Nuevo.Nombre" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Nuevo.Apellido" class="form-label">Apellido</label>
+                        <input asp-for="Nuevo.Apellido" class="form-control" />
+                        <span asp-validation-for="Nuevo.Apellido" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Nuevo.Email" class="form-label">Email</label>
+                        <input asp-for="Nuevo.Email" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="Nuevo.Email" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Nuevo.Telefono" class="form-label">Teléfono (opcional)</label>
+                        <input asp-for="Nuevo.Telefono" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Nuevo.Password" class="form-label">Contraseña inicial</label>
+                        <input asp-for="Nuevo.Password" type="password" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="Nuevo.Password" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Agregar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+@if (!Model.Equipo.Any())
+{
+    <p class="text-muted">No hay integrantes para mostrar.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Alta</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model.Equipo)
+                {
+                    <tr>
+                        <td>@m.Nombre @m.Apellido</td>
+                        <td>@m.Email</td>
+                        <td>@(m.Telefono ?? "—")</td>
+                        <td>
+                            <span class="badge @(m.RolRefugio == RolRefugio.Fundador ? "bg-primary" : "bg-secondary")">
+                                @(m.RolRefugio == RolRefugio.Fundador ? "Fundador" : "Colaborador")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(m.Activo ? "bg-success" : "bg-danger")">@(m.Activo ? "Activo" : "Bloqueado")</span>
+                        </td>
+                        <td>@Formato.FechaDe(m.FechaAlta)</td>
+                        <td class="text-end">
+                            @if (Model.EsFundador && m.RolRefugio == RolRefugio.Colaborador)
+                            {
+                                @if (m.Activo)
+                                {
+                                    <form method="post" asp-page-handler="Bloquear" asp-route-id="@m.Id"
+                                          onsubmit="return confirm('¿Bloquear a @m.Nombre @m.Apellido? No va a poder iniciar sesión.');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Bloquear</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-page-handler="Desbloquear" asp-route-id="@m.Id">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Desbloquear</button>
+                                    </form>
+                                }
+
+                                <form method="post" asp-page-handler="Blanquear" asp-route-id="@m.Id"
+                                      class="d-flex gap-1 justify-content-end mt-1"
+                                      onsubmit="return confirm('¿Blanquear la contraseña de @m.Nombre @m.Apellido?');">
+                                    <input type="password" name="passwordNueva" class="form-control form-control-sm" style="max-width:140px"
+                                           placeholder="Temporal" minlength="8" required autocomplete="new-password" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Blanquear</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">—</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
