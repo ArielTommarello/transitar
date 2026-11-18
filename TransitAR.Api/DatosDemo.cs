@@ -52,6 +52,8 @@ namespace TransitAR.Api
             var laura = NuevoUsuario("huellitasrescatadas@example.com", "rescatadas2026", "Laura", "Gómez", ahora.AddMonths(-6), rescatadas);
             var martin = NuevoUsuario("refugiodelsur@example.com", "refugiosur2026", "Martín", "Sosa", ahora.AddMonths(-5), sur);
             var valeria = NuevoUsuario("huellitasquilmes@example.com", "huellitas2026", "Valeria", "Ruiz", ahora.AddMonths(-2), huellitas);
+            //colaborador de Huellitas Rescatadas (dado de alta por fundador)
+            var julian = NuevoUsuario("julian.ortiz@example.com", "julian2026", "Julián", "Ortiz", ahora.AddMonths(-1), rescatadas, RolRefugio.Colaborador);
 
             var ana = NuevoUsuario("ana.perez@example.com", "postulante2026", "Ana", "Pérez", ahora.AddMonths(-4));
             var sofia = NuevoUsuario("sofia.ramirez@example.com", "sofia2026", "Sofía", "Ramírez", ahora.AddMonths(-3));
@@ -207,7 +209,7 @@ namespace TransitAR.Api
             nina.Estado = EstadoMascota.Adoptada;
             bruno.Estado = EstadoMascota.EnTransito;
 
-            var usuarios = new List<Usuario> { laura, martin, valeria, ana, sofia, carlos, lucia, diego };
+            var usuarios = new List<Usuario> { laura, martin, valeria, julian, ana, sofia, carlos, lucia, diego };
             var refugios = new List<Refugio> { rescatadas, sur, huellitas };
             return (usuarios, refugios);
         }
@@ -277,8 +279,9 @@ namespace TransitAR.Api
         /// <param name="apellido"></param>
         /// <param name="alta"></param>
         /// <param name="refugio"></param>
+        /// <param name="rolRefugio"></param>
         /// <returns></returns>
-        private static Usuario NuevoUsuario(string email, string clave, string nombre, string apellido, DateTime alta, Refugio? refugio = null) => new()
+        private static Usuario NuevoUsuario(string email, string clave, string nombre, string apellido, DateTime alta, Refugio? refugio = null, RolRefugio rolRefugio = RolRefugio.Fundador) => new()
         {
             Id = Guid.NewGuid(),
             Email = email,
@@ -286,7 +289,7 @@ namespace TransitAR.Api
             Nombre = nombre,
             Apellido = apellido,
             Rol = refugio != null ? RolUsuario.Refugio : RolUsuario.Usuario,
-            RolRefugio = refugio != null ? RolRefugio.Fundador : null,
+            RolRefugio = refugio != null ? rolRefugio : null,
             RefugioId = refugio?.Id,
             Activo = true,
             FechaAlta = alta

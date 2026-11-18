@@ -174,13 +174,17 @@ Usuarios de demo (datos inventados, solo para probar):
 | Refugio — Huellitas Rescatadas | `huellitasrescatadas@example.com` | `rescatadas2026` |
 | Refugio — Refugio del Sur | `refugiodelsur@example.com` | `refugiosur2026` |
 | Refugio — Huellitas Quilmes | `huellitasquilmes@example.com` | `huellitas2026` |
+| Colaborador — Huellitas Rescatadas | `julian.ortiz@example.com` | `julian2026` |
 | Postulante | `ana.perez@example.com` | `postulante2026` |
 | Postulante | `sofia.ramirez@example.com` | `sofia2026` |
 | Postulante | `carlos.diaz@example.com` | `carlos2026` |
 | Postulante | `lucia.fernandez@example.com` | `lucia2026` |
 | Postulante | `diego.morales@example.com` | `diego2026` |
 
+Julián es colaborador: gestiona el refugio igual que la fundadora, pero no puede administrar el equipo. Para eso, entrá como Laura (`huellitasrescatadas@example.com`) y andá a **Equipo**.
+
 Las fotos de animales son de [Pexels](https://www.pexels.com/license/) y [Unsplash](https://unsplash.com/license). Los logos de los refugios, los íconos de los postulantes y la foto del patio se generaron con IA.
+
 
 
 ## Solución de Problemas Comunes
