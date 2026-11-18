@@ -90,19 +90,31 @@ else
                             {
                                 <span class="text-muted small">—</span>
                             }
-                            else if (u.Activo)
-                            {
-                                <form method="post" asp-page-handler="Bloquear" asp-route-id="@u.Id"
-                                      asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo"
-                                      onsubmit="return confirm('¿Bloquear a @u.Nombre @u.Apellido? No va a poder iniciar sesión.');">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Bloquear</button>
-                                </form>
-                            }
                             else
                             {
-                                <form method="post" asp-page-handler="Desbloquear" asp-route-id="@u.Id"
-                                      asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo">
-                                    <button type="submit" class="btn btn-sm btn-outline-success">Desbloquear</button>
+                                @if (u.Activo)
+                                {
+                                    <form method="post" asp-page-handler="Bloquear" asp-route-id="@u.Id"
+                                          asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo"
+                                          onsubmit="return confirm('¿Bloquear a @u.Nombre @u.Apellido? No va a poder iniciar sesión.');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Bloquear</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-page-handler="Desbloquear" asp-route-id="@u.Id"
+                                          asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Desbloquear</button>
+                                    </form>
+                                }
+
+                                <form method="post" asp-page-handler="Blanquear" asp-route-id="@u.Id"
+                                      asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo"
+                                      class="d-flex gap-1 justify-content-end mt-1"
+                                      onsubmit="return confirm('¿Blanquear la contraseña de @u.Nombre @u.Apellido?');">
+                                    <input type="password" name="passwordNueva" class="form-control form-control-sm" style="max-width:140px"
+                                           placeholder="Temporal" minlength="8" required autocomplete="new-password" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Blanquear</button>
                                 </form>
                             }
                         </td>

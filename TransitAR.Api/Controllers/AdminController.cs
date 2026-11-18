@@ -170,6 +170,22 @@ namespace TransitAR.Api.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Blanquea la contraseña de un usuario con una temporal (Solo el admin). No pide la actual
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPatch("usuarios/{id:guid}/password")]
+        public async Task<IActionResult> BlanquearPassword(Guid id, [FromBody]BlanquearPasswordRequest request)
+        {
+            var error = await _adminService.BlanquearPasswordAsync(id, request.PasswordNueva);
+
+            if (error != null)
+                return BadRequest(new { mensaje = error });
+
+            return NoContent();
+        }
+
         #endregion
 
         #region Refugios

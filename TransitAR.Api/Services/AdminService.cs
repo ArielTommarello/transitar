@@ -55,6 +55,25 @@ namespace TransitAR.Api.Services
 
             return null;
         }
+
+        ///<inheritdoc/>
+        public async Task<string?> BlanquearPasswordAsync(Guid id, string passwordNueva)
+        {
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (usuario == null)
+                return "No encontramos ese usuario.";
+
+            //A un administrador no se le blanquea
+            if (usuario.Rol == RolUsuario.Admin)
+                return "No se puede blanquear la contraseña de un administrador.";
+
+            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(passwordNueva);
+            await _context.SaveChangesAsync();
+
+            return null;
+        }
+
         #endregion
 
         #region Refugio

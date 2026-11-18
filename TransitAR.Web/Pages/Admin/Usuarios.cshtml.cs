@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Web.Services;
@@ -77,6 +77,13 @@ namespace TransitAR.Web.Pages.Admin
         {
             var respuesta = await _api.PatchAsync<object>($"api/Admin/usuarios/{id}/desbloquear");
             return Volver(respuesta.Exito ? "Usuario desbloqueado." : null, respuesta.Error);
+        }
+
+        public async Task<IActionResult> OnPostBlanquearAsync(Guid id, string passwordNueva)
+        {
+            var respuesta = await _api.PatchAsync<object>($"api/Admin/usuarios/{id}/password",
+                new BlanquearPasswordRequest { PasswordNueva = passwordNueva });
+            return Volver(respuesta.Exito ? "Contraseña blanqueada. Comunicásela al usuario." : null, respuesta.Error);
         }
 
         /// <summary>

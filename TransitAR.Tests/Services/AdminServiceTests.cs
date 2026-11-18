@@ -210,6 +210,50 @@ namespace TransitAR.Tests.Services
             Assert.NotNull(await servicio.CambiarEstadoUsuarioAsync(Guid.NewGuid(), false));
         }
 
+        /// <summary>
+        /// Blanquear contraseña a un usuario, cambia la clave a una temporal correctamente
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task BlanquearPassword_CambiaLaClave()
+        {
+            using var contexto = CrearContexto();
+            var servicio = new AdminService(contexto);
+
+            Assert.Null(await servicio.BlanquearPasswordAsync(_anaId, "temporal2026"));
+            Assert.True(BCrypt.Net.BCrypt.Verify("temporal2026",LeerUsuario(_anaId).PasswordHash));
+        }
+
+
+        /// <summary>
+        /// Blanquear contraseña a un usuario que no existe,no cambia la clave y da error
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task BlanquearPassword_UsuarioInexistente_DaError()
+        {
+            using var contexto = CrearContexto();
+            var servicio = new AdminService(contexto);
+
+            Assert.NotNull(await servicio.BlanquearPasswordAsync(Guid.NewGuid(), "temporal2026"));            
+        }
+
+
+        /// <summary>
+        /// Blanquearle la contraseña a un admin no se puede y da error
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task BlanquearPassword_Admin_DaErrorYNoCambia()
+        {
+            using var contexto = CrearContexto();
+            var servicio = new AdminService(contexto);
+
+            var passAntes = LeerUsuario(_adminId).PasswordHash;
+
+            Assert.NotNull(await servicio.BlanquearPasswordAsync(_adminId, "temporal2026"));
+            Assert.Equal(passAntes, LeerUsuario(_adminId).PasswordHash);
+        }
 
 
         /// <summary>

@@ -34,5 +34,13 @@ namespace TransitAR.Api.Services
         /// <param name="activo"></param>
         /// <returns></returns>
         Task<string?> CambiarEstadoRefugioAsync(Guid id, bool activo);
+
+        /// <summary>
+        /// Blanquea la contraseña de un usuario (solo el admin). No hace falta la actual da null si se blanqueo o error
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="passwordNueva"></param>
+        /// <returns></returns>
+        Task<string?> BlanquearPasswordAsync(Guid id, string passwordNueva);
     }
 }
