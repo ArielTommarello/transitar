@@ -1,10 +1,14 @@
-<a name="readme-top"></a>
+﻿<a name="readme-top"></a>
 # PPS UTN – Tecnicatura Universitaria en Programación 2026
 
 <div align="center">
   <h3 align="center">TransitAR</h3>
   <p align="center">
     Plataforma web para la gestión integral de adopciones y tránsitos de animales.
+  </p>
+  <p align="center">
+    <a href="./documentacion/TransitAR_Documentacion_PPS.pdf">
+    <strong>Acceda a la documentación del proyecto »</strong></a>
   </p>
 </div>
 
@@ -27,7 +31,9 @@ Permite a los refugios publicar sus mascotas, recibir postulaciones, elegir a qu
   <li>Permitir a los refugios aceptar o rechazar postulaciones y confirmar la entrega de la mascota.</li>
   <li>Permitir a los refugios hacer el seguimiento de cada tenencia con controles programados, y convertir un tránsito en adopción.</li>
   <li>Permitir a refugios y postulantes comunicarse por un chat dentro de la plataforma, con archivos adjuntos.</li>
-  <li>Permitir a los administradores aprobar refugios, gestionar usuarios y mantener los catálogos de especies y condiciones.</li>
+  <li>Permitir al fundador de cada refugio sumar colaboradores a su equipo, bloquearlos y blanquearles la contraseña.</li>
+  <li>Permitir a cualquier usuario cambiar su contraseña desde su cuenta.</li>
+  <li>Permitir a los administradores bloquear o desbloquear refugios y usuarios, blanquear contraseñas y mantener los catálogos de especies y condiciones.</li>
 </ul>
 
 
