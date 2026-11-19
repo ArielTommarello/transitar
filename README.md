@@ -64,6 +64,7 @@ Permite a los refugios publicar sus mascotas, recibir postulaciones, elegir a qu
 | `TransitAR.Web` | Interfaz de usuario (Razor Pages) |
 | `TransitAR.Structures` | Entidades, 'DbContext', Migrations, DTOs y enums compartidos entre Api y Web |
 | `TransitAR.Tests` | Pruebas unitarias de los services de la API |
+| `documentacion` | Acta y documentación (PDF), diagramas PlantUML, modelo de datos e imágenes |
 
 ## Project setup
 
