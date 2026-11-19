@@ -1,0 +1,276 @@
+
+// --------------------
+// ENUMS
+// --------------------
+
+Enum TipoContacto {
+  SitioWeb
+  Instagram
+  Facebook
+  WhatsApp
+  Tiktok
+}
+
+Enum EstadoMascota {
+  EnRefugio
+  EnTransito
+  Adoptada
+}
+
+Enum Sexo {
+  Macho
+  Hembra
+}
+
+Enum Tamanio {
+  Chico
+  Mediano
+  Grande
+}
+
+Enum DisponibilidadHorario {
+  Maniana
+  Tarde
+  Noche
+  TodoElDia
+}
+
+Enum SeleccionUsuario {
+  Adoptante
+  Transito
+  Ambos
+}
+
+Enum EstadoPostulacion {
+  Pendiente
+  EnEspera
+  Aceptada
+  Rechazada
+  Retirada
+}
+
+Enum EstadoPublicacion {
+  Activa
+  Pausada
+  Cerrada
+}
+
+Enum TipoPublicacion {
+  Adopcion
+  Transito
+}
+
+Enum EstadoSeguimiento {
+  Pendiente
+  Realizado
+  Cancelado
+  Reprogramado
+}
+
+Enum RolUsuario {
+  Admin
+  Refugio
+  Usuario
+}
+
+Enum RolRefugio {
+  Fundador
+  Colaborador
+}
+
+// --------------------
+// TABLAS
+// --------------------
+
+Table Refugios {
+  Id uniqueidentifier [pk]
+  Activo bit [not null]
+  Descripcion nvarchar(1000)
+  Direccion nvarchar(200)
+  Email nvarchar(120) [not null]
+  FechaAlta datetime2 [not null]
+  FotoContentType nvarchar(100)
+  FotoPerfil varbinary
+  Localidad nvarchar(150)
+  MensajeRechazoAutomatico nvarchar(800)
+  Nombre nvarchar(150) [not null]
+  Telefono nvarchar(80)
+}
+
+Table ContactosRefugio {
+  Id uniqueidentifier [pk]
+  RefugioId uniqueidentifier [not null]
+  Tipo TipoContacto [not null, note: 'se guarda como int']
+  Url nvarchar(250) [not null]
+
+  Indexes {
+    (RefugioId, Tipo) [unique]
+  }
+}
+
+Table Usuarios {
+  Id uniqueidentifier [pk]
+  Activo bit [not null]
+  Apellido nvarchar(100) [not null]
+  Email nvarchar(120) [not null, unique]
+  FechaAlta datetime2 [not null]
+  Nombre nvarchar(100) [not null]
+  PasswordHash nvarchar(200) [not null]
+  RefugioId uniqueidentifier
+  Rol RolUsuario [not null, note: 'se guarda como int']
+  RolRefugio RolRefugio [note: 'se guarda como int']
+  Telefono nvarchar(80)
+}
+
+Table PerfilPostulantes {
+  Id uniqueidentifier [pk]
+  CercaniaVeterinaria nvarchar(250)
+  DetalleOtrasMascotas nvarchar(400)
+  DisponibilidadHorario DisponibilidadHorario [note: 'se guarda como int']
+  ExperienciaPrevia nvarchar(800)
+  FechaCompletado datetime2 [not null]
+  FotoContentType nvarchar(100)
+  FotoPerfil varbinary
+  HorasSoloPorDia int
+  MotivoPostulacion nvarchar(800)
+  PatioCerrado bit [not null]
+  Seleccion SeleccionUsuario [not null, note: 'se guarda como int']
+  TieneOtrasMascotas bit [not null]
+  TienePatio bit [not null]
+  TipoVivienda nvarchar(80)
+  UsuarioId uniqueidentifier [not null, unique]
+}
+
+Table ContactoPostulantes {
+  Id uniqueidentifier [pk]
+  PerfilPostulanteId uniqueidentifier [not null]
+  Tipo TipoContacto [not null, note: 'se guarda como int']
+  Url nvarchar(250) [not null]
+
+  Indexes {
+    (PerfilPostulanteId, Tipo) [unique]
+  }
+}
+
+Table Especies {
+  Id uniqueidentifier [pk]
+  Descripcion nvarchar(150)
+  Nombre nvarchar(60) [not null]
+}
+
+Table Condiciones {
+  Id uniqueidentifier [pk]
+  Descripcion nvarchar(150)
+  Nombre nvarchar(100) [not null]
+}
+
+Table Mascotas {
+  Id uniqueidentifier [pk]
+  CondicionId uniqueidentifier [not null]
+  EspecieId uniqueidentifier [not null]
+  Estado EstadoMascota [not null, note: 'se guarda como int']
+  FechaAlta datetime2 [not null]
+  FechaNacimientoAproximada datetime2
+  Nombre nvarchar(100) [not null]
+  Raza nvarchar(150)
+  RefugioId uniqueidentifier [not null]
+  Sexo Sexo [note: 'se guarda como int']
+  Tamanio Tamanio [note: 'se guarda como int']
+  Vacunado bit [not null]
+}
+
+Table FotosMascota {
+  Id uniqueidentifier [pk]
+  Contenido varbinary [not null]
+  ContentType nvarchar(100) [not null]
+  MascotaId uniqueidentifier [not null]
+  Orden int [not null]
+}
+
+Table Publicaciones {
+  Id uniqueidentifier [pk]
+  Descripcion nvarchar(2000) [not null]
+  Estado EstadoPublicacion [not null, note: 'se guarda como int']
+  FechaCierre datetime2
+  FechaPublicacion datetime2 [not null]
+  MascotaId uniqueidentifier [not null]
+  PlazoEstimado int
+  Tipo TipoPublicacion [not null, note: 'se guarda como int']
+  Titulo nvarchar(150) [not null]
+  Ubicacion nvarchar(300) [not null]
+}
+
+Table Postulaciones {
+  Id uniqueidentifier [pk]
+  Estado EstadoPostulacion [not null, note: 'se guarda como int']
+  FechaPostulacion datetime2 [not null]
+  FechaResolucion datetime2
+  ObservacionRechazo nvarchar(500)
+  PublicacionId uniqueidentifier [not null]
+  UsuarioId uniqueidentifier [not null]
+
+  Indexes {
+    (PublicacionId, UsuarioId) [unique]
+  }
+}
+
+Table Tenencias {
+  Id uniqueidentifier [pk]
+  FechaConversion datetime2
+  FechaFinEstimada datetime2
+  FechaFinReal datetime2
+  FechaInicio datetime2 [not null]
+  FinalizoBien bit
+  MascotaId uniqueidentifier [not null]
+  Modalidad TipoPublicacion [not null, note: 'se guarda como int']
+  ObservacionCierre nvarchar(1000)
+  PostulacionId uniqueidentifier [not null, unique]
+}
+
+Table Seguimientos {
+  Id uniqueidentifier [pk]
+  Estado EstadoSeguimiento [not null, note: 'se guarda como int']
+  FechaProgramada datetime2 [not null]
+  FechaRealizada datetime2
+  Observacion nvarchar(1000)
+  TenenciaId uniqueidentifier [not null]
+}
+
+Table Mensajes {
+  Id uniqueidentifier [pk]
+  EmisorId uniqueidentifier [not null]
+  FechaEnvio datetime2 [not null]
+  FechaLectura datetime2
+  PostulacionId uniqueidentifier [not null]
+  Texto nvarchar(2000) [not null]
+}
+
+Table AdjuntosMensaje {
+  Id uniqueidentifier [pk]
+  Contenido varbinary [not null]
+  ContentType nvarchar(100) [not null]
+  MensajeId uniqueidentifier [not null]
+  NombreArchivo nvarchar(260) [not null]
+  TamanioBytes bigint [not null]
+}
+
+// --------------------
+// RELACIONES (FK)
+// --------------------
+Ref: AdjuntosMensaje.MensajeId > Mensajes.Id
+Ref: ContactoPostulantes.PerfilPostulanteId > PerfilPostulantes.Id
+Ref: ContactosRefugio.RefugioId > Refugios.Id
+Ref: FotosMascota.MascotaId > Mascotas.Id
+Ref: Mascotas.CondicionId > Condiciones.Id
+Ref: Mascotas.EspecieId > Especies.Id
+Ref: Mascotas.RefugioId > Refugios.Id
+Ref: Mensajes.EmisorId > Usuarios.Id
+Ref: Mensajes.PostulacionId > Postulaciones.Id
+Ref: PerfilPostulantes.UsuarioId - Usuarios.Id
+Ref: Postulaciones.PublicacionId > Publicaciones.Id
+Ref: Postulaciones.UsuarioId > Usuarios.Id
+Ref: Publicaciones.MascotaId > Mascotas.Id
+Ref: Seguimientos.TenenciaId > Tenencias.Id
+Ref: Tenencias.MascotaId > Mascotas.Id
+Ref: Tenencias.PostulacionId - Postulaciones.Id
+Ref: Usuarios.RefugioId > Refugios.Id

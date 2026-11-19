@@ -1,0 +1,213 @@
+@startuml perfiles
+
+skinparam Linetype ortho
+
+class PerfilPostulante <<Model>> {
+  Id : Guid
+  UsuarioId : Guid <<FK>>
+  Seleccion : SeleccionUsuario
+  FotoPerfil : byte[]
+  FotoContentType : string
+  TipoVivienda : string
+  TienePatio : bool
+  PatioCerrado : bool
+  TieneOtrasMascotas : bool
+  DetalleOtrasMascotas : string
+  HorasSoloPorDia : int
+  DisponibilidadHorario : DisponibilidadHorario
+  CercaniaVeterinaria : string
+  ExperienciaPrevia : string
+  MotivoPostulacion : string
+  FechaCompletado : DateTime
+}
+
+class ContactoPostulante <<Model>> {
+  Id : Guid
+  PerfilPostulanteId : Guid <<FK>>
+  Tipo : TipoContacto
+  Url : string
+}
+
+class Refugio <<Model>> {
+  Id : Guid
+  Nombre : string
+  Descripcion : string
+  FotoPerfil : byte[]
+  FotoContentType : string
+  Email : string
+  Telefono : string
+  Direccion : string
+  Localidad : string
+  MensajeRechazoAutomatico : string
+  Activo : bool
+  FechaAlta : DateTime
+}
+
+class ContactoRefugio <<Model>> {
+  Id : Guid
+  RefugioId : Guid <<FK>>
+  Tipo : TipoContacto
+  Url : string
+}
+
+class PerfilRequest <<DTO>> {
+  Seleccion : SeleccionUsuario
+  TipoVivienda : string
+  TienePatio : bool
+  PatioCerrado : bool
+  TieneOtrasMascotas : bool
+  DetalleOtrasMascotas : string
+  HorasSoloPorDia : int
+  DisponibilidadHorario : DisponibilidadHorario
+  CercaniaVeterinaria : string
+  ExperienciaPrevia : string
+  MotivoPostulacion : string
+  Contactos : List<ContactoRequest>
+}
+
+class PerfilResponse <<DTO>> {
+  Id : Guid
+  Seleccion : SeleccionUsuario
+  FotoPerfil : bool
+  TipoVivienda : string
+  TienePatio : bool
+  PatioCerrado : bool
+  TieneOtrasMascotas : bool
+  DetalleOtrasMascotas : string
+  HorasSoloPorDia : int
+  DisponibilidadHorario : DisponibilidadHorario
+  CercaniaVeterinaria : string
+  ExperienciaPrevia : string
+  MotivoPostulacion : string
+  FechaCompletado : DateTime
+  Contactos : List<ContactoResponse>
+}
+
+class RefugioRequest <<DTO>> {
+  Nombre : string
+  Descripcion : string
+  Email : string
+  Telefono : string
+  Direccion : string
+  Localidad : string
+  MensajeRechazoAutomatico : string
+  Contactos : List<ContactoRequest>
+}
+
+class RefugioResponse <<DTO>> {
+  Id : Guid
+  Nombre : string
+  Descripcion : string
+  FotoPerfil : bool
+  Email : string
+  Telefono : string
+  Direccion : string
+  Localidad : string
+  MensajeRechazoAutomatico : string
+  FechaAlta : DateTime
+  Contactos : List<ContactoResponse>
+}
+
+class ContactoRequest <<DTO>> {
+  Tipo : TipoContacto
+  Url : string
+}
+
+class ContactoResponse <<DTO>> {
+  Tipo : TipoContacto
+  Url : string
+}
+
+class ArchivoAdjunto <<DTO>> {
+  NombreArchivo : string
+  ContentType : string
+  Contenido : byte[]
+}
+
+class PerfilController <<Controller>> {
+  ObtenerPerfil() : IActionResult
+  CrearPerfil(request : PerfilRequest) : IActionResult
+  ActualizarPerfil(request : PerfilRequest) : IActionResult
+  CambiarFoto(foto : IFormFile) : IActionResult
+  ObtenerFoto(usuarioId : Guid) : IActionResult
+}
+
+class RefugioController <<Controller>> {
+  ObtenerPerfil() : IActionResult
+  ActualizarPerfil(request : RefugioRequest) : IActionResult
+  CambiarFoto(foto : IFormFile) : IActionResult
+  ObtenerFoto(refugioId : Guid) : IActionResult
+}
+
+interface IPerfilService <<Service>> {
+  ObtenerPerfilAsync(usuarioId : Guid) : PerfilResponse
+  CrearPerfilAsync(request : PerfilRequest, usuarioId : Guid) : PerfilResponse
+  ActualizarPerfilAsync(request : PerfilRequest, usuarioId : Guid) : PerfilResponse
+  CambiarFotoAsync(usuarioId : Guid, foto : ArchivoAdjunto) : bool
+  ObtenerFotoAsync(usuarioId : Guid) : ArchivoAdjunto
+}
+
+interface IRefugioService <<Service>> {
+  ObtenerPerfilAsync(refugioId : Guid) : RefugioResponse
+  ActualizarPerfilAsync(request : RefugioRequest, refugioId : Guid) : RefugioResponse
+  CambiarFotoAsync(refugioId : Guid, foto : ArchivoAdjunto) : bool
+  ObtenerFotoAsync(refugioId : Guid) : ArchivoAdjunto
+}
+
+class PerfilService <<Service>>
+
+class RefugioService <<Service>>
+
+enum SeleccionUsuario {
+  Adoptante
+  Transito
+  Ambos
+}
+
+enum DisponibilidadHorario {
+  Maniana
+  Tarde
+  Noche
+  TodoElDia
+}
+
+enum TipoContacto {
+  SitioWeb
+  Instagram
+  Facebook
+  WhatsApp
+  Tiktok
+}
+
+/' Relaciones '/
+PerfilController ..> IPerfilService
+RefugioController ..> IRefugioService
+IPerfilService <|.. PerfilService
+IRefugioService <|.. RefugioService
+PerfilService ..> PerfilPostulante
+PerfilService ..> ContactoPostulante
+PerfilService ..> PerfilRequest
+PerfilService ..> PerfilResponse
+PerfilService ..> ContactoRequest
+PerfilService ..> ContactoResponse
+PerfilService ..> ArchivoAdjunto
+RefugioService ..> Refugio
+RefugioService ..> ContactoRefugio
+RefugioService ..> RefugioRequest
+RefugioService ..> RefugioResponse
+RefugioService ..> ContactoRequest
+RefugioService ..> ContactoResponse
+RefugioService ..> ArchivoAdjunto
+
+PerfilPostulante ..> SeleccionUsuario
+PerfilPostulante ..> DisponibilidadHorario
+ContactoPostulante ..> TipoContacto
+ContactoRefugio ..> TipoContacto
+PerfilRequest ..> SeleccionUsuario
+PerfilRequest ..> DisponibilidadHorario
+PerfilResponse ..> SeleccionUsuario
+PerfilResponse ..> DisponibilidadHorario
+ContactoRequest ..> TipoContacto
+ContactoResponse ..> TipoContacto
+
+@enduml

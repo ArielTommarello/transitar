@@ -1,0 +1,56 @@
+@startuml confirmar_entrega
+
+mainframe confirmar entrega
+
+actor "Refugio" as R
+participant "Página Web\n(UI)" as W
+participant "ApiClient" as AC
+participant "Controller\nTenencia" as C
+participant "Service\nTenencia" as S
+participant "Tenencia, Postulación,\nPublicación y Mascota\nModels" as M
+participant "Base de Datos" as DB
+
+R -> W : Click en\nConfirmar entrega
+activate R
+activate W
+W -> AC : PostAsync("api/Tenencia",\nTenenciaRequest)
+activate AC
+AC -> C : POST api/Tenencia\n+ Bearer JWT
+activate C
+C -> C : Obtiene el refugioId\ndel token
+C -> S : ConfirmarEntregaAsync\n(request, refugioId)
+activate S
+S -> M : Busca la postulación con su\npublicación, mascota y candidatos
+activate M
+M -> DB : Consulta
+activate DB
+DB --> M : devuelve los datos
+deactivate DB
+M --> S : devuelve la postulación
+deactivate M
+S -> S : Valida: es de ese refugio,\nestá aceptada y no se entregó antes
+S -> M : Busca el tránsito abierto\nde la mascota (R44)
+activate M
+M -> DB : Consulta
+activate DB
+DB --> M : devuelve la tenencia en tránsito
+deactivate DB
+M --> S : devuelve el tránsito
+deactivate M
+S -> S : Crea la Tenencia de adopción,\ncierra la publicación, rechaza\nlas otras postulaciones y pasa\nla mascota a Adoptada
+S -> S : Cierra el tránsito (terminó bien)\ny cancela sus controles pendientes
+S -> DB : Guarda todo junto\n(SaveChangesAsync)
+activate DB
+DB --> S : OK
+deactivate DB
+S --> C : TenenciaResult
+deactivate S
+C --> AC : 200 OK (TenenciaResponse)
+deactivate C
+AC --> W : Tenencia creada
+deactivate AC
+W --> R : Muestra "Entrega confirmada.\nLa publicación se cerró."
+deactivate W
+deactivate R
+
+@enduml

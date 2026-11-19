@@ -1,0 +1,45 @@
+@startuml iniciar_sesion
+
+mainframe iniciar sesión
+
+actor "Usuario" as U
+participant "Página Web\n(UI)" as W
+participant "ApiClient" as AC
+participant "Controller\nAuth" as C
+participant "Service\nAuth" as S
+participant "Usuario\nModel" as M
+participant "Base de Datos" as DB
+
+U -> W : Click en\nIniciar sesión
+activate U
+activate W
+W --> U : Muestra la página /Cuenta/Login
+U -> W : Ingresa credenciales
+W -> AC : PostAsync("api/Auth/login")
+activate AC
+AC -> C : POST api/Auth/login\n(LoginRequest)
+activate C
+C -> S : LoginAsync(request)
+activate S
+S -> M : Busca el usuario por email
+activate M
+M -> DB : Consulta en Usuarios
+activate DB
+DB --> M : devuelve el Usuario
+deactivate DB
+M --> S : devuelve el Usuario
+deactivate M
+S -> S : Valida contraseña (BCrypt)\ny que la cuenta esté activa
+S -> S : Genera y firma el JWT
+S --> C : LoginResponse (token)
+deactivate S
+C --> AC : 200 OK
+deactivate C
+AC --> W : LoginResponse
+deactivate AC
+W -> W : Guarda el token\nen la cookie de sesión
+W --> U : Redirige al panel del refugio\no al inicio
+deactivate W
+deactivate U
+
+@enduml

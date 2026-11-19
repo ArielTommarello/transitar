@@ -1,0 +1,210 @@
+@startuml mascotas_y_catalogos
+
+skinparam Linetype ortho
+
+class Mascota <<Model>> {
+  Id : Guid
+  Nombre : string
+  RefugioId : Guid <<FK>>
+  EspecieId : Guid <<FK>>
+  CondicionId : Guid <<FK>>
+  Raza : string
+  Sexo : Sexo
+  FechaNacimientoAproximada : DateTime
+  Tamanio : Tamanio
+  Vacunado : bool
+  Estado : EstadoMascota
+  FechaAlta : DateTime
+}
+
+class FotoMascota <<Model>> {
+  Id : Guid
+  MascotaId : Guid <<FK>>
+  Orden : int
+  ContentType : string
+  Contenido : byte[]
+}
+
+class Especie <<Model>> {
+  Id : Guid
+  Nombre : string
+  Descripcion : string
+}
+
+class Condicion <<Model>> {
+  Id : Guid
+  Nombre : string
+  Descripcion : string
+}
+
+class MascotaRequest <<DTO>> {
+  Nombre : string
+  EspecieId : Guid
+  CondicionId : Guid
+  Raza : string
+  Sexo : Sexo
+  FechaNacimientoAproximada : DateTime
+  Tamanio : Tamanio
+  Vacunado : bool
+}
+
+class MascotaResponse <<DTO>> {
+  Id : Guid
+  Nombre : string
+  EspecieNombre : string
+  EspecieId : Guid
+  CondicionNombre : string
+  CondicionId : Guid
+  Raza : string
+  Sexo : Sexo
+  FechaNacimientoAproximada : DateTime
+  EdadAproximadaMeses : int
+  EdadAproximadaDias : int
+  Tamanio : Tamanio
+  Vacunado : bool
+  Estado : EstadoMascota
+  FotosIds : List<Guid>
+  FechaAlta : DateTime
+}
+
+class ArchivoAdjunto <<DTO>> {
+  NombreArchivo : string
+  ContentType : string
+  Contenido : byte[]
+}
+
+class EspecieRequest <<DTO>> {
+  Nombre : string
+  Descripcion : string
+}
+
+class EspecieResponse <<DTO>> {
+  Id : Guid
+  Nombre : string
+  Descripcion : string
+}
+
+class EspecieResult <<DTO>> {
+  Especie : EspecieResponse
+  Error : string
+}
+
+class CondicionRequest <<DTO>> {
+  Nombre : string
+  Descripcion : string
+}
+
+class CondicionResponse <<DTO>> {
+  Id : Guid
+  Nombre : string
+  Descripcion : string
+}
+
+class CondicionResult <<DTO>> {
+  Condicion : CondicionResponse
+  Error : string
+}
+
+class MascotaController <<Controller>> {
+  ListarMascotas() : IActionResult
+  ObtenerMascota(id : Guid) : IActionResult
+  CrearMascota(request : MascotaRequest) : IActionResult
+  ActualizarMascota(id : Guid, request : MascotaRequest) : IActionResult
+  EliminarMascota(id : Guid) : IActionResult
+  AgregarFotos(id : Guid, fotos : List<IFormFile>) : IActionResult
+  BorrarFoto(id : Guid, fotoId : Guid) : IActionResult
+  HacerPrincipal(id : Guid, fotoId : Guid) : IActionResult
+  ObtenerFoto(fotoId : Guid) : IActionResult
+}
+
+class EspecieController <<Controller>> {
+  ListarEspecies() : IActionResult
+}
+
+class CondicionController <<Controller>> {
+  ListarCondiciones() : IActionResult
+}
+
+interface IMascotaService <<Service>> {
+  ListarMascotasAsync(refugioId : Guid) : List<MascotaResponse>
+  ObtenerMascotaAsync(id : Guid, refugioId : Guid) : MascotaResponse
+  CrearMascotaAsync(request : MascotaRequest, refugioId : Guid) : MascotaResponse
+  ActualizarMascotaAsync(id : Guid, request : MascotaRequest, refugioId : Guid) : MascotaResponse
+  EliminarMascotaAsync(id : Guid, refugioId : Guid) : string
+  ObtenerMascotaDeTenenciaAsync(tenenciaId : Guid, usuarioId : Guid) : MascotaResponse
+  AgregarFotosAsync(mascotaId : Guid, refugioId : Guid, fotos : List<ArchivoAdjunto>, maximo : int) : string
+  BorrarFotoAsync(mascotaId : Guid, fotoId : Guid, refugioId : Guid) : bool
+  HacerPrincipalAsync(mascotaId : Guid, fotoId : Guid, refugioId : Guid) : bool
+  ObtenerFotoAsync(fotoId : Guid) : ArchivoAdjunto
+}
+
+interface IEspecieService <<Service>> {
+  ListarEspeciesAsync() : List<EspecieResponse>
+  CrearEspecieAsync(request : EspecieRequest) : EspecieResult
+  ActualizarEspecieAsync(id : Guid, request : EspecieRequest) : EspecieResult
+  EliminarEspecieAsync(id : Guid) : string
+}
+
+interface ICondicionService <<Service>> {
+  ListarCondicionesAsync() : List<CondicionResponse>
+  CrearCondicionAsync(request : CondicionRequest) : CondicionResult
+  ActualizarCondicionAsync(id : Guid, request : CondicionRequest) : CondicionResult
+  EliminarCondicionAsync(id : Guid) : string
+}
+
+class MascotaService <<Service>>
+
+class EspecieService <<Service>>
+
+class CondicionService <<Service>>
+
+enum EstadoMascota {
+  EnRefugio
+  EnTransito
+  Adoptada
+}
+
+enum Sexo {
+  Macho
+  Hembra
+}
+
+enum Tamanio {
+  Chico
+  Mediano
+  Grande
+}
+
+/' Relaciones '/
+MascotaController ..> IMascotaService
+EspecieController ..> IEspecieService
+CondicionController ..> ICondicionService
+IMascotaService <|.. MascotaService
+IEspecieService <|.. EspecieService
+ICondicionService <|.. CondicionService
+MascotaService ..> Mascota
+MascotaService ..> FotoMascota
+MascotaService ..> Especie
+MascotaService ..> Condicion
+MascotaService ..> MascotaRequest
+MascotaService ..> MascotaResponse
+MascotaService ..> ArchivoAdjunto
+EspecieService ..> Especie
+EspecieService ..> EspecieRequest
+EspecieService ..> EspecieResponse
+EspecieService ..> EspecieResult
+CondicionService ..> Condicion
+CondicionService ..> CondicionRequest
+CondicionService ..> CondicionResponse
+CondicionService ..> CondicionResult
+
+Mascota ..> EstadoMascota
+Mascota ..> Sexo
+Mascota ..> Tamanio
+MascotaRequest ..> Sexo
+MascotaRequest ..> Tamanio
+MascotaResponse ..> EstadoMascota
+MascotaResponse ..> Sexo
+MascotaResponse ..> Tamanio
+
+@enduml

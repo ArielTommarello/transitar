@@ -1,0 +1,116 @@
+@startuml postulaciones
+
+skinparam Linetype ortho
+
+class Postulacion <<Model>> {
+  Id : Guid
+  PublicacionId : Guid <<FK>>
+  UsuarioId : Guid <<FK>>
+  Estado : EstadoPostulacion
+  FechaPostulacion : DateTime
+  FechaResolucion : DateTime
+  ObservacionRechazo : string
+}
+
+class PostulacionRequest <<DTO>> {
+  PublicacionId : Guid
+}
+
+class PostulacionResponse <<DTO>> {
+  Id : Guid
+  Estado : EstadoPostulacion
+  FechaPostulacion : DateTime
+  FechaResolucion : DateTime
+  MotivoRechazo : string
+  PublicacionId : Guid
+  PublicacionTitulo : string
+  Tipo : TipoPublicacion
+  MascotaNombre : string
+  EspecieNombre : string
+  FotosIds : List<Guid>
+  RefugioNombre : string
+  TieneTenencia : bool
+}
+
+class PostulacionRefugioResponse <<DTO>> {
+  Id : Guid
+  Estado : EstadoPostulacion
+  DisponibilidadHorario : DisponibilidadHorario
+  FechaPostulacion : DateTime
+  FechaResolucion : DateTime
+  UsuarioId : Guid
+  Nombre : string
+  Apellido : string
+  FotoPerfil : bool
+  Seleccion : SeleccionUsuario
+  TipoVivienda : string
+  TienePatio : bool
+  PatioCerrado : bool
+  TieneOtrasMascotas : bool
+  DetalleOtrasMascotas : string
+  HorasSoloPorDia : int
+  CercaniaVeterinaria : string
+  ExperienciaPrevia : string
+  MotivoPostulacion : string
+  FechaCompletado : DateTime
+  Contactos : List<ContactoResponse>
+}
+
+class PostulacionResult <<DTO>> {
+  Postulacion : PostulacionResponse
+  Error : string
+}
+
+class PostulacionController <<Controller>> {
+  ListarMisPostulaciones() : IActionResult
+  ObtenerPostulacion(id : Guid) : IActionResult
+  Postularse(request : PostulacionRequest) : IActionResult
+  RetirarPostulacion(id : Guid) : IActionResult
+  ListarMisTenencias() : IActionResult
+  ListarMisSeguimientos(estado : EstadoSeguimiento) : IActionResult
+  ObtenerMascotaDeMiTenencia(id : Guid) : IActionResult
+}
+
+interface IPostulacionService <<Service>> {
+  ListarMisPostulacionesAsync(usuarioId : Guid) : List<PostulacionResponse>
+  ObtenerPostulacionAsync(id : Guid, usuarioId : Guid) : PostulacionResponse
+  PostularseAsync(request : PostulacionRequest, usuarioId : Guid) : PostulacionResult
+  RetirarPostulacionAsync(id : Guid, usuarioId : Guid) : PostulacionResult
+  ListarPostulacionesDePublicacionAsync(publicacionId : Guid, refugioId : Guid) : List<PostulacionRefugioResponse>
+  AceptarAsync(publicacionId : Guid, postulacionId : Guid, refugioId : Guid) : PostulacionResult
+  RechazarAsync(publicacionId : Guid, postulacionId : Guid, observacion : string, refugioId : Guid) : PostulacionResult
+}
+
+class PostulacionService <<Service>>
+
+enum EstadoPostulacion {
+  Pendiente
+  EnEspera
+  Aceptada
+  Rechazada
+  Retirada
+}
+
+interface ITenenciaService <<Service>>
+
+interface ISeguimientoService <<Service>>
+
+interface IMascotaService <<Service>>
+
+/' Relaciones '/
+PostulacionController ..> IPostulacionService
+PostulacionController ..> ITenenciaService
+PostulacionController ..> ISeguimientoService
+PostulacionController ..> IMascotaService
+IPostulacionService <|.. PostulacionService
+PostulacionService ..> Postulacion
+PostulacionService ..> PostulacionRequest
+PostulacionService ..> PostulacionResponse
+PostulacionService ..> PostulacionRefugioResponse
+PostulacionService ..> PostulacionResult
+
+Postulacion ..> EstadoPostulacion
+PostulacionResponse ..> EstadoPostulacion
+PostulacionRefugioResponse ..> EstadoPostulacion
+
+@enduml

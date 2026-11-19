@@ -1,0 +1,180 @@
+@startuml autenticacion_y_administracion
+
+skinparam Linetype ortho
+
+class Usuario <<Model>> {
+  Id : Guid
+  Email : string
+  PasswordHash : string
+  Nombre : string
+  Apellido : string
+  Telefono : string
+  Rol : RolUsuario
+  RolRefugio : RolRefugio
+  RefugioId : Guid <<FK>>
+  Activo : bool
+  FechaAlta : DateTime
+}
+
+class Refugio <<Model>> {
+  Id : Guid
+  Nombre : string
+  Descripcion : string
+  FotoPerfil : byte[]
+  FotoContentType : string
+  Email : string
+  Telefono : string
+  Direccion : string
+  Localidad : string
+  MensajeRechazoAutomatico : string
+  Activo : bool
+  FechaAlta : DateTime
+}
+
+class LoginRequest <<DTO>> {
+  Email : string
+  Password : string
+}
+
+class LoginResponse <<DTO>> {
+  Token : string
+  FechaExpiracion : DateTime
+  UsuarioId : Guid
+  Email : string
+  Nombre : string
+  Rol : RolUsuario
+  RefugioId : Guid
+}
+
+class RegistroPostulanteRequest <<DTO>> {
+  Email : string
+  Password : string
+  Nombre : string
+  Apellido : string
+  Telefono : string
+}
+
+class RegistroRefugioRequest <<DTO>> {
+  Email : string
+  Password : string
+  Nombre : string
+  Apellido : string
+  Telefono : string
+  NombreRefugio : string
+  Localidad : string
+  Direccion : string
+}
+
+class CambiarPasswordRequest <<DTO>> {
+  PasswordActual : string
+  PasswordNueva : string
+}
+
+class BlanquearPasswordRequest <<DTO>> {
+  PasswordNueva : string
+}
+
+class UsuarioAdminResponse <<DTO>> {
+  Id : Guid
+  Nombre : string
+  Apellido : string
+  Email : string
+  Rol : RolUsuario
+  RefugioId : Guid
+  Activo : bool
+  FechaAlta : DateTime
+}
+
+class RefugioAdminResponse <<DTO>> {
+  Id : Guid
+  Nombre : string
+  Email : string
+  Localidad : string
+  Activo : bool
+  FechaAlta : DateTime
+}
+
+class AuthController <<Controller>> {
+  RegistrarPostulante(request : RegistroPostulanteRequest) : IActionResult
+  RegistrarRefugio(request : RegistroRefugioRequest) : IActionResult
+  Login(request : LoginRequest) : IActionResult
+  Me() : IActionResult
+  CambiarPassword(request : CambiarPasswordRequest) : IActionResult
+}
+
+class AdminController <<Controller>> {
+  CrearEspecie(request : EspecieRequest) : IActionResult
+  ActualizarEspecie(id : Guid, request : EspecieRequest) : IActionResult
+  EliminarEspecie(id : Guid) : IActionResult
+  CrearCondicion(request : CondicionRequest) : IActionResult
+  ActualizarCondicion(id : Guid, request : CondicionRequest) : IActionResult
+  EliminarCondicion(id : Guid) : IActionResult
+  ListarUsuarios(rol : RolUsuario, activo : bool) : IActionResult
+  BloquearUsuario(id : Guid) : IActionResult
+  DesbloquearUsuario(id : Guid) : IActionResult
+  BlanquearPassword(id : Guid, request : BlanquearPasswordRequest) : IActionResult
+  ListarRefugios(activo : bool) : IActionResult
+  BloquearRefugio(id : Guid) : IActionResult
+  DesbloquearRefugio(id : Guid) : IActionResult
+}
+
+interface IAuthService <<Service>> {
+  RegistrarPostulanteAsync(request : RegistroPostulanteRequest) : Usuario
+  RegistrarRefugioAsync(request : RegistroRefugioRequest) : Usuario
+  LoginAsync(request : LoginRequest) : LoginResponse
+  CambiarPasswordAsync(usuarioId : Guid, request : CambiarPasswordRequest) : string
+}
+
+interface IAdminService <<Service>> {
+  ListarUsuariosAsync(rol : RolUsuario, activo : bool) : List<UsuarioAdminResponse>
+  CambiarEstadoUsuarioAsync(id : Guid, activo : bool) : string
+  ListarRefugiosAsync(activo : bool) : List<RefugioAdminResponse>
+  CambiarEstadoRefugioAsync(id : Guid, activo : bool) : string
+  BlanquearPasswordAsync(id : Guid, passwordNueva : string) : string
+}
+
+class AuthService <<Service>>
+
+class AdminService <<Service>>
+
+enum RolUsuario {
+  Admin
+  Refugio
+  Usuario
+}
+
+enum RolRefugio {
+  Fundador
+  Colaborador
+}
+
+interface IEspecieService <<Service>>
+
+interface ICondicionService <<Service>>
+
+/' Relaciones '/
+AuthController ..> IAuthService
+AdminController ..> IEspecieService
+AdminController ..> ICondicionService
+AdminController ..> IAdminService
+AdminController ..> BlanquearPasswordRequest
+IAuthService <|.. AuthService
+IAdminService <|.. AdminService
+AuthService ..> Usuario
+AuthService ..> Refugio
+AuthService ..> LoginRequest
+AuthService ..> LoginResponse
+AuthService ..> RegistroPostulanteRequest
+AuthService ..> RegistroRefugioRequest
+AuthService ..> CambiarPasswordRequest
+AdminService ..> Usuario
+AdminService ..> Refugio
+AdminService ..> UsuarioAdminResponse
+AdminService ..> RefugioAdminResponse
+
+Usuario ..> RolUsuario
+Usuario ..> RolRefugio
+LoginResponse ..> RolUsuario
+UsuarioAdminResponse ..> RolUsuario
+
+@enduml

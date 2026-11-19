@@ -1,0 +1,128 @@
+@startuml publicaciones
+
+skinparam Linetype ortho
+
+class Publicacion <<Model>> {
+  Id : Guid
+  MascotaId : Guid <<FK>>
+  Titulo : string
+  Descripcion : string
+  Ubicacion : string
+  Tipo : TipoPublicacion
+  Estado : EstadoPublicacion
+  PlazoEstimado : int
+  FechaPublicacion : DateTime
+  FechaCierre : DateTime
+}
+
+class PublicacionRequest <<DTO>> {
+  MascotaId : Guid
+  Titulo : string
+  Descripcion : string
+  Ubicacion : string
+  Tipo : TipoPublicacion
+  PlazoEstimado : int
+}
+
+class PublicacionResponse <<DTO>> {
+  Id : Guid
+  MascotaId : Guid
+  MascotaNombre : string
+  FotosIds : List<Guid>
+  Titulo : string
+  Descripcion : string
+  Ubicacion : string
+  Tipo : TipoPublicacion
+  Estado : EstadoPublicacion
+  PlazoEstimado : int
+  FechaPublicacion : DateTime
+  FechaCierre : DateTime
+  CantidadPostulaciones : int
+}
+
+class PublicacionPublicaResponse <<DTO>> {
+  Id : Guid
+  Titulo : string
+  Descripcion : string
+  Ubicacion : string
+  Tipo : TipoPublicacion
+  PlazoEstimado : int
+  FechaPublicacion : DateTime
+  MascotaNombre : string
+  EspecieNombre : string
+  Sexo : Sexo
+  Tamanio : Tamanio
+  EdadAproximadaMeses : int
+  EdadAproximadaDias : int
+  Vacunado : bool
+  FotosIds : List<Guid>
+  RefugioNombre : string
+  RefugioLocalidad : string
+}
+
+class PublicacionResult <<DTO>> {
+  Publicacion : PublicacionResponse
+  Error : string
+}
+
+class RechazoRequest <<DTO>> {
+  Observacion : string
+}
+
+class PublicacionController <<Controller>> {
+  ListarPublicaciones() : IActionResult
+  ObtenerPublicacion(id : Guid) : IActionResult
+  CrearPublicacion(request : PublicacionRequest) : IActionResult
+  ActualizarPublicacion(id : Guid, request : PublicacionRequest) : IActionResult
+  CambiarEstado(id : Guid, estado : EstadoPublicacion) : IActionResult
+  ListarPostulaciones(id : Guid) : IActionResult
+  AceptarPostulacion(id : Guid, postulacionId : Guid) : IActionResult
+  RechazarPostulacion(id : Guid, postulacionId : Guid, request : RechazoRequest) : IActionResult
+  ListarPublicacionesActivas(tipo : TipoPublicacion, especieId : Guid, tamanio : Tamanio, sexo : Sexo, ubicacion : string) : IActionResult
+  ObtenerPublicacionActiva(id : Guid) : IActionResult
+}
+
+interface IPublicacionService <<Service>> {
+  ListarPublicacionesAsync(refugioId : Guid) : List<PublicacionResponse>
+  ObtenerPublicacionAsync(id : Guid, refugioId : Guid) : PublicacionResponse
+  CrearPublicacionAsync(request : PublicacionRequest, refugioId : Guid) : PublicacionResult
+  ActualizarPublicacionAsync(id : Guid, request : PublicacionRequest, refugioId : Guid) : PublicacionResult
+  CambiarEstadoAsync(id : Guid, estado : EstadoPublicacion, refugioId : Guid) : PublicacionResult
+  ObtenerActivaAsync(id : Guid) : PublicacionPublicaResponse
+  ListarActivasAsync(tipo : TipoPublicacion, especieId : Guid, tamanio : Tamanio, sexo : Sexo, ubicacion : string) : List<PublicacionPublicaResponse>
+}
+
+class PublicacionService <<Service>>
+
+enum TipoPublicacion {
+  Adopcion
+  Transito
+}
+
+enum EstadoPublicacion {
+  Activa
+  Pausada
+  Cerrada
+}
+
+interface IPostulacionService <<Service>>
+
+/' Relaciones '/
+PublicacionController ..> IPublicacionService
+PublicacionController ..> IPostulacionService
+PublicacionController ..> RechazoRequest
+IPublicacionService <|.. PublicacionService
+PublicacionService ..> Publicacion
+PublicacionService ..> PublicacionRequest
+PublicacionService ..> PublicacionResponse
+PublicacionService ..> PublicacionPublicaResponse
+PublicacionService ..> PublicacionResult
+
+Publicacion ..> TipoPublicacion
+Publicacion ..> EstadoPublicacion
+PublicacionRequest ..> TipoPublicacion
+PublicacionResponse ..> TipoPublicacion
+PublicacionResponse ..> EstadoPublicacion
+PublicacionPublicaResponse ..> TipoPublicacion
+
+@enduml

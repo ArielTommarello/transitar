@@ -1,0 +1,181 @@
+@startuml tenencias_y_seguimiento
+
+skinparam Linetype ortho
+
+class Tenencia <<Model>> {
+  Id : Guid
+  PostulacionId : Guid <<FK>>
+  MascotaId : Guid <<FK>>
+  FechaInicio : DateTime
+  FechaFinEstimada : DateTime
+  FechaFinReal : DateTime
+  FechaConversion : DateTime
+  ObservacionCierre : string
+  FinalizoBien : bool
+  Modalidad : TipoPublicacion
+}
+
+class Seguimiento <<Model>> {
+  Id : Guid
+  TenenciaId : Guid <<FK>>
+  FechaProgramada : DateTime
+  FechaRealizada : DateTime
+  Estado : EstadoSeguimiento
+  Observacion : string
+}
+
+class TenenciaRequest <<DTO>> {
+  PostulacionId : Guid
+  FechaFinEstimada : DateTime
+}
+
+class TenenciaResponse <<DTO>> {
+  Id : Guid
+  PostulacionId : Guid
+  Modalidad : TipoPublicacion
+  MascotaId : Guid
+  MascotaNombre : string
+  UsuarioId : Guid
+  Nombre : string
+  Apellido : string
+  FechaInicio : DateTime
+  FechaFinEstimada : DateTime
+  FechaFinReal : DateTime
+  FechaConversion : DateTime
+  ObservacionCierre : string
+  FinalizoBien : bool
+  EstaVencida : bool
+  PublicacionId : Guid
+  EspecieNombre : string
+  FotosIds : List<Guid>
+  DuracionEnDias : int
+  TieneControlPendiente : bool
+}
+
+class TenenciaResult <<DTO>> {
+  Tenencia : TenenciaResponse
+  Error : string
+}
+
+class DevolucionRequest <<DTO>> {
+  ObservacionCierre : string
+  FinalizoBien : bool
+}
+
+class HistorialTenenciaResponse <<DTO>> {
+  Id : Guid
+  MascotaNombre : string
+  RefugioNombre : string
+  Modalidad : TipoPublicacion
+  FechaInicio : DateTime
+  FechaFinEstimada : DateTime
+  FechaFinReal : DateTime
+  FechaConversion : DateTime
+  FinalizoBien : bool
+  ObservacionCierre : string
+  EnCurso : bool
+  VencidaEnCurso : bool
+  DuracionEnDias : int
+  PostulacionId : Guid
+  EspecieNombre : string
+  FotosIds : List<Guid>
+}
+
+class SeguimientoRequest <<DTO>> {
+  TenenciaId : Guid
+  FechaProgramada : DateTime
+  Estado : EstadoSeguimiento
+  Observacion : string
+}
+
+class SeguimientoResponse <<DTO>> {
+  Id : Guid
+  TenenciaId : Guid
+  PostulacionId : Guid
+  MascotaId : Guid
+  MascotaNombre : string
+  PersonaNombre : string
+  RefugioNombre : string
+  Modalidad : TipoPublicacion
+  FechaProgramada : DateTime
+  FechaRealizada : DateTime
+  Observacion : string
+  Estado : EstadoSeguimiento
+  Vencido : bool
+}
+
+class TenenciaController <<Controller>> {
+  ObtenerTenencia(id : Guid) : IActionResult
+  ConfirmarEntrega(request : TenenciaRequest) : IActionResult
+  ListarTenencias(modalidad : TipoPublicacion, enCurso : bool, vencidas : bool, sinControles : bool) : IActionResult
+  Devolver(id : Guid, request : DevolucionRequest) : IActionResult
+  ConvertirAAdopcion(id : Guid) : IActionResult
+  ObtenerHistorialPostulante(usuarioId : Guid) : IActionResult
+  ObtenerControlesPostulante(usuarioId : Guid) : IActionResult
+}
+
+class SeguimientoController <<Controller>> {
+  Listar(estado : EstadoSeguimiento, vencidos : bool, mascotaId : Guid) : IActionResult
+  Crear(request : SeguimientoRequest) : IActionResult
+  CambiarEstado(id : Guid, request : SeguimientoRequest) : IActionResult
+}
+
+interface ITenenciaService <<Service>> {
+  ObtenerTenenciaAsync(id : Guid, refugioId : Guid) : TenenciaResponse
+  ConfirmarEntregaAsync(request : TenenciaRequest, refugioId : Guid) : TenenciaResult
+  ListarTenenciasAsync(refugioId : Guid, modalidad : TipoPublicacion, enCurso : bool, vencidas : bool, sinControles : bool) : List<TenenciaResponse>
+  DevolverAsync(id : Guid, request : DevolucionRequest, refugioId : Guid) : TenenciaResult
+  ConvertirAAdopcionAsync(id : Guid, refugioId : Guid) : TenenciaResult
+  ObtenerHistorialPostulanteAsync(usuarioId : Guid, refugioId : Guid) : List<HistorialTenenciaResponse>
+  ObtenerControlesPostulanteAsync(usuarioId : Guid, refugioId : Guid) : List<SeguimientoResponse>
+  ObtenerMisTenenciasAsync(usuarioId : Guid) : List<HistorialTenenciaResponse>
+}
+
+interface ISeguimientoService <<Service>> {
+  ListarAsync(usuarioId : Guid, refugioId : Guid, estado : EstadoSeguimiento, vencidos : bool, mascotaId : Guid) : List<SeguimientoResponse>
+  CrearAsync(request : SeguimientoRequest, refugioId : Guid) : string
+  CambiarEstadoAsync(id : Guid, request : SeguimientoRequest, refugioId : Guid) : string
+}
+
+class TenenciaService <<Service>>
+
+class SeguimientoService <<Service>>
+
+enum TipoPublicacion {
+  Adopcion
+  Transito
+}
+
+enum EstadoSeguimiento {
+  Pendiente
+  Realizado
+  Cancelado
+  Reprogramado
+}
+
+/' Relaciones '/
+TenenciaController ..> ITenenciaService
+SeguimientoController ..> ISeguimientoService
+ITenenciaService <|.. TenenciaService
+ISeguimientoService <|.. SeguimientoService
+TenenciaService ..> Tenencia
+TenenciaService ..> TenenciaRequest
+TenenciaService ..> TenenciaResponse
+TenenciaService ..> TenenciaResult
+TenenciaService ..> DevolucionRequest
+TenenciaService ..> HistorialTenenciaResponse
+TenenciaService ..> SeguimientoResponse
+SeguimientoService ..> Tenencia
+SeguimientoService ..> Seguimiento
+SeguimientoService ..> SeguimientoRequest
+SeguimientoService ..> SeguimientoResponse
+
+Tenencia ..> TipoPublicacion
+Seguimiento ..> EstadoSeguimiento
+TenenciaResponse ..> TipoPublicacion
+HistorialTenenciaResponse ..> TipoPublicacion
+SeguimientoRequest ..> EstadoSeguimiento
+SeguimientoResponse ..> TipoPublicacion
+SeguimientoResponse ..> EstadoSeguimiento
+
+@enduml

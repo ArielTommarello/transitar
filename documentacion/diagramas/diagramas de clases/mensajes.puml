@@ -1,0 +1,130 @@
+@startuml mensajes
+
+skinparam Linetype ortho
+
+class Mensaje <<Model>> {
+  Id : Guid
+  PostulacionId : Guid <<FK>>
+  EmisorId : Guid <<FK>>
+  Texto : string
+  FechaEnvio : DateTime
+  FechaLectura : DateTime
+}
+
+class AdjuntoMensaje <<Model>> {
+  Id : Guid
+  MensajeId : Guid <<FK>>
+  NombreArchivo : string
+  ContentType : string
+  TamanioBytes : long
+  Contenido : byte[]
+}
+
+class MensajeRequest <<DTO>> {
+  Texto : string
+}
+
+class MensajeResponse <<DTO>> {
+  Id : Guid
+  Texto : string
+  FechaEnvio : DateTime
+  FechaLectura : DateTime
+  EsPropio : bool
+  EmisorNombre : string
+  Adjuntos : List<AdjuntoResponse>
+}
+
+class MensajeResult <<DTO>> {
+  Mensaje : MensajeResponse
+  Error : string
+}
+
+class ChatResponse <<DTO>> {
+  PostulacionId : Guid
+  PublicacionId : Guid
+  PublicacionTitulo : string
+  Tipo : TipoPublicacion
+  MascotaId : Guid
+  MascotaNombre : string
+  Receptor : string
+  EstadoPostulacion : EstadoPostulacion
+  PuedeEscribir : bool
+  Mensajes : List<MensajeResponse>
+}
+
+class ChatResumenResponse <<DTO>> {
+  PostulacionId : Guid
+  PublicacionId : Guid
+  MascotaId : Guid
+  MascotaNombre : string
+  Tipo : TipoPublicacion
+  Receptor : string
+  EstadoPostulacion : EstadoPostulacion
+  PuedeEscribir : bool
+  UltimoMensaje : string
+  FechaUltimoMensaje : DateTime
+  UltimoTieneAdjunto : bool
+  NoLeidos : int
+}
+
+class AdjuntoResponse <<DTO>> {
+  Id : Guid
+  NombreArchivo : string
+  ContentType : string
+  TamanioBytes : long
+}
+
+class ArchivoAdjunto <<DTO>> {
+  NombreArchivo : string
+  ContentType : string
+  Contenido : byte[]
+}
+
+class MensajeController <<Controller>> {
+  ListarChats(publicacionId : Guid, mascotaId : Guid) : IActionResult
+  ObtenerChat(postulacionId : Guid) : IActionResult
+  EnviarMensaje(postulacionId : Guid, request : MensajeRequest, archivos : List<IFormFile>) : IActionResult
+  ObtenerAdjunto(adjuntoId : Guid) : IActionResult
+}
+
+interface IMensajeService <<Service>> {
+  ListarChatsAsync(usuarioId : Guid, refugioId : Guid, publicacionId : Guid, mascotaId : Guid) : List<ChatResumenResponse>
+  ObtenerChatAsync(postulacionId : Guid, usuarioId : Guid, refugioId : Guid) : ChatResponse
+  EnviarAsync(postulacionId : Guid, request : MensajeRequest, adjuntos : List<ArchivoAdjunto>, usuarioId : Guid, refugioId : Guid) : MensajeResult
+  ObtenerAdjuntoAsync(adjuntoId : Guid, usuarioId : Guid, refugioId : Guid) : ArchivoAdjunto
+}
+
+class MensajeService <<Service>>
+
+enum TipoPublicacion {
+  Adopcion
+  Transito
+}
+
+enum EstadoPostulacion {
+  Pendiente
+  EnEspera
+  Aceptada
+  Rechazada
+  Retirada
+}
+
+/' Relaciones '/
+MensajeController ..> IMensajeService
+IMensajeService <|.. MensajeService
+MensajeService ..> Mensaje
+MensajeService ..> AdjuntoMensaje
+MensajeService ..> MensajeRequest
+MensajeService ..> MensajeResponse
+MensajeService ..> MensajeResult
+MensajeService ..> ChatResponse
+MensajeService ..> ChatResumenResponse
+MensajeService ..> AdjuntoResponse
+MensajeService ..> ArchivoAdjunto
+
+ChatResponse ..> TipoPublicacion
+ChatResponse ..> EstadoPostulacion
+ChatResumenResponse ..> TipoPublicacion
+ChatResumenResponse ..> EstadoPostulacion
+
+@enduml
