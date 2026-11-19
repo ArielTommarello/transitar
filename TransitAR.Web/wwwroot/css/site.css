@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -8,9 +8,24 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}*/
+
+/* colores */
+:root {
+    --bs-primary: #1f7a6f;
+    --bs-primary-rgb: 31, 122, 111;
+    --bs-primary-text-emphasis: #0f3d37;
+    --bs-primary-bg-subtle: #d2e4e2;
+    --bs-primary-border-subtle: #a5cac5;
+    --bs-link-color: #1f7a6f;
+    --bs-link-color-rgb: 31, 122, 111;
+    --bs-link-hover-color: #185f57;
+    --bs-link-hover-color-rgb: 24, 95, 87;
+    --bs-focus-ring-color: rgba(31, 122, 111, .25);
 }
+
 
 html {
   position: relative;
@@ -20,6 +35,46 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* fondo */
+body {
+    background-color: #f5f7f8;
+}
+
+.btn-primary {
+    --bs-btn-bg: #1f7a6f;
+    --bs-btn-border-color: #1f7a6f;
+    --bs-btn-hover-bg: #1b6b62;
+    --bs-btn-hover-border-color: #1b6b62;
+    --bs-btn-active-bg: #185f57;
+    --bs-btn-active-border-color: #185f57;
+    --bs-btn-disabled-bg: #1f7a6f;
+    --bs-btn-disabled-border-color: #1f7a6f;
+    --bs-btn-focus-shadow-rgb: 31, 122, 111;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #1f7a6f;
+    --bs-btn-border-color: #1f7a6f;
+    --bs-btn-hover-bg: #1f7a6f;
+    --bs-btn-hover-border-color: #1f7a6f;
+    --bs-btn-active-bg: #185f57;
+    --bs-btn-active-border-color: #185f57;
+    --bs-btn-disabled-color: #1f7a6f;
+    --bs-btn-disabled-border-color: #1f7a6f;
+    --bs-btn-focus-shadow-rgb: 31, 122, 111;
+}
+
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    border-color: #8fbdb7;
+    box-shadow: 0 0 0 .25rem rgba(31, 122, 111, .25);
+}
+
+.form-check-input:checked {
+    background-color: #1f7a6f;
+    border-color: #1f7a6f;
+}
+
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
