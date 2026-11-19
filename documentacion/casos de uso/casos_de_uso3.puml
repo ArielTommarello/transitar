@@ -1,0 +1,33 @@
+@startuml caso de uso 3
+
+'caso de uso 3
+'Usuario refugio (registrado y autenticado): publicar una mascota y entregarla
+'El fundador puede hacer todo lo del colaborador y además gestionar el equipo
+
+actor "Colaborador del refugio" as Colaborador
+actor "Fundador del refugio" as Fundador
+
+Fundador -|> Colaborador
+
+rectangle "web TransitAR" {
+
+    (Iniciar sesión) as IniciarSesion
+    (Crear mascota y subir fotos) as CrearMascota
+    (Publicar mascota) as Publicar
+    (Aceptar o rechazar postulaciones) as Postulaciones
+    (Confirmar entrega) as ConfirmarEntrega
+    (Programar seguimientos) as Seguimientos
+    (Enviar mensajes al postulante) as Mensajes
+    (Gestionar equipo del refugio) as Equipo
+}
+
+Colaborador -[#green]-> IniciarSesion
+IniciarSesion -[#green]-> CrearMascota
+CrearMascota -[#green]-> Publicar
+Publicar -[#green]-> Postulaciones
+Postulaciones -[#green]-> ConfirmarEntrega
+ConfirmarEntrega -[#green]-> Seguimientos
+IniciarSesion --> Mensajes
+Fundador --> Equipo
+
+@enduml

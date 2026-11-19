@@ -1,0 +1,40 @@
+@startuml
+skinparam componentStyle rectangle
+
+' Frontend
+package "Frontend (Razor Pages)" {
+  [Páginas (Bootstrap)] as UI
+  [ApiClient (HttpClient)] as Cliente
+}
+
+' Backend
+package "Backend (ASP.NET Core Web API)" {
+  [Controller]
+  [Swagger Doc]
+  [Service]
+  [Auth (JWT)] as Auth
+  package "capa de datos" {
+    [DTOs]
+    [Entidades]
+  }
+}
+
+' Base de datos
+database "SQL Server" as DB
+
+' Notas
+note right of [Swagger Doc]
+  Documentación de la API
+  generada desde Controllers y DTOs
+end note
+
+' Relaciones
+UI <--> Cliente : Solicita datos
+Cliente <--> [Controller] : HTTP Request
+[Controller] <--> [Service] : Lógica de negocio
+Auth <--> [Controller] : Valida el JWT en cada pedido
+[Service] <--> Auth : Genera el JWT (login)
+[Service] <--> [DTOs] : Usa para validar
+[Service] <--> [Entidades] : Acceso a datos
+[Entidades] <--> DB : ORM (Entity Framework Core)
+@enduml
