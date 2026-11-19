@@ -1,0 +1,27 @@
+@startuml caso de uso 2
+
+'caso de uso 2
+'Usuario postulante (registrado y autenticado): postularse a una mascota en adopción o tránsito
+
+actor "Usuario postulante" as Postulante
+
+rectangle "web TransitAR" {
+
+    (Iniciar sesión) as IniciarSesion
+    (Completar perfil) as CompletarPerfil
+    (Postularse a una publicación) as Postularse
+    (Ver o retirar sus postulaciones) as MisPostulaciones
+    (Ver tenencias y seguimientos) as MisTenencias
+    (Enviar mensajes al refugio) as Mensajes
+    (Cambiar contraseña) as CambiarPassword
+}
+
+Postulante -[#green]-> IniciarSesion
+IniciarSesion -[#green]-> CompletarPerfil
+CompletarPerfil -[#green]-> Postularse
+Postularse -[#green]-> MisPostulaciones
+IniciarSesion --> MisTenencias
+IniciarSesion --> Mensajes
+IniciarSesion --> CambiarPassword
+
+@enduml
