@@ -98,7 +98,7 @@ else
                             <a asp-page="/Refugio/Mascota" asp-route-id="@m.Id" class="btn btn-sm btn-outline-primary">Editar</a>
 
                             <form method="post" asp-page-handler="Eliminar" asp-route-id="@m.Id" asp-route-estado="@Model.Estado"
-                                  class="d-inline" onsubmit="return confirm('¿Borrar a @m.Nombre? Solo se puede si no tiene publicaciones ni tenencias.');">
+                                  class="d-inline" data-confirmar="¿Borrar a @m.Nombre? Solo se puede si no tiene publicaciones ni tenencias." data-confirmar-boton="Borrar">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Borrar</button>
                             </form>
                         </td>

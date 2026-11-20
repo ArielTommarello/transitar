@@ -26,3 +26,39 @@ function actualizarCada(caja, segundos, opciones = {}) {
 
     setInterval(actualizar, segundos * 1000);
 }
+
+
+//Modal confirmaciones para todos los formilarios. data-condfimrar="texto" y data-confirmar-boton="Borrar" para texto boton.
+document.addEventListener('submit', (e) => {
+
+    //si hay error return
+    if (e.defaultPrevented) return;
+
+    const form = e.target;
+    const boton = e.submitter;
+    const texto = boton?.dataset.confirmar ?? form.dataset.confirmar;
+    if (!texto) return;
+
+    e.preventDefault();
+    const textoBoton = boton?.dataset.confirmarBoton ?? form.dataset.confirmarBoton;
+
+    abrirConfirmacion(texto, textoBoton, () => {
+        // propio handler capaz (asp-page-handler en el botón)
+        if (boton) form.action = boton.formAction;
+        form.submit();//envio formulario
+    });
+});
+
+function abrirConfirmacion(texto, textoBoton, alAceptar) {
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmar'));
+    document.getElementById('modalConfirmarTexto').textContent = texto;
+
+    const aceptar = document.getElementById('modalConfirmarAceptar');
+    aceptar.textContent = textoBoton || 'Confirmar';
+    aceptar.onclick = () => {
+        modal.hide();
+        alAceptar();
+    };
+
+    modal.show();
+}

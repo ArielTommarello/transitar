@@ -133,7 +133,7 @@ else
                             {
                                 <form method="post" asp-page-handler="CambiarEstado" asp-route-id="@p.Id"
                                       asp-route-nuevoEstado="@EstadoPublicacion.Cerrada" asp-route-estado="@Model.Estado" class="d-inline"
-                                      onsubmit="return confirm('¿Cerrar esta publicación? Es definitivo: no se puede reabrir, y las postulaciones que siguen abiertas se rechazan.');">
+                                      data-confirmar="¿Cerrar esta publicación? Es definitivo: no se puede reabrir, y las postulaciones que siguen abiertas se rechazan." data-confirmar-boton="Cerrar publicación">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Cerrar</button>
                                 </form>
                             }

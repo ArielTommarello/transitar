@@ -63,7 +63,7 @@
                         @if (sePuedeRetirar)
                         {
                             <form method="post" asp-page-handler="Retirar" asp-route-id="@Model.Id"
-                                  onsubmit="return confirm('¿Seguro que querés retirarte de esta postulación?');">
+                                  data-confirmar="¿Seguro que querés retirarte de esta postulación?" data-confirmar-boton="Retirarme">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Retirarme</button>
                             </form>
                         }

@@ -103,6 +103,23 @@
         </main>
     </div>
 
+    <div class="modal fade" id="modalConfirmar" tabindex="-1" aria-labelledby="modalConfirmarTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalConfirmarTitulo">Confirmar</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="modalConfirmarTexto"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Volver</button>
+                    <button type="button" class="btn btn-primary" id="modalConfirmarAceptar">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2026 TransitAR · Proyecto de Práctica Profesional Supervisada UTN · <a asp-area="" asp-page="/Privacy">Privacidad</a>

@@ -55,8 +55,8 @@
                     </button>
                     <button type="submit" asp-page-handler="BorrarEspecie" asp-route-id="@e.Id"
                             class="btn btn-sm btn-outline-danger" formnovalidate
-                            onclick="return confirm('¿Borrar la especie @e.Nombre?');">
-                        Borrar
+                            data-confirmar="¿Borrar la especie @e.Nombre?" data-confirmar-boton="Borrar">
+                            Borrar
                     </button>
                 </div>
             </form>
@@ -102,7 +102,7 @@
                     </button>
                     <button type="submit" asp-page-handler="BorrarCondicion" asp-route-id="@c.Id"
                             class="btn btn-sm btn-outline-danger" formnovalidate
-                            onclick="return confirm('¿Borrar la condición @c.Nombre?');">
+                            data-confirmar="¿Borrar la condición @c.Nombre?" data-confirmar-boton="Borrar">
                         Borrar
                     </button>
                 </div>

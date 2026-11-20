@@ -229,7 +229,7 @@
                                     </div>
 
                                     <form method="post" asp-page-handler="BorrarFoto" asp-route-id="@Model.Id" asp-route-fotoId="@ids[i]"
-                                          onsubmit="return confirm('¿Borrar esta foto?');">
+                                          data-confirmar="¿Borrar esta foto?" data-confirmar-boton="Borrar">
                                         <button type="submit" class="btn btn-sm btn-link text-danger p-0">Borrar</button>
                                     </form>
                                 </div>

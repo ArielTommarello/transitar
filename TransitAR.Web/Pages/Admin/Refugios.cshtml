@@ -69,7 +69,7 @@ else
                             @if (r.Activo)
                             {
                                 <form method="post" asp-page-handler="Bloquear" asp-route-id="@r.Id" asp-route-activo="@Model.Activo"
-                                      onsubmit="return confirm('¿Bloquear @r.Nombre? Sus publicaciones dejan de verse y sus cuentas no van a poder iniciar sesión.');">
+                                      data-confirmar="¿Bloquear @r.Nombre? Sus publicaciones dejan de verse y sus cuentas no van a poder iniciar sesión." data-confirmar-boton="Bloquear">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Bloquear</button>
                                 </form>
                             }

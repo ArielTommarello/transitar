@@ -142,7 +142,7 @@
                     </p>
 
                     <form method="post" asp-page-handler="ConfirmarEntrega" class="mb-4"
-                          onsubmit="return confirm('¿Confirmás que @p.Nombre ya tiene a @pub.MascotaNombre? Se cierra la publicación y se rechazan las demás postulaciones.');">
+                          data-confirmar="¿Confirmás que @p.Nombre ya tiene a @pub.MascotaNombre? Se cierra la publicación y se rechazan las demás postulaciones." data-confirmar-boton="Confirmar entrega">
                         @if (esTransito)
                         {
                             <div class="mb-2">
@@ -156,7 +156,7 @@
                     </form>
 
                     <form method="post" asp-page-handler="Rechazar"
-                          onsubmit="return confirm('¿Rechazar a @p.Nombre? La publicación vuelve a estar activa y las postulaciones en espera vuelven a evaluación.');">
+                          data-confirmar="¿Rechazar a @p.Nombre? La publicación vuelve a estar activa y las postulaciones en espera vuelven a evaluación." data-confirmar-boton="Rechazar">
                         <div class="mb-2">
                             <label asp-for="Observacion" class="form-label">Observación (opcional)</label>
                             <textarea asp-for="Observacion" class="form-control" rows="2"></textarea>
@@ -169,7 +169,7 @@
                     @if (p.Estado == EstadoPostulacion.Pendiente)
                     {
                         <form method="post" asp-page-handler="Aceptar" class="mb-4"
-                              onsubmit="return confirm('¿Aceptar a @p.Nombre? Las demás postulaciones quedan en espera y la publicación se pausa hasta que confirmes la entrega.');">
+                              data-confirmar="¿Aceptar a @p.Nombre? Las demás postulaciones quedan en espera y la publicación se pausa hasta que confirmes la entrega." data-confirmar-boton="Aceptar">
                             <button type="submit" class="btn btn-success w-100">Aceptar</button>                            
                         </form>
                     }
@@ -179,7 +179,7 @@
                     }
 
                     <form method="post" asp-page-handler="Rechazar"
-                          onsubmit="return confirm('¿Rechazar a @p.Nombre?');">
+                          data-confirmar="¿Rechazar a @p.Nombre?" data-confirmar-boton="Rechazar">
                         <div class="mb-2">
                             <label asp-for="Observacion" class="form-label">Observación (opcional)</label>
                             <textarea asp-for="Observacion" class="form-control" rows="2"></textarea>
