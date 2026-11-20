@@ -108,14 +108,12 @@ else
                                     </form>
                                 }
 
-                                <form method="post" asp-page-handler="Blanquear" asp-route-id="@u.Id"
-                                      asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo"
-                                      class="d-flex gap-1 justify-content-end mt-1"
-                                      onsubmit="return confirm('¿Blanquear la contraseña de @u.Nombre @u.Apellido?');">
-                                    <input type="password" name="passwordNueva" class="form-control form-control-sm" style="max-width:140px"
-                                           placeholder="Temporal" minlength="8" required autocomplete="new-password" />
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Blanquear</button>
-                                </form>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mt-1"
+                                        data-bs-toggle="modal" data-bs-target="#modalBlanquear"
+                                        data-nombre="@u.Nombre @u.Apellido"
+                                        data-url="@Url.Page("/Admin/Usuarios", "Blanquear", new { id = u.Id, rol = Model.Rol, activo = Model.Activo })">
+                                    Blanquear
+                                </button>
                             }
                         </td>
                     </tr>
@@ -123,4 +121,10 @@ else
             </tbody>
         </table>
     </div>
+}
+
+<partial name="_ModalBlanquear" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -43,7 +43,7 @@ document.addEventListener('submit', (e) => {
     const textoBoton = boton?.dataset.confirmarBoton ?? form.dataset.confirmarBoton;
 
     abrirConfirmacion(texto, textoBoton, () => {
-        // propio handler capaz (asp-page-handler en el botón)
+        // propio handler (asp-page-handler en el botón)
         if (boton) form.action = boton.formAction;
         form.submit();//envio formulario
     });
@@ -61,4 +61,19 @@ function abrirConfirmacion(texto, textoBoton, alAceptar) {
     };
 
     modal.show();
+}
+
+//Modal blanquear contraseña (admin-usuarios y equipo en el refugio)
+const modalBlanquear = document.getElementById('modalBlanquear');
+if (modalBlanquear) {
+    modalBlanquear.addEventListener('show.bs.modal', (e) => {
+        const boton = e.relatedTarget;
+        document.getElementById('blanquearNombre').textContent = boton.dataset.nombre;
+        document.getElementById('formBlanquear').action = boton.dataset.url;
+        document.getElementById('formBlanquear').reset();
+    });
+        
+    modalBlanquear.addEventListener('shown.bs.modal', () => {
+        document.getElementById('passwordNueva').focus();
+    });
 }

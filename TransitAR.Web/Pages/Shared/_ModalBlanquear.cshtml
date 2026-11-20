@@ -1,0 +1,29 @@
+﻿@* Modal para blanquear la contraseña, lo usan Admin/Usuarios y Refugio/Equipo. 
+uso de  (data-nombre ) y (data-url)*@
+<div class="modal fade" id="modalBlanquear" tabindex="-1" aria-labelledby="modalBlanquearTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" id="formBlanquear">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalBlanquearTitulo">Blanquear contraseña</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Contraseña temporal para <strong id="blanquearNombre"></strong>. Después puede cambiarla desde "Cambiar contraseña".</p>
+                    <label for="passwordNueva" class="form-label">Contraseña temporal</label>
+                    <input type="password" id="passwordNueva" name="passwordNueva" class="form-control"
+                           maxlength="100" autocomplete="new-password"
+                           data-val="true"
+                           data-val-required="Escribí la contraseña temporal."
+                           data-val-minlength="La contraseña debe tener al menos 8 caracteres." data-val-minlength-min="8" />
+                    <span class="text-danger small" data-valmsg-for="passwordNueva" data-valmsg-replace="true"></span>
+                    <div class="form-text">Mínimo 8 caracteres.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Volver</button>
+                    <button type="submit" class="btn btn-primary">Blanquear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
