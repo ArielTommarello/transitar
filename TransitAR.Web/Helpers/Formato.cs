@@ -468,5 +468,20 @@ namespace TransitAR.Web.Helpers
         };
 
 
+        /// <summary>
+        /// Switch para iconos de red contaco
+        /// </summary>
+        /// <param name="tipo"></param>
+        /// <returns></returns>
+        public static string IconoContacto(TipoContacto tipo) => tipo switch
+        {
+            Structures.TipoContacto.Instagram => "bi-instagram",
+            Structures.TipoContacto.Facebook => "bi-facebook",
+            Structures.TipoContacto.WhatsApp => "bi-whatsapp",
+            Structures.TipoContacto.Tiktok => "bi-tiktok",
+            Structures.TipoContacto.SitioWeb => "bi-globe",
+            _ => "bi-link-45deg"
+        };
+
     }
 }

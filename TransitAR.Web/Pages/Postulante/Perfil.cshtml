@@ -170,8 +170,11 @@
                     {
                         <div class="mb-2">
                             <label class="form-label small mb-1" for="red-@red.Tipo">@red.Nombre</label>
-                            <input name="Redes[@red.Tipo]" id="red-@red.Tipo" class="form-control"
-                                   value="@Model.Redes.GetValueOrDefault(red.Tipo)" placeholder="@red.Ejemplo" maxlength="250" />
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi @Formato.IconoContacto(red.Tipo)"></i></span>
+                                <input name="Redes[@red.Tipo]" id="red-@red.Tipo" class="form-control"
+                                       value="@Model.Redes.GetValueOrDefault(red.Tipo)" placeholder="@red.Ejemplo" maxlength="250" />
+                            </div>
                         </div>
                     }
                 </div>
