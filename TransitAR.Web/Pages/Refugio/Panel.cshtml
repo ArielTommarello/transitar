@@ -1,50 +1,164 @@
 ﻿@page
 @model TransitAR.Web.Pages.Refugio.PanelModel
 @{
-    ViewData["Title"] = "Panel";
-    
-    void Tarjeta(string texto, int? numero, string? url, bool atender = false)
-    {
-        <div class="col">
-            <a href="@url" class="card h-100 text-decoration-none @(atender && numero > 0 ? "border-warning bg-warning-subtle" : "")">
-                <div class="card-body">
-                    <div class="display-6 text-body">@(numero?.ToString() ?? "—")</div>
-                    <div class="text-muted small">@texto</div>
-                </div>
-            </a>
-        </div>
-    }
+    ViewData["Title"] = "Panel";   
 }
 
 <h1 class="h3 mb-4">Panel del refugio</h1>
 
 <partial name="_AvisoControles" model="Model.ProximosDias" />
 
-<h2 class="h5 mb-3">Para atender</h2>
+<h2 class="h5 pb-2 mb-3 border-bottom">Para atender</h2>
 <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3 mb-5">
-    @{
-        Tarjeta("Postulaciones por revisar", Model.PorRevisar, Url.Page("/Refugio/Publicaciones"), true);
-        Tarjeta("Controles atrasados", Model.ControlesAtrasados, Url.Page("/Refugio/Seguimiento"), true);
-        Tarjeta("Tenencias vencidas", Model.TenenciasVencidas, Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.Vencidas }), true);
-        Tarjeta("Tenencias sin controles", Model.SinControles, Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.SinControlesPendientes }), true);
-        Tarjeta("Mensajes sin leer", Model.SinLeer, Url.Page("/Mensajes/Index"), true);
-    }
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Publicaciones")" class="card h-100 text-decoration-none @(Model.PorRevisar > 0 ? "border-warning bg-warning-subtle" : "")">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-person-lines-fill"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.PorRevisar?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Postulaciones por revisar</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Seguimiento")" class="card h-100 text-decoration-none @(Model.ControlesAtrasados > 0 ? "border-warning bg-warning-subtle" : "")">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.ControlesAtrasados?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Controles atrasados</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.Vencidas })" class="card h-100 text-decoration-none @(Model.TenenciasVencidas > 0 ? "border-warning bg-warning-subtle" : "")">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.TenenciasVencidas?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Tenencias vencidas</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.SinControlesPendientes })" class="card h-100 text-decoration-none @(Model.SinControles > 0 ? "border-warning bg-warning-subtle" : "")">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-clipboard-x"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.SinControles?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Tenencias sin controles</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a href="@Url.Page("/Mensajes/Index")" class="card h-100 text-decoration-none @(Model.SinLeer > 0 ? "border-warning bg-warning-subtle" : "")">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-chat-dots"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.SinLeer?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Mensajes sin leer</p>
+                </div>
+            </div>
+        </a>
+    </div>   
 </div>
 
-<h2 class="h5 mb-3">Hoy</h2>
+<h2 class="h5 pb-2 mb-3 border-bottom">Hoy</h2>
 <div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
-    @{
-        Tarjeta("Mascotas en el refugio", Model.EnRefugio, Url.Page("/Refugio/Mascotas", new { estado = EstadoMascota.EnRefugio }));
-        Tarjeta("Publicaciones activas", Model.Activas, Url.Page("/Refugio/Publicaciones", new { estado = EstadoPublicacion.Activa }));
-        Tarjeta("Publicaciones pausadas", Model.Pausadas, Url.Page("/Refugio/Publicaciones", new { estado = EstadoPublicacion.Pausada }));
-        Tarjeta("Tenencias en curso", Model.EnCurso, Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.EnCurso }));
-    }
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Mascotas", new { estado = EstadoMascota.EnRefugio })" class="card h-100 text-decoration-none">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-house-heart"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.EnRefugio?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Mascotas en el refugio</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Publicaciones", new { estado = EstadoPublicacion.Activa })" class="card h-100 text-decoration-none">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-megaphone"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.Activas?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Publicaciones activas</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Publicaciones", new { estado = EstadoPublicacion.Pausada })" class="card h-100 text-decoration-none">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-pause-circle"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.Pausadas?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Publicaciones pausadas</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.EnCurso })" class="card h-100 text-decoration-none">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-arrow-left-right"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.EnCurso?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Tenencias en curso</p>
+                </div>
+            </div>
+        </a>
+    </div>  
 </div>
 
-<h2 class="h5 mb-3">Historia del refugio</h2>
+<h2 class="h5 pb-2 mb-3 border-bottom">Historia del refugio</h2>
 <div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
-    @{
-        Tarjeta("Adopciones logradas", Model.Adoptadas, Url.Page("/Refugio/Mascotas", new { estado = EstadoMascota.Adoptada }));
-        Tarjeta("Tenencias terminadas", Model.Finalizadas, Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.Finalizadas }));
-    }
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Mascotas", new { estado = EstadoMascota.Adoptada })" class="card h-100 text-decoration-none">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-heart"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.Adoptadas?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Adopciones logradas</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a href="@Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.Finalizadas })" class="card h-100 text-decoration-none">
+            <div class="card-body d-flex align-items-start">
+                <div class="icon-square text-bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2 text-body-emphasis mb-0">@(Model.Finalizadas?.ToString() ?? "—")</h3>
+                    <p class="text-body-secondary small mb-0">Tenencias terminadas</p>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>

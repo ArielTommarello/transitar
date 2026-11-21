@@ -4,7 +4,7 @@
     var foto = Api.UrlFotoPrincipal(Model.FotosIds);
 }
 
-<div class="card h-100">
+<div class="card h-100 tarjeta-hover">
     @if (foto != null)
     {
         <img src="@foto" class="card-img-top tarjeta-foto" alt="Foto de @Model.MascotaNombre" />

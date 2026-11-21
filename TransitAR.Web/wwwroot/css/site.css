@@ -1,11 +1,11 @@
 ﻿html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 /*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -28,12 +28,12 @@
 
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 /* fondo */
@@ -77,12 +77,12 @@ body {
 
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    text-align: start;
 }
 
 /*tarjeta de publicacion*/
@@ -197,4 +197,36 @@ body {
 /* Badges redondeados pills en bootstrap*/
 .badge {
     --bs-badge-border-radius: var(--bs-border-radius-pill);
+}
+
+/* nav pills */
+.nav-pills {
+    --bs-nav-pills-link-active-bg: #1f7a6f;
+}
+
+.dropdown-menu {
+    --bs-dropdown-link-active-bg: #1f7a6f;
+}
+
+/* cards sin borde */
+.card {
+    --bs-card-border-color: transparent;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+
+/* hover en tarjeta */
+.tarjeta-hover {
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.tarjeta-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--bs-box-shadow);
+}
+
+.icon-square {
+    width: 3rem;
+    height: 3rem;
+    border-radius: .75rem;
 }
