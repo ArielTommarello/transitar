@@ -193,3 +193,8 @@ body {
     height: 120px;
     object-fit: cover;
 }
+
+/* Badges redondeados pills en bootstrap*/
+.badge {
+    --bs-badge-border-radius: var(--bs-border-radius-pill);
+}
