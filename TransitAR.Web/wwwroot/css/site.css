@@ -230,3 +230,8 @@ body {
     height: 3rem;
     border-radius: .75rem;
 }
+
+
+.hero-inicio {
+    background: linear-gradient(90deg, #1f7a6f 0%, #2a9d8f 100%);
+}

@@ -21,44 +21,69 @@ else if (User.IsInRole("Admin"))
 }
 
 @* buscador (ya con la zona) *@
-<div class="bg-light rounded-3 p-4 p-md-5 mb-4">
-    <h1 class="h2">Encontrá a tu próximo compañero</h1>
-    <p class="text-muted">Adoptá o dale un tránsito a un animal de un refugio.</p>
+<div class="hero-inicio text-white rounded-3 p-4 p-md-5 mb-4">
+    <h1 class="display-6 fw-bold">Encontrá a tu próximo compañero</h1>
+    <p class="lead">Adoptá o dale un tránsito a un animal de un refugio.</p>
 
-    <form method="get" asp-page="/Publicaciones/Index" class="d-flex gap-2">
-        <input name="Ubicacion" class="form-control form-control-lg" placeholder="¿En qué zona estás? Ej: Lomas" />
-        <button type="submit" class="btn btn-primary btn-lg">Buscar</button>
-    </form>
+    <div class="col-lg-8">
+        <form method="get" asp-page="/Publicaciones/Index" class="d-flex gap-2">
+            <input name="Ubicacion" class="form-control form-control-lg" placeholder="¿En qué zona estás? Ej: Lomas" />
+            <button type="submit" class="btn btn-light btn-lg text-nowrap text-primary"><i class="bi bi-search me-1"></i>Buscar</button>
+        </form>
 
-    @if (Model.Especies.Count > 0)
-    {
-        <div class="d-flex flex-wrap gap-2 mt-3">
-            @foreach (var e in Model.Especies)
-            {
-                <a asp-page="/Publicaciones/Index" asp-route-EspecieId="@e.Id" class="btn btn-sm btn-outline-secondary">@e.Nombre</a>
-            }
-        </div>
-    }
+        @if (Model.Especies.Count > 0)
+        {
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                @foreach (var e in Model.Especies)
+                {
+                    <a asp-page="/Publicaciones/Index" asp-route-EspecieId="@e.Id" class="btn btn-sm btn-outline-light">@e.Nombre</a>
+                }
+            </div>
+        }
+    </div>
 </div>
 
 @* sin sesion *@
 @if (User.Identity?.IsAuthenticated != true)
 {
-    <div class="row text-center g-4 mb-5">
+    <div class="row text-center g-4 mb-4">
         <div class="col-md-4">
-            <h2 class="h5">1. Elegí</h2>
-            <p class="text-muted small mb-0">Mirá los animales que publican los refugios, para adoptar o para tránsito.</p>
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <i class="bi bi-1-circle-fill fs-1 text-primary"></i>
+                    <h2 class="h5 mt-2">Elegí</h2>
+                    <p class="text-muted small mb-0">Mirá los animales que publican los refugios, para adoptar o para tránsito.</p>
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            <h2 class="h5">2. Postulate</h2>
-            <p class="text-muted small mb-0">Creá tu cuenta, completá tu perfil y postulate en un par de clics.</p>
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <i class="bi bi-2-circle-fill fs-1 text-primary"></i>
+                    <h2 class="h5 mt-2">Postulate</h2>
+                    <p class="text-muted small mb-0">Creá tu cuenta, completá tu perfil y postulate en un par de clics.</p>
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            <h2 class="h5">3. Hablá con el refugio</h2>
-            <p class="text-muted small mb-0">El refugio revisa tu postulación y te escribe por el chat.</p>
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <i class="bi bi-3-circle-fill fs-1 text-primary"></i>
+                    <h2 class="h5 mt-2">Hablá con el refugio</h2>
+                    <p class="text-muted small mb-0">El refugio revisa tu postulación y te escribe por el chat.</p>
+                </div>
+            </div>
         </div>
-        <div class="col-12">
-            <a asp-page="/Cuenta/RegistroPostulante" class="btn btn-primary">Crear cuenta</a>
+    </div>
+
+    <div class="p-4 mb-5 bg-primary-subtle text-primary-emphasis rounded-3 d-md-flex align-items-center justify-content-between gap-3 text-center text-md-start">
+        <div class="mb-3 mb-md-0">
+            <h2 class="h5 mb-1">¿Querés adoptar o dar un tránsito?</h2>
+            <p class="mb-0 small">Creá tu cuenta gratis y postulate en un par de clics.</p>
+        </div>
+        <div class="d-grid gap-2 d-sm-flex justify-content-center flex-shrink-0">
+            <a asp-page="/Cuenta/RegistroPostulante" class="btn btn-primary px-4">Crear cuenta</a>
+            <a asp-page="/Cuenta/Login" class="btn btn-light border px-4">Iniciar sesión</a>
         </div>
     </div>
 }
@@ -69,16 +94,16 @@ else if (User.IsInRole("Admin"))
 }
 else if (Model.Todas.Count == 0)
 {
-    <div class="text-center text-muted py-5">Todavía no hay animales publicados.</div>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-house-heart", "Todavía no hay animales publicados.")' />
 }
 else
 {
     @if (Model.Transitos.Count > 0)
     {
         <section class="mb-5">
-            <div class="d-flex justify-content-between align-items-baseline mb-3">
+            <div class="d-flex align-items-baseline gap-3 pb-2 mb-3 border-bottom">
                 <h2 class="h4 mb-0">Necesitan tránsito</h2>
-                <a asp-page="/Publicaciones/Index" asp-route-Tipo="Transito">Ver todos</a>
+                <a asp-page="/Publicaciones/Index" asp-route-Tipo="Transito" class="small text-decoration-none">Ver todos<i class="bi bi-chevron-right small ms-1"></i></a>
             </div>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
                 @foreach (var p in Model.Transitos)
@@ -92,9 +117,9 @@ else
     @if (Model.Adopciones.Count > 0)
     {
         <section class="mb-5">
-            <div class="d-flex justify-content-between align-items-baseline mb-3">
+            <div class="d-flex align-items-baseline gap-3 pb-2 mb-3 border-bottom">
                 <h2 class="h4 mb-0">Para adoptar</h2>
-                <a asp-page="/Publicaciones/Index" asp-route-Tipo="Adopcion">Ver todos</a>
+                <a asp-page="/Publicaciones/Index" asp-route-Tipo="Adopcion" class="small text-decoration-none">Ver todos<i class="bi bi-chevron-right small ms-1"></i></a>
             </div>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
                 @foreach (var p in Model.Adopciones)
@@ -106,9 +131,9 @@ else
     }
 
     <section class="mb-5">
-        <div class="d-flex justify-content-between align-items-baseline mb-3">
+        <div class="d-flex align-items-baseline gap-3 pb-2 mb-3 border-bottom">
             <h2 class="h4 mb-0">Recién publicados</h2>
-            <a asp-page="/Publicaciones/Index">Ver todos</a>
+            <a asp-page="/Publicaciones/Index" class="small text-decoration-none">Ver todos<i class="bi bi-chevron-right small ms-1"></i></a>
         </div>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
             @foreach (var p in Model.Recientes)
