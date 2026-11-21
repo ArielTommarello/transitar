@@ -21,7 +21,9 @@ else if (User.IsInRole("Admin"))
 }
 
 @* buscador (ya con la zona) *@
-<div class="hero-inicio text-white rounded-3 p-4 p-md-5 mb-4">
+<div class="hero-inicio position-relative overflow-hidden text-white rounded-3 p-4 p-md-5 mb-4">
+    <img src="~/img/hero.jpg" class="hero-foto d-none d-md-block" alt="" />
+    <div class="position-relative">
     <h1 class="display-6 fw-bold">Encontrá a tu próximo compañero</h1>
     <p class="lead">Adoptá o dale un tránsito a un animal de un refugio.</p>
 
@@ -40,6 +42,7 @@ else if (User.IsInRole("Admin"))
                 }
             </div>
         }
+        </div>
     </div>
 </div>
 

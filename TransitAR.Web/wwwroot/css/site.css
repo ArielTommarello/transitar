@@ -231,7 +231,16 @@ body {
     border-radius: .75rem;
 }
 
-
+/* Hero nuevo con degrade y foto */
 .hero-inicio {
     background: linear-gradient(90deg, #1f7a6f 0%, #2a9d8f 100%);
+}
+.hero-foto {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: auto;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 45%);
+    mask-image: linear-gradient(to right, transparent, #000 45%);
 }
