@@ -38,7 +38,7 @@
 
         @if (Model.Aceptada == null && !Model.EnEvaluacion.Any() && !Model.Finalizadas.Any())
         {
-            <p class="text-muted">Todavía nadie se postuló a esta publicación.</p>
+            <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-person-lines-fill", "Todavía nadie se postuló a esta publicación.")' />
         }
 
         @if (Model.Aceptada != null)

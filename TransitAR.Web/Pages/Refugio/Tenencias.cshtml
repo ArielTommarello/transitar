@@ -49,17 +49,11 @@
 
 @if (!Model.Todas.Any())
 {
-    <div class="text-center py-5">
-        <p class="text-muted">
-            @(Model.MascotaId == null
-                ? "Todavía no entregaste ninguna mascota. Las tenencias aparecen cuando confirmás una entrega."
-                : "Esta mascota no tiene tenencias.")
-        </p>
-    </div>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-arrow-left-right", Model.MascotaId == null ? "Todavía no entregaste ninguna mascota." : "Esta mascota no tiene tenencias.", Model.MascotaId == null ? "Las tenencias aparecen cuando confirmás una entrega." : null)' />
 }
 else if (!Model.Tenencias.Any())
 {
-    <p class="text-muted">No hay tenencias en esta pestaña.</p>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-inbox", "No hay tenencias para mostrar.")' />
 }
 else
 {

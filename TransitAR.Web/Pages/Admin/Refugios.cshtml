@@ -38,7 +38,7 @@
 
 @if (!Model.Refugios.Any())
 {
-    <p class="text-muted">No hay refugios en este estado.</p>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-inbox", "No hay refugios para mostrar.")' />
 }
 else
 {

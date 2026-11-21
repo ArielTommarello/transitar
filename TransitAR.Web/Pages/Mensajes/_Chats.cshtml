@@ -2,10 +2,7 @@
 
 @if (!Model.Any())
 {
-    <div class="text-center py-5">
-        <p class="text-muted mb-0">Todavía no tenés conversaciones.</p>
-        <p class="small text-muted">Se abre una por cada postulación.</p>
-    </div>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-chat-dots", "Todavía no tenés conversaciones.", "Se abre una por cada postulación.")' />
 }
 else
 {

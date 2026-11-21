@@ -1,0 +1,20 @@
+﻿@model AvisoSinDatos
+@* Hero + card de bootstrap*@
+<div class="card">
+    <div class="card-body px-4 py-5 text-center">
+        <i class="bi @Model.Icono d-block mx-auto mb-3 fs-1 text-primary"></i>
+        <div class="col-lg-6 mx-auto">
+            <p class="text-body-secondary mb-0">@Model.Texto</p>
+            @if (Model.Detalle != null)
+            {
+                <p class="small text-body-secondary mt-1 mb-0">@Model.Detalle</p>
+            }
+            @if (Model.BotonTexto != null)
+            {
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+                    <a href="@Model.BotonUrl" class="btn btn-primary px-4">@Model.BotonTexto</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

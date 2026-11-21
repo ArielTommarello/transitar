@@ -20,10 +20,7 @@
 
         @if (!Model.EnCurso.Any() && !Model.Finalizadas.Any())
         {
-                <div class="text-center py-5">
-                    <p class="text-muted">Todavía no te postulaste a ninguna publicación.</p>
-                    <a asp-page="/Publicaciones/Index" class="btn btn-primary">Ver publicaciones</a>
-                </div>
+            <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-clipboard-heart", "Todavía no te postulaste a ninguna publicación.", BotonTexto: "Ver publicaciones", BotonUrl: Url.Page("/Publicaciones/Index"))' />
         }
         else
         {

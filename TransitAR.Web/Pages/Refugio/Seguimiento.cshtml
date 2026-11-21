@@ -26,12 +26,7 @@
 
 @if (!Model.Pendientes.Any())
 {
-    <div class="text-center py-5">
-        <p class="text-muted">No tenés controles pendientes.</p>
-        <a asp-page="/Refugio/Tenencias" asp-route-vista="@VistaTenencias.SinControlesPendientes" class="btn btn-primary">
-            Ver tenencias sin controles pendientes
-        </a>
-    </div>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-clock-history", "No tenés controles pendientes.", BotonTexto: "Ver tenencias sin controles pendientes", BotonUrl: Url.Page("/Refugio/Tenencias", new { vista = VistaTenencias.SinControlesPendientes }))' />
     return;
 }
 

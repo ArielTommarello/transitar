@@ -58,7 +58,7 @@
 
 @if (!Model.Usuarios.Any())
 {
-    <p class="text-muted">No hay usuarios con estos filtros.</p>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-inbox", "No hay usuarios con estos filtros.")' />
 }
 else
 {

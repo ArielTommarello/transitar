@@ -15,11 +15,7 @@
 
         @if (!Model.ConVos.Any() && !Model.Anteriores.Any())
         {
-            <div class="text-center py-5">
-                <p class="text-muted mb-0">Todavía no tenés animales a cargo.</p>
-                <p class="text-muted">Cuando un refugio te entregue uno, lo vas a ver acá.</p>
-                <a asp-page="/Publicaciones/Index" class="btn btn-primary">Ver publicaciones</a>
-            </div>
+            <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-house-heart", "Todavía no tenés animales a cargo.", "Cuando un refugio te entregue uno, lo vas a ver acá.", "Ver publicaciones", Url.Page("/Publicaciones/Index"))' />
         }
         else
         {

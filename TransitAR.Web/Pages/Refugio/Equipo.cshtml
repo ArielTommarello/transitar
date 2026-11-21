@@ -64,7 +64,7 @@
 }
 @if (!Model.Equipo.Any())
 {
-    <p class="text-muted">No hay integrantes para mostrar.</p>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-people", "No hay integrantes para mostrar.")' />
 }
 else
 {

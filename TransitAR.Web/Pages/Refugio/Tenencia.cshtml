@@ -196,10 +196,9 @@
                                 <div class="col-sm-6 col-md-3">
                                     <label for="fecha-@c.Id" class="form-label small mb-1">Día nuevo (solo reprogramar)</label>
                                     <input type="date" id="fecha-@c.Id" name="FechaReprogramada" class="form-control form-control-sm"
-                                           min="@Formato.HoyEnArgentina().ToString("yyyy-MM-dd")" />
-                                    <div class="form-text">&nbsp;</div>
+                                           min="@Formato.HoyEnArgentina().ToString("yyyy-MM-dd")" />                                    
                                 </div>
-                                <div class="col-md-3 d-flex flex-wrap gap-1 pb-4">
+                                <div class="col-md-3 d-flex flex-wrap gap-1">
                                     <button type="submit" asp-page-handler="Realizado" asp-route-controlId="@c.Id"
                                             class="btn btn-sm btn-success">
                                         Realizado

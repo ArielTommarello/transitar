@@ -41,14 +41,11 @@
 
 @if (!Model.Todas.Any())
 {
-    <div class="text-center py-5">
-        <p class="text-muted">Todavía no cargaste ninguna mascota.</p>
-        <a asp-page="/Refugio/Mascota" class="btn btn-primary">Cargar la primera</a>
-    </div>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-house-heart", "Todavía no cargaste ninguna mascota.", BotonTexto: "Cargar la primera", BotonUrl: Url.Page("/Refugio/Mascota"))' />
 }
 else if (!Model.Mascotas.Any())
 {
-    <p class="text-muted">No hay mascotas en este estado.</p>
+    <partial name="_AvisoSinDatos" model='new AvisoSinDatos("bi-inbox", "No hay mascotas para mostrar.")' />
 }
 else
 {
