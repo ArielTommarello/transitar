@@ -61,10 +61,8 @@
                 <ul class="list-unstyled mb-3">
                     <li>
                         <strong>Con quién:</strong>
-                        <a asp-page="/Refugio/Postulante" asp-route-publicacionId="@t.PublicacionId" asp-route-postulacionId="@t.PostulacionId">
-                            @t.Nombre @t.Apellido
-                        </a> -
-                        <a asp-page="/Mensajes/Chat" asp-route-postulacionId="@t.PostulacionId"> Mensajes</a>
+                        <a asp-page="/Refugio/Postulante" asp-route-publicacionId="@t.PublicacionId" asp-route-postulacionId="@t.PostulacionId" class="btn btn-sm btn-outline-primary ms-1"><i class="bi bi-person me-1"></i>@t.Nombre @t.Apellido</a>
+                        <a asp-page="/Mensajes/Chat" asp-route-postulacionId="@t.PostulacionId" class="btn btn-sm btn-outline-primary ms-1"><i class="bi bi-chat-dots me-1"></i>Mensajes</a>
                     </li>
                     <li><strong>Se la entregaste el:</strong> @Formato.FechaDe(t.FechaInicio)</li>
                     @if (t.FechaFinEstimada != null && Model.EnCurso)
