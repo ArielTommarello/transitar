@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Web.Services;
@@ -33,9 +33,9 @@ namespace TransitAR.Web.Pages.Admin
         /// <summary>
         /// Los que pasan el filtro
         /// </summary>
-        public List<RefugioAdminResponse> Refugios =>
-            Todos.Where(r => Activo == null || r.Activo == Activo).ToList();
-
+        //public List<RefugioAdminResponse> Refugios =>
+        //    Todos.Where(r => Activo == null || r.Activo == Activo).ToList();
+        public PaginatedList<RefugioAdminResponse> Refugios { get; set; } = default!;
 
         /// <summary>
         /// Mensaje
@@ -51,7 +51,7 @@ namespace TransitAR.Web.Pages.Admin
 
 
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
             var respuesta = await _api.GetAsync<List<RefugioAdminResponse>>("api/Admin/refugios");
 
@@ -59,6 +59,10 @@ namespace TransitAR.Web.Pages.Admin
                 Error = respuesta.Error;
 
             Todos = respuesta.Datos ?? new();
+            //paginacion como el tutorial de Microsoft, de a 5
+            var pageSize = 5;
+            var filtrados = Todos.Where(r => Activo == null || r.Activo == Activo).ToList();
+            Refugios = PaginatedList<RefugioAdminResponse>.Create(filtrados, pageIndex ?? 1, pageSize);
         }
 
         public async Task<IActionResult> OnPostBloquearAsync(Guid id)

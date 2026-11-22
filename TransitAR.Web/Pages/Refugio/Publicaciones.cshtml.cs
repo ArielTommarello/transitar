@@ -32,7 +32,9 @@ namespace TransitAR.Web.Pages.Refugio
         /// <summary>
         /// Publicaciones con el filtro mostrando
         /// </summary>
-        public List<PublicacionResponse> Publicaciones { get; set; } = new();
+        //public List<PublicacionResponse> Publicaciones { get; set; } = new();
+        public PaginatedList<PublicacionResponse> Publicaciones { get; set; } = default!;
+
 
         /// <summary>
         /// Aviso cuando cambia un estado
@@ -47,7 +49,7 @@ namespace TransitAR.Web.Pages.Refugio
         public string? Error { get; set; }
 
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
             var respuesta = await _api.GetAsync<List<PublicacionResponse>>("api/Publicacion");
 
@@ -59,9 +61,13 @@ namespace TransitAR.Web.Pages.Refugio
 
             //ya ordenadas pro api
             Todas = respuesta.Datos;
-            Publicaciones = Estado == null
+            var filtradas = Estado == null
                 ? Todas
                 : Todas.Where(p => p.Estado == Estado).ToList();
+
+            //paginacion como el tutorial de Microsoft, de a 5
+            var pageSize = 5;
+            Publicaciones = PaginatedList<PublicacionResponse>.Create(filtradas, pageIndex ?? 1, pageSize);
         }
 
         /// <summary>

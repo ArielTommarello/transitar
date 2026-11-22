@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Web.Services;
@@ -50,7 +50,9 @@ namespace TransitAR.Web.Pages.Refugio
         /// <summary>
         /// Tenencias de la pestaña que se eligio
         /// </summary>
-        public List<TenenciaResponse> Tenencias { get; set; } = new();
+        //public List<TenenciaResponse> Tenencias { get; set; } = new();
+        public PaginatedList<TenenciaResponse> Tenencias { get; set; } = default!;
+
 
         /// <summary>
         /// Nombre de la mascota filtrada
@@ -72,7 +74,7 @@ namespace TransitAR.Web.Pages.Refugio
         public string? Error { get; set; }
 
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
             var respuesta = await _api.GetAsync<List<TenenciaResponse>>("api/Tenencia");
 
@@ -87,7 +89,11 @@ namespace TransitAR.Web.Pages.Refugio
                 ? respuesta.Datos
                 : respuesta.Datos.Where(t => t.MascotaId == MascotaId).ToList();
 
-            Tenencias = Todas.Where(t => EnVista(t, Vista)).ToList();
+            var filtradas = Todas.Where(t => EnVista(t, Vista)).ToList();
+
+            //paginacion como el tutorial de Microsoft, de a 5
+            var pageSize = 5;
+            Tenencias = PaginatedList<TenenciaResponse>.Create(filtradas, pageIndex ?? 1, pageSize);
         }
 
         /// <summary>

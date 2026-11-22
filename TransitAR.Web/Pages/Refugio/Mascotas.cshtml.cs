@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Web.Services;
@@ -30,8 +30,8 @@ namespace TransitAR.Web.Pages.Refugio
         /// <summary>
         /// Las mascotas que se muestran segun el filtro elegido
         /// </summary>
-        public List<MascotaResponse> Mascotas { get; set; } = new();
-
+        //public List<MascotaResponse> Mascotas { get; set; } = new();
+        public PaginatedList<MascotaResponse> Mascotas { get; set; } = default!;
 
         /// <summary>
         /// lo que muestro despues de borrar 
@@ -46,7 +46,7 @@ namespace TransitAR.Web.Pages.Refugio
         public string? Error { get; set; }
 
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
             var respuesta = await _api.GetAsync<List<MascotaResponse>>("api/Mascota");
 
@@ -57,11 +57,15 @@ namespace TransitAR.Web.Pages.Refugio
             }
 
             Todas = respuesta.Datos.OrderBy(m => m.Nombre).ToList();
-
+                        
             //aplico el filtro, la API devuelve todas las del refugio
-            Mascotas = Estado == null
+            var filtradas = Estado == null
                 ? Todas
                 : Todas.Where(m => m.Estado == Estado).ToList();
+
+            //paginacion como el tutorial de Microsoft, de a 5
+            var pageSize = 5;
+            Mascotas = PaginatedList<MascotaResponse>.Create(filtradas, pageIndex ?? 1, pageSize);
         }
 
         /// <summary>
