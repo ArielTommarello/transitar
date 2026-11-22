@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Web.Services;
@@ -38,13 +38,25 @@ namespace TransitAR.Web.Pages.Refugio
         /// </summary>
         public List<PostulacionRefugioResponse> Finalizadas { get; set; } = new();
 
+
+        // <summary>
+        /// Filtro: false = en evaluacion (arranca asi), true = finalizadas
+        /// </summary>
+        [BindProperty(SupportsGet = true)]
+        public bool VerFinalizadas { get; set; }
+
+        /// <summary>
+        /// Las del filtro elegido, paginadas
+        /// </summary>
+        public PaginatedList<PostulacionRefugioResponse> Postulaciones { get; set; } = default!;
+
         /// <summary>
         /// True si no es del refugio
         /// </summary>
         public bool NoEncontrada { get; set; }
 
 
-        public async Task OnGetAsync(Guid id)
+        public async Task OnGetAsync(Guid id, int? pageIndex)
         {
             var publicacion = await _api.GetAsync<PublicacionResponse>($"api/Publicacion/{id}");
             if (!publicacion.Exito || publicacion.Datos == null)
@@ -69,6 +81,12 @@ namespace TransitAR.Web.Pages.Refugio
             Finalizadas = todas
                 .Where(p => p.Estado == EstadoPostulacion.Rechazada || p.Estado == EstadoPostulacion.Retirada)
                 .ToList();
+
+            var filtradas = VerFinalizadas ? Finalizadas : EnEvaluacion;
+
+            //paginacion como el tutorial de Microsoft, de a 5
+            var pageSize = 5;
+            Postulaciones = PaginatedList<PostulacionRefugioResponse>.Create(filtradas, pageIndex ?? 1, pageSize);
         }
 
     }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TransitAR.Structures;
 using TransitAR.Web.Services;
@@ -35,6 +35,11 @@ namespace TransitAR.Web.Pages.Mensajes
         public List<ChatResumenResponse> Chats { get; set; } = new();
 
         /// <summary>
+        /// Los chats de la pagina 
+        /// </summary>
+        public PaginatedList<ChatResumenResponse> ChatsPagina { get; set; } = default!;
+
+        /// <summary>
         /// Error
         /// </summary>
         [TempData]
@@ -54,26 +59,34 @@ namespace TransitAR.Web.Pages.Mensajes
         public string? MascotaNombre => Filtrada ? Chats.FirstOrDefault()?.MascotaNombre : null;
 
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
             //qpara que atras no storee en cache
             Response.Headers.CacheControl = "no-store";
 
             Error = await CargarAsync();
+
+            //paginacion como el tutorial de Microsoft, de a 10
+            var pageSize = 10;
+            ChatsPagina = PaginatedList<ChatResumenResponse>.Create(Chats, pageIndex ?? 1, pageSize);
         }
 
         /// <summary>
         /// solo muestro la lista, y la actualzio 15s
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnGetChatsAsync()
+        public async Task<IActionResult> OnGetChatsAsync(int? pageIndex)
         {
             Response.Headers.CacheControl = "no-store";
 
             if (await CargarAsync() != null)
                 return NotFound();
+                        
+            //la misma pagina que se esta viendo
+            var pageSize = 10;
+            ChatsPagina = PaginatedList<ChatResumenResponse>.Create(Chats, pageIndex ?? 1, pageSize);
 
-            return Partial("_Chats", Chats);
+            return Partial("_Chats", ChatsPagina);
         }
 
         /// <summary>
