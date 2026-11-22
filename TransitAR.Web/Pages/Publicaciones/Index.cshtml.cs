@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using TransitAR.Structures;
@@ -34,7 +34,13 @@ namespace TransitAR.Web.Pages.Publicaciones
         /// <summary>
         /// Las publicaciones que cumplen los filtros
         /// </summary>
-        public List<PublicacionPublicaResponse> Publicaciones { get; set; } = new();
+        //public List<PublicacionPublicaResponse> Publicaciones { get; set; } = new();
+        public PaginatedList<PublicacionPublicaResponse> Publicaciones { get; set; } = default!;
+
+        /// <summary>
+        /// filtros en total, publicaciones con las de esta pagina nomas
+        /// </summary>
+        public int TotalResultados { get; set; }
 
         /// <summary>
         /// Para el desplegable de especies
@@ -43,7 +49,7 @@ namespace TransitAR.Web.Pages.Publicaciones
 
         public string? Error { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
             var especies = await _api.GetAsync<List<EspecieResponse>>("api/Especie");
             Especies = especies.Datos ?? new();
@@ -71,7 +77,11 @@ namespace TransitAR.Web.Pages.Publicaciones
                 return;
             }
 
-            Publicaciones = respuesta.Datos ?? new();
+            var todas = respuesta.Datos ?? new();
+            TotalResultados = todas.Count;
+            //paginacion como hace microsoft (2 filas de 3 tarjetas)
+            var pageSize = 6;
+            Publicaciones = PaginatedList<PublicacionPublicaResponse>.Create(todas, pageIndex ?? 1, pageSize);
         }
     }
 }

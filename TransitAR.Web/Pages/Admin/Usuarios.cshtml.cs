@@ -40,9 +40,9 @@ namespace TransitAR.Web.Pages.Admin
         /// <summary>
         /// Los que pasan los dos filtros
         /// </summary>
-        public List<UsuarioAdminResponse> Usuarios =>
-            Todos.Where(u => Habilitado(u, Rol, Activo)).ToList();
-
+        //public List<UsuarioAdminResponse> Usuarios =>
+        //    Todos.Where(u => Habilitado(u, Rol, Activo)).ToList();
+        public PaginatedList<UsuarioAdminResponse> Usuarios { get; set; } = default!;
 
         /// <summary>
         /// Mensaje
@@ -57,7 +57,7 @@ namespace TransitAR.Web.Pages.Admin
         [TempData]
         public string? Error { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
             var respuesta = await _api.GetAsync<List<UsuarioAdminResponse>>("api/Admin/usuarios");
 
@@ -65,6 +65,10 @@ namespace TransitAR.Web.Pages.Admin
                 Error = respuesta.Error;
 
             Todos = respuesta.Datos ?? new();
+            //paginacion como el tutorial de Microsoft, de a 5
+            var pageSize = 5;
+            var filtrados = Todos.Where(u => Habilitado(u, Rol, Activo)).ToList();
+            Usuarios = PaginatedList<UsuarioAdminResponse>.Create(filtrados, pageIndex ?? 1, pageSize);
         }
 
         public async Task<IActionResult> OnPostBloquearAsync(Guid id)
