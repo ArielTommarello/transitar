@@ -26,7 +26,7 @@
         <h1 class="h4 mb-0">@c.MascotaNombre <span class="text-muted fw-normal">· @c.Receptor</span></h1>
         <div class="small text-muted">@c.PublicacionTitulo · @Formato.Tipo(c.Tipo) · @estado</div>
     </div>
-    <a asp-page="/Mensajes/Chat" asp-route-postulacionId="@c.PostulacionId" class="btn btn-sm btn-outline-secondary">Actualizar</a>
+    <a asp-page="/Mensajes/Chat" asp-route-postulacionId="@c.PostulacionId" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise me-1"></i>Actualizar</a>
 </div>
 
 @if (Model.Error != null)
@@ -47,7 +47,7 @@
         <div class="d-flex gap-2 align-items-end">
             <textarea name="Texto" class="form-control" rows="2" maxlength="2000"
                       placeholder="Escribí un mensaje…"></textarea>
-            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-send me-1"></i>Enviar</button>
         </div>
         <div class="mt-2">
             @* cambia si cambia la regla , esta en default *@

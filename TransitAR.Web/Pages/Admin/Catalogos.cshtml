@@ -51,12 +51,12 @@
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" asp-page-handler="GuardarEspecie" asp-route-id="@e.Id"
                             class="btn btn-sm btn-outline-primary">
-                        Guardar
+                        <i class="bi bi-check-lg me-1"></i>Guardar
                     </button>
                     <button type="submit" asp-page-handler="BorrarEspecie" asp-route-id="@e.Id"
                             class="btn btn-sm btn-outline-danger" formnovalidate
                             data-confirmar="¿Borrar la especie @e.Nombre?" data-confirmar-boton="Borrar">
-                            Borrar
+                        <i class="bi bi-trash me-1"></i>Borrar
                     </button>
                 </div>
             </form>
@@ -98,12 +98,12 @@
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" asp-page-handler="GuardarCondicion" asp-route-id="@c.Id"
                             class="btn btn-sm btn-outline-primary">
-                        Guardar
+                        <i class="bi bi-check-lg me-1"></i>Guardar
                     </button>
                     <button type="submit" asp-page-handler="BorrarCondicion" asp-route-id="@c.Id"
                             class="btn btn-sm btn-outline-danger" formnovalidate
                             data-confirmar="¿Borrar la condición @c.Nombre?" data-confirmar-boton="Borrar">
-                        Borrar
+                        <i class="bi bi-trash me-1"></i>Borrar
                     </button>
                 </div>
             </form>

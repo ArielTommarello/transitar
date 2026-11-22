@@ -14,7 +14,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 mb-0">Mascotas</h1>
-    <a asp-page="/Refugio/Mascota" class="btn btn-primary">Nueva mascota</a>
+    <a asp-page="/Refugio/Mascota" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva mascota</a>
 </div>
 
 @if (Model.Mensaje != null)
@@ -90,13 +90,13 @@ else
                         <td class="text-end text-nowrap">
                             @if (m.Estado == EstadoMascota.EnTransito || m.Estado == EstadoMascota.Adoptada)
                             {
-                                <a asp-page="/Refugio/Tenencias" asp-route-mascotaId="@m.Id" class="btn btn-sm btn-outline-secondary">Tenencias</a>
+                                <a asp-page="/Refugio/Tenencias" asp-route-mascotaId="@m.Id" class="btn btn-sm btn-outline-secondary"><i class="bi bi-house-heart me-1"></i>Tenencias</a>
                             }
-                            <a asp-page="/Refugio/Mascota" asp-route-id="@m.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <a asp-page="/Refugio/Mascota" asp-route-id="@m.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
 
                             <form method="post" asp-page-handler="Eliminar" asp-route-id="@m.Id" asp-route-estado="@Model.Estado"
                                   class="d-inline" data-confirmar="¿Borrar a @m.Nombre? Solo se puede si no tiene publicaciones ni tenencias." data-confirmar-boton="Borrar">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Borrar</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Borrar</button>
                             </form>
                         </td>
                     </tr>

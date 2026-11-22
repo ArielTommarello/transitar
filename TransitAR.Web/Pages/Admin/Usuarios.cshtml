@@ -97,14 +97,14 @@ else
                                     <form method="post" asp-page-handler="Bloquear" asp-route-id="@u.Id"
                                           asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo"
                                           data-confirmar="¿Bloquear a @u.Nombre @u.Apellido? No va a poder iniciar sesión." data-confirmar-boton="Bloquear">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Bloquear</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-slash-circle me-1"></i>Bloquear</button>
                                     </form>
                                 }
                                 else
                                 {
                                     <form method="post" asp-page-handler="Desbloquear" asp-route-id="@u.Id"
                                           asp-route-rol="@Model.Rol" asp-route-activo="@Model.Activo">
-                                        <button type="submit" class="btn btn-sm btn-outline-success">Desbloquear</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check-circle me-1"></i>Desbloquear</button>
                                     </form>
                                 }
 
@@ -112,7 +112,7 @@ else
                                         data-bs-toggle="modal" data-bs-target="#modalBlanquear"
                                         data-nombre="@u.Nombre @u.Apellido"
                                         data-url="@Url.Page("/Admin/Usuarios", "Blanquear", new { id = u.Id, rol = Model.Rol, activo = Model.Activo })">
-                                    Blanquear
+                                    <i class="bi bi-key me-1"></i>Blanquear
                                 </button>
                             }
                         </td>

@@ -199,16 +199,16 @@
                                 <div class="col-md-3 d-flex flex-wrap gap-1">
                                     <button type="submit" asp-page-handler="Realizado" asp-route-controlId="@c.Id"
                                             class="btn btn-sm btn-success">
-                                        Realizado
+                                        <i class="bi bi-check-lg me-1"></i>Realizado
                                     </button>
                                     <button type="submit" asp-page-handler="Reprogramar" asp-route-controlId="@c.Id"
                                             class="btn btn-sm btn-outline-primary">
-                                        Reprogramar
+                                        <i class="bi bi-calendar-event me-1"></i>Reprogramar
                                     </button>
                                     <button type="submit" asp-page-handler="Cancelar" asp-route-controlId="@c.Id"
                                             class="btn btn-sm btn-outline-secondary"
                                             data-confirmar="¿Cancelar el control del @Formato.Dia(c.FechaProgramada)?" data-confirmar-boton="Cancelar control">
-                                        Cancelar
+                                        <i class="bi bi-x-circle me-1"></i>Cancelar
                                     </button>
                                 </div>
                             </form>
